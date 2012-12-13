@@ -1,4 +1,4 @@
-﻿namespace HareDu
+﻿namespace HareDu.Model
 {
     public class ConnectionInfo
     {
