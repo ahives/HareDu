@@ -2,7 +2,7 @@
 {
     public static class PrimitiveValueExtensions
     {
-        public static string Sanitize(this string value)
+        public static string SanitizeVirtualHostName(this string value)
         {
             if (value == @"/")
             {

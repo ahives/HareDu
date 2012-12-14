@@ -7,7 +7,7 @@
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("vhost")]
-        public string VirtualHost { get; set; }
+        public string VirtualHostName { get; set; }
         [JsonProperty("type")]
         public string Type { get; set; }
         [JsonProperty("durable")]

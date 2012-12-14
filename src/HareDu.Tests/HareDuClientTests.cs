@@ -14,7 +14,7 @@ namespace HareDu.Tests
         public void Verify_GetInfoOnOpenChannels_Working()
         {
             var client = new HareDuClient("http://localhost", 55672, "guest", "guest");
-            var channels = client.GetInfoOnOpenChannels();
+            var channels = client.GetListOfAllOpenChannels();
 
             foreach (var channelInfo in channels)
             {

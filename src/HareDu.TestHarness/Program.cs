@@ -18,7 +18,7 @@ namespace HareDu.TestHarness
 
             url = "http://localhost";
             var client = new HareDuClient(url, 55672, username, password);
-            var channels = client.GetInfoOnOpenChannels();
+            var channels = client.GetListOfAllOpenChannels();
 
             foreach (var channelInfo in channels)
             {

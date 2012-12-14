@@ -1,14 +1,16 @@
 ﻿namespace HareDu.Model
 {
+    using Newtonsoft.Json;
+
     public class MessageStatsInfo
     {
+        [JsonProperty("publish")]
         public int Published { get; set; }
+        [JsonProperty("ack")]
         public int Acknowledged { get; set; }
+        [JsonProperty("deliver")]
         public int Delivered { get; set; }
+        [JsonProperty("deliver_get")]
         public int DeliveredOrGet { get; set; }
-        public int Unacknowledged { get; set; }
-        public int Unconfirmed{ get; set; }
-        public int Uncommitted { get; set; }
-        public int AcknowledgesUncommitted { get; set; }
     }
 }
