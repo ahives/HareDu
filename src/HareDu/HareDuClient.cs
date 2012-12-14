@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Net;
     using System.Reflection;
+    using System.Text;
     using Model;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -40,7 +41,7 @@
             flagsFieldInfo.SetValue(uri, flags);
         }
 
-        private HttpWebRequest MakeRequestViaHttpGet(string url)
+        private HttpWebRequest BuildHttpGetRequest(string url)
         {
             var endpoint = BuildRestEndpoint(url);
             var uri = new Uri(endpoint);
@@ -58,9 +59,23 @@
             return request;
         }
 
-        private HttpWebRequest MakeRequestViaHttpPut(string url)
+        private HttpWebRequest BuildHttpPutRequest(string url, long contentLength)
         {
-            throw new NotImplementedException();
+            var endpoint = BuildRestEndpoint(url);
+            var uri = new Uri(endpoint);
+            ForceCanonicalPathAndQuery(uri);
+            var request = WebRequest.Create(uri) as HttpWebRequest;
+
+            if (request == null)
+            {
+            }
+
+            request.Method = "PUT";
+            request.ContentType = "application/json";
+            request.Credentials = new NetworkCredential(Username, Password);
+            request.ContentLength = contentLength;
+
+            return request;
         }
 
         private HttpWebRequest MakeRequestViaHttpPost(string url)
@@ -87,7 +102,7 @@
 
         //public IEnumerable<string> GetListOfVirtualHosts()
         //{
-        //    var request = MakeRequestViaHttpGet("vhosts");
+        //    var request = BuildHttpGetRequest("vhosts");
         //    string response = GetHttpResponseBody(request);
         //    var parser = JArray.Parse(response);
 
@@ -97,7 +112,7 @@
 
         public IEnumerable<string> GetListOfAllQueuesInVirtualHost(string vhost)
         {
-            var request = MakeRequestViaHttpGet(string.Format(@"queues/{0}", vhost.SanitizeVirtualHostName()));
+            var request = BuildHttpGetRequest(string.Format(@"queues/{0}", vhost.SanitizeVirtualHostName()));
             string response = GetHttpResponseBody(request);
             //var parser = JArray.Parse(response);
 
@@ -109,7 +124,7 @@
 
         public IEnumerable<QueueInfo> GetListOfAllQueues()
         {
-            var request = MakeRequestViaHttpGet("queues");
+            var request = BuildHttpGetRequest("queues");
             string response = GetHttpResponseBody(request);
 
             return JsonConvert.DeserializeObject<IEnumerable<QueueInfo>>(response);
@@ -117,7 +132,7 @@
 
         public IEnumerable<ExchangeInfo> GetListOfAllExchanges()
         {
-            var request = MakeRequestViaHttpGet("exchanges");
+            var request = BuildHttpGetRequest("exchanges");
             string response = GetHttpResponseBody(request);
 
             return JsonConvert.DeserializeObject<IEnumerable<ExchangeInfo>>(response);
@@ -125,7 +140,7 @@
 
         public IEnumerable<ConnectionInfo> GetListOfAllOpenConnections()
         {
-            var request = MakeRequestViaHttpGet("connections");
+            var request = BuildHttpGetRequest("connections");
             string response = GetHttpResponseBody(request);
 
             return JsonConvert.DeserializeObject<IEnumerable<ConnectionInfo>>(response);
@@ -133,7 +148,7 @@
 
         public IEnumerable<ChannelInfo> GetListOfAllOpenChannels()
         {
-            var request = MakeRequestViaHttpGet("connections");
+            var request = BuildHttpGetRequest("connections");
             string response = GetHttpResponseBody(request);
 
             return JsonConvert.DeserializeObject<IEnumerable<ChannelInfo>>(response);
@@ -141,10 +156,26 @@
 
         public IEnumerable<QueueBindingInfo> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
-            var request = MakeRequestViaHttpGet(string.Format("queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
+            var request = BuildHttpGetRequest(string.Format("queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
             string response = GetHttpResponseBody(request);
 
             return JsonConvert.DeserializeObject<IEnumerable<QueueBindingInfo>>(response);
+        }
+
+        public string CreateQueue(QueuePutRequestParams queue)
+        {
+            var json = JsonConvert.SerializeObject(queue);
+            var requestBody = Encoding.UTF8.GetBytes(json);
+            var request =
+                BuildHttpPutRequest(
+                    string.Format("/api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.Name),
+                    requestBody.Length);
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(requestBody, 0, requestBody.Length);
+            }
+            return GetHttpResponseBody(request);
         }
     }
 }

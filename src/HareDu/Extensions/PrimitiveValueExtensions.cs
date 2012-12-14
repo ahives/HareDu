@@ -6,7 +6,7 @@
         {
             if (value == @"/")
             {
-                return value.Replace("/", "%2F");
+                return value.Replace("/", "%2f");
             }
 
             return value;
