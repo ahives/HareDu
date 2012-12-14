@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ExchangePutRequestParams.cs" />
     <Compile Include="Model\ChannelInfo.cs" />
     <Compile Include="HareDuClient.cs" />
     <Compile Include="Model\ConnectionInfo.cs" />

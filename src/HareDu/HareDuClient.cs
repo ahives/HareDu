@@ -162,20 +162,34 @@
             return JsonConvert.DeserializeObject<IEnumerable<QueueBindingInfo>>(response);
         }
 
-        public string CreateQueue(QueuePutRequestParams queue)
+        public void CreateQueue(QueuePutRequestParams queue)
         {
             var json = JsonConvert.SerializeObject(queue);
             var requestBody = Encoding.UTF8.GetBytes(json);
             var request =
                 BuildHttpPutRequest(
-                    string.Format("/api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.Name),
+                    string.Format("queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName),
                     requestBody.Length);
 
             using (Stream stream = request.GetRequestStream())
             {
                 stream.Write(requestBody, 0, requestBody.Length);
             }
-            return GetHttpResponseBody(request);
+        }
+
+        public void CreateExchange(ExchangePutRequestParams exchange)
+        {
+            var json = JsonConvert.SerializeObject(exchange);
+            var requestBody = Encoding.UTF8.GetBytes(json);
+            var request =
+                BuildHttpPutRequest(
+                    string.Format("exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(), exchange.ExchangeName),
+                    requestBody.Length);
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(requestBody, 0, requestBody.Length);
+            }
         }
     }
 }
