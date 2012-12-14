@@ -3,7 +3,7 @@
     using System;
     using Newtonsoft.Json;
 
-    public class ChannelInfo
+    public class Channel
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -30,7 +30,7 @@
         [JsonProperty("user")]
         public string User { get; set; }
         [JsonIgnore]
-        public MessageStatsInfo MessageStats { get; set; }
+        public MessageStats MessageStats { get; set; }
         [JsonProperty("messages_unacknowledged")]
         public int Unacknowledged { get; set; }
         [JsonProperty("messages_unconfirmed")]

@@ -2,7 +2,7 @@
 {
     using Newtonsoft.Json;
 
-    public class QueueInfo
+    public class Queue
     {
         [JsonProperty("name")]
         public string Name { get; set; }

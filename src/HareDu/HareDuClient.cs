@@ -122,44 +122,44 @@
             //throw new NotImplementedException();
         }
 
-        public IEnumerable<QueueInfo> GetListOfAllQueues()
+        public IEnumerable<Queue> GetListOfAllQueues()
         {
             var request = BuildHttpGetRequest("queues");
             string response = GetHttpResponseBody(request);
 
-            return JsonConvert.DeserializeObject<IEnumerable<QueueInfo>>(response);
+            return JsonConvert.DeserializeObject<IEnumerable<Queue>>(response);
         }
 
-        public IEnumerable<ExchangeInfo> GetListOfAllExchanges()
+        public IEnumerable<Exchange> GetListOfAllExchanges()
         {
             var request = BuildHttpGetRequest("exchanges");
             string response = GetHttpResponseBody(request);
 
-            return JsonConvert.DeserializeObject<IEnumerable<ExchangeInfo>>(response);
+            return JsonConvert.DeserializeObject<IEnumerable<Exchange>>(response);
         }
 
-        public IEnumerable<ConnectionInfo> GetListOfAllOpenConnections()
+        public IEnumerable<Connection> GetListOfAllOpenConnections()
         {
             var request = BuildHttpGetRequest("connections");
             string response = GetHttpResponseBody(request);
 
-            return JsonConvert.DeserializeObject<IEnumerable<ConnectionInfo>>(response);
+            return JsonConvert.DeserializeObject<IEnumerable<Connection>>(response);
         }
 
-        public IEnumerable<ChannelInfo> GetListOfAllOpenChannels()
+        public IEnumerable<Channel> GetListOfAllOpenChannels()
         {
             var request = BuildHttpGetRequest("connections");
             string response = GetHttpResponseBody(request);
 
-            return JsonConvert.DeserializeObject<IEnumerable<ChannelInfo>>(response);
+            return JsonConvert.DeserializeObject<IEnumerable<Channel>>(response);
         }
 
-        public IEnumerable<QueueBindingInfo> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
+        public IEnumerable<QueueBinding> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
             var request = BuildHttpGetRequest(string.Format("queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
             string response = GetHttpResponseBody(request);
 
-            return JsonConvert.DeserializeObject<IEnumerable<QueueBindingInfo>>(response);
+            return JsonConvert.DeserializeObject<IEnumerable<QueueBinding>>(response);
         }
 
         public void CreateQueue(QueuePutRequestParams queue)

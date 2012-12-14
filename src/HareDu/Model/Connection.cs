@@ -2,7 +2,7 @@
 {
     using Newtonsoft.Json;
 
-    public class ConnectionInfo
+    public class Connection
     {
         [JsonProperty("name")]
         public string Name { get; set; }

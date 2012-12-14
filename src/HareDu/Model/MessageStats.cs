@@ -2,7 +2,7 @@
 {
     using Newtonsoft.Json;
 
-    public class MessageStatsInfo
+    public class MessageStats
     {
         [JsonProperty("publish")]
         public int Published { get; set; }
