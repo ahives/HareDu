@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\QueueBinding.cs" />
     <Compile Include="Model\QueuePutRequestParams.cs" />
+    <Compile Include="QueueBindingsPostRequestParams.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

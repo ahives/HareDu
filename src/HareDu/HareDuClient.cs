@@ -78,9 +78,23 @@
             return request;
         }
 
-        private HttpWebRequest MakeRequestViaHttpPost(string url)
+        private HttpWebRequest BuildHttpPostRequest(string url, long contentLength)
         {
-            throw new NotImplementedException();
+            var endpoint = BuildRestEndpoint(url);
+            var uri = new Uri(endpoint);
+            ForceCanonicalPathAndQuery(uri);
+            var request = WebRequest.Create(uri) as HttpWebRequest;
+
+            if (request == null)
+            {
+            }
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.Credentials = new NetworkCredential(Username, Password);
+            request.ContentLength = contentLength;
+
+            return request;
         }
 
         private HttpWebRequest MakeRequestViaHttpDelete(string url)
@@ -184,6 +198,22 @@
             var request =
                 BuildHttpPutRequest(
                     string.Format("exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(), exchange.ExchangeName),
+                    requestBody.Length);
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(requestBody, 0, requestBody.Length);
+            }
+        }
+
+        public void CreateQueueBindings(QueueBindingsPostRequestParams queueBinding)
+        {
+            queueBinding.RoutingKey = queueBinding.RoutingKey ?? string.Empty;
+            var json = JsonConvert.SerializeObject(queueBinding);
+            var requestBody = Encoding.UTF8.GetBytes(json);
+            var request =
+                BuildHttpPostRequest(
+                    string.Format("bindings/{0}/e/{1}/q/{2}", queueBinding.VirtualHostName.SanitizeVirtualHostName(), queueBinding.ExchangeName, queueBinding.QueueName),
                     requestBody.Length);
 
             using (Stream stream = request.GetRequestStream())
