@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class QueuePutRequestParams
+    public class QueueRequestOperationParams
     {
         [JsonIgnore]
         public string QueueName { get; set; }
@@ -18,7 +18,7 @@
         [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default)]
         public string Node { get; set; }
 
-        public QueuePutRequestParams()
+        public QueueRequestOperationParams()
         {
             Arguments = new List<string>();
         }
