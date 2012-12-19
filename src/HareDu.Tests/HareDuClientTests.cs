@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HareDu.Model;
 
 namespace HareDu.Tests
 {
@@ -10,6 +11,16 @@ namespace HareDu.Tests
     [TestFixture]
     public class HareDuClientTests
     {
+        private HareDuClient _client;
+        private string _vhost = "/";
+        private bool _enableTracing = true;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _client = new HareDuClient("http://localhost", 15672, "guest", "guest");
+        }
+
         [Test]
         public void Verify_GetInfoOnOpenChannels_Working()
         {
@@ -40,5 +51,55 @@ namespace HareDu.Tests
             }
         }
 
+        [Test]
+        public void Test_Exchanges()
+        {
+            string exchangeName = "Test123";
+            var exhangeputreq = new ExchangePutRequestParams()
+                {
+                    ExchangeName = exchangeName,
+                    Type = "direct",
+                    VirtualHostName = _vhost
+                };
+            _client.CreateExchange(exhangeputreq);
+
+            //Test Get
+            var exchange = _client.GetExchange(_vhost, exchangeName);
+            Assert.AreEqual(exchangeName,exchange.Name);
+
+            //Test List
+
+            var exchanges = _client.GetListOfAllExchangesInVirtualHost(_vhost);
+            Assert.IsNotNull(exchanges);
+            if (_enableTracing)
+                exchanges.ToList().ForEach(p => Console.WriteLine(p.Name));
+
+            Assert.AreEqual(1, exchanges.Count(p => p.Name==exchangeName));
+            
+            //Test Delete
+            _client.DeleteExchange(_vhost, exchangeName);
+            exchanges = _client.GetListOfAllExchangesInVirtualHost(_vhost);
+            Assert.AreEqual(0, exchanges.Count(p => p.Name == exchangeName));
+        }
+
+         [Test]
+        public void Test_Exchanges_Binding()
+        {
+            string exchangeName = "provider";
+            //Test Get
+            var bindings = _client.GetListOfAllBindingsOnExchange(_vhost, exchangeName, true);
+            Assert.IsNotNull(bindings);
+            if (_enableTracing)
+                bindings.ToList().ForEach(p => Console.WriteLine(p.Source));
+
+           
+           //Test Get
+            bindings = _client.GetListOfAllBindingsOnExchange(_vhost, exchangeName, false);
+            Assert.IsNotNull(bindings);
+            if (_enableTracing)
+                bindings.ToList().ForEach(p => Console.WriteLine(p.Source));
+             
+        }
+       
     }
 }

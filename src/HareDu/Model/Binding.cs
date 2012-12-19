@@ -2,7 +2,7 @@
 {
     using Newtonsoft.Json;
 
-    public class QueueBinding
+    public class Binding
     {
         [JsonProperty("source")]
         public string Source { get; set; }
