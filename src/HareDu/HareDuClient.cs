@@ -164,6 +164,7 @@
 
             setUpdatableFlagsMethod.Invoke(uriParser, new object[] { 0 });
         }
+
         private T Get<T>(string path)
         protected T Get<T>(string path)
 
@@ -237,10 +238,13 @@
 
         public IEnumerable<Binding> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
+<<<<<<< HEAD
             return Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
             return
                 Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings",
                                                              virtualHostName.SanitizeVirtualHostName(), queueName));
+=======
+>>>>>>> 2450030... added exchange api methods and also setup a base patern for for using unites as Integration test
             return Get<IEnumerable<Binding>>(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
         }
 
@@ -249,15 +253,11 @@
             Put(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName),
                 queue);
         }
-
-        public void CreateExchange(ExchangePutRequestParams exchange)
-        {
-            Put(string.Format("api/exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(),
-                              exchange.ExchangeName), exchange);
-        }
-
+        
         private bool Put<T>(string path, T value)
         {
+            if (path.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
            // var uri = new Uri(string.Format("{0}/{1}", Client.BaseAddress.PathAndQuery, path));
             var uri = new Uri(string.Format("http://localhost/{0}", path));
             var response = Client.PutAsJsonAsync(uri.PathAndQuery, value).Result;
