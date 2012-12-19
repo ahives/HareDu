@@ -138,8 +138,41 @@
         //        }
         //}
 
+        /// <summary>
+        /// this method is to add workaound for isssue using forword shlash ('/') in uri
+        /// default vhost in RabbitMQ is named as '/' but '/' is uri charter so RabbitMQ suggest to uses '%2f' encoded character while passing default host name in URI
+        /// but System.URI class replaces this encoded char with '/' which changes symantics fo URI. 
+        /// This method is to overide the default System.Uri behaviour 
+        /// </summary>
+        private void LeaveDotsAndSlashesEscaped()
+        {
+            var getSyntaxMethod =
+                typeof(UriParser).GetMethod("GetSyntax", BindingFlags.Static | BindingFlags.NonPublic);
+            if (getSyntaxMethod == null)
+            {
+                throw new MissingMethodException("UriParser", "GetSyntax");
+            }
+
+            var uriParser = getSyntaxMethod.Invoke(null, new object[] { "http" });
+
+            var setUpdatableFlagsMethod =
+                uriParser.GetType().GetMethod("SetUpdatableFlags", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (setUpdatableFlagsMethod == null)
+            {
+                throw new MissingMethodException("UriParser", "SetUpdatableFlags");
+            }
+
+            setUpdatableFlagsMethod.Invoke(uriParser, new object[] { 0 });
+        }
         protected T Get<T>(string path)
         {
+            //if defaut vhost name is pressetnt then use LeaveDotsAndSlashesEscaped to prevent encoded charater getting overwrittern
+            if (path.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
+            if (path.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
             var response = Client.GetAsync(path).Result;
             response.EnsureSuccessStatusCode();
 
@@ -178,7 +211,7 @@
 
         public IEnumerable<string> GetListOfAllQueuesInVirtualHost(string vhost)
         {
-            var queues = Get<IEnumerable<Queue>>(string.Format(@"queues/{0}", vhost.SanitizeVirtualHostName()));
+            var queues = Get<IEnumerable<Queue>>(string.Format(@"api/queues/{0}", vhost.SanitizeVirtualHostName()));
             return queues.Where(x => x.VirtualHostName == vhost).Select(x => x.Name);
         }
 
