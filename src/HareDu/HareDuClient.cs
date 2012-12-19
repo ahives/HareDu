@@ -6,12 +6,11 @@
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Reflection;
     using Model;
 
     public class HareDuClient
     {
-        protected HttpClient Client { get; set; }
-
         public HareDuClient(string hostUrl, int port, string username, string password)
         {
             Client = new HttpClient(new HttpClientHandler
@@ -21,122 +20,7 @@
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        //private string BuildRestEndpoint(string url)
-        //{
-        //    return string.Format("{0}:{1}/api/{2}", HostUrl, Port, url);
-        //}
-
-        //private void ForceCanonicalPathAndQuery(Uri uri)
-        //{
-        //    var paq = uri.PathAndQuery;
-        //    var flagsFieldInfo = typeof(Uri).GetField("m_Flags", BindingFlags.Instance | BindingFlags.NonPublic);
-        //    var flags = (ulong)flagsFieldInfo.GetValue(uri);
-
-        //    flags &= ~((ulong)0x30);
-        //    flagsFieldInfo.SetValue(uri, flags);
-        //}
-
-        //private HttpWebRequest BuildHttpRequest(string url)
-        //{
-        //    var endpoint = BuildRestEndpoint(url);
-        //    var uri = new Uri(endpoint);
-        //    ForceCanonicalPathAndQuery(uri);
-        //    var request = WebRequest.Create(uri) as HttpWebRequest;
-
-        //    if (request == null)
-        //    {
-        //    }
-
-        //    request.Method = "GET";
-        //    request.ContentType = "application/json";
-        //    request.Credentials = new NetworkCredential(Username, Password);
-
-        //    return request;
-        //}
-
-        //private HttpWebRequest BuildHttpGetRequest(string url)
-        //{
-        //    var endpoint = BuildRestEndpoint(url);
-        //    var uri = new Uri(endpoint);
-        //    ForceCanonicalPathAndQuery(uri);
-        //    var request = WebRequest.Create(uri) as HttpWebRequest;
-
-        //    if (request == null)
-        //    {
-        //    }
-
-        //    request.Method = "GET";
-        //    request.ContentType = "application/json";
-        //    request.Credentials = new NetworkCredential(Username, Password);
-
-        //    return request;
-        //}
-
-        //private HttpWebRequest BuildHttpPutRequest(string url, long contentLength)
-        //{
-        //    var endpoint = BuildRestEndpoint(url);
-        //    var uri = new Uri(endpoint);
-        //    ForceCanonicalPathAndQuery(uri);
-        //    var request = WebRequest.Create(uri) as HttpWebRequest;
-
-        //    if (request == null)
-        //    {
-        //    }
-
-        //    request.Method = "PUT";
-        //    request.ContentType = "application/json";
-        //    request.Credentials = new NetworkCredential(Username, Password);
-        //    request.ContentLength = contentLength;
-
-        //    return request;
-        //}
-
-        //private HttpWebRequest BuildHttpPostRequest(string url, long contentLength)
-        //{
-        //    var endpoint = BuildRestEndpoint(url);
-        //    var uri = new Uri(endpoint);
-        //    ForceCanonicalPathAndQuery(uri);
-        //    var request = WebRequest.Create(uri) as HttpWebRequest;
-
-        //    if (request == null)
-        //    {
-        //    }
-
-        //    request.Method = "POST";
-        //    request.ContentType = "application/json";
-        //    request.Credentials = new NetworkCredential(Username, Password);
-        //    request.ContentLength = contentLength;
-
-        //    return request;
-        //}
-
-        //private HttpWebRequest BuildHttpDeleteRequest(string url)
-        //{
-        //    var endpoint = BuildRestEndpoint(url);
-        //    var uri = new Uri(endpoint);
-        //    ForceCanonicalPathAndQuery(uri);
-        //    var request = WebRequest.Create(uri) as HttpWebRequest;
-
-        //    if (request == null)
-        //    {
-        //    }
-
-        //    request.Method = "DELETE";
-        //    request.ContentType = "application/json";
-        //    request.Credentials = new NetworkCredential(Username, Password);
-
-        //    return request;
-        //}
-
-        //private string GetHttpResponseBody(HttpWebRequest request)
-        //{
-        //    var response = request.GetResponse() as HttpWebResponse;
-        //    using (Stream responseStream = response.GetResponseStream())
-        //        using (var reader = new StreamReader(responseStream))
-        //        {
-        //            return reader.ReadToEnd();
-        //        }
-        //}
+        protected HttpClient Client { get; set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri
@@ -147,13 +31,13 @@
         private void LeaveDotsAndSlashesEscaped()
         {
             var getSyntaxMethod =
-                typeof(UriParser).GetMethod("GetSyntax", BindingFlags.Static | BindingFlags.NonPublic);
+                typeof (UriParser).GetMethod("GetSyntax", BindingFlags.Static | BindingFlags.NonPublic);
             if (getSyntaxMethod == null)
             {
                 throw new MissingMethodException("UriParser", "GetSyntax");
             }
 
-            var uriParser = getSyntaxMethod.Invoke(null, new object[] { "http" });
+            var uriParser = getSyntaxMethod.Invoke(null, new object[] {"http"});
 
             var setUpdatableFlagsMethod =
                 uriParser.GetType().GetMethod("SetUpdatableFlags", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -162,32 +46,32 @@
                 throw new MissingMethodException("UriParser", "SetUpdatableFlags");
             }
 
-            setUpdatableFlagsMethod.Invoke(uriParser, new object[] { 0 });
+            setUpdatableFlagsMethod.Invoke(uriParser, new object[] {0});
         }
 
-        private T Get<T>(string path)
         protected T Get<T>(string path)
-
-        private T Get<T>(string path)
         {
             //if defaut vhost name is pressetnt then use LeaveDotsAndSlashesEscaped to prevent encoded charater getting overwrittern
             if (path.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
-
             var response = Client.GetAsync(path).Result;
             response.EnsureSuccessStatusCode();
 
             return response.Content.ReadAsAsync<T>().Result;
         }
 
-        protected void Delete(string url)
+        private void Delete(string url)
         {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
             var response = Client.DeleteAsync(url).Result;
             response.EnsureSuccessStatusCode();
         }
 
         protected void Put<T>(string url, T value)
         {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
             var response = Client.PutAsJsonAsync(url, value).Result;
             response.EnsureSuccessStatusCode();
         }
@@ -238,50 +122,15 @@
 
         public IEnumerable<Binding> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
-<<<<<<< HEAD
-            return Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
             return
-                Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings",
-                                                             virtualHostName.SanitizeVirtualHostName(), queueName));
-=======
->>>>>>> 2450030... added exchange api methods and also setup a base patern for for using unites as Integration test
-            return Get<IEnumerable<Binding>>(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
+                Get<IEnumerable<Binding>>(string.Format("api/queues/{0}/{1}/bindings",
+                                                        virtualHostName.SanitizeVirtualHostName(), queueName));
         }
 
         public void CreateQueue(QueueRequestOperationParams queue)
         {
             Put(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName),
                 queue);
-        }
-        
-        private bool Put<T>(string path, T value)
-        {
-            if (path.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-           // var uri = new Uri(string.Format("{0}/{1}", Client.BaseAddress.PathAndQuery, path));
-            var uri = new Uri(string.Format("http://localhost/{0}", path));
-            var response = Client.PutAsJsonAsync(uri.PathAndQuery, value).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
-        }
-
-
-        public void CreateExchange(ExchangePutRequestParams exchange)
-        {
-            Put(string.Format("api/exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(),
-                              exchange.ExchangeName), exchange);
-        }
-
-        
-        private bool Put<T>(string path, T value)
-        {
-            if (path.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-           // var uri = new Uri(string.Format("{0}/{1}", Client.BaseAddress.PathAndQuery, path));
-            var uri = new Uri(string.Format("http://localhost/{0}", path));
-            var response = Client.PutAsJsonAsync(uri.PathAndQuery, value).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
         }
 
         public void CreateQueueBindings(QueueBindingsPostRequestParams queueBinding)
@@ -297,23 +146,6 @@
             Delete(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName));
         }
 
-        private bool Delete(string url)
-        {
-            var response = Client.DeleteAsync(url).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
-        }
-
-        private bool Delete(string url)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-
-            var response = Client.DeleteAsync(url).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
-        }
-
         #region exchanges
 
         public IEnumerable<Exchange> GetListOfAllExchangesInVirtualHost(string vhost)
@@ -325,7 +157,7 @@
         {
             return Get<Exchange>(string.Format(@"api/exchanges/{0}/{1}", vhost.SanitizeVirtualHostName(), exchangeName));
         }
-       
+
         public void CreateExchange(ExchangePutRequestParams exchange)
         {
             Put(string.Format("api/exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(),
@@ -337,15 +169,13 @@
             Delete(string.Format("api/exchanges/{0}/{1}", vhost.SanitizeVirtualHostName(), exchangeName));
         }
 
-        public IEnumerable<Binding> GetListOfAllBindingsOnExchange(string vhost, string exchangeName, bool exchangeAsSource)
+        public IEnumerable<Binding> GetListOfAllBindingsOnExchange(string vhost, string exchangeName,
+                                                                   bool exchangeAsSource)
         {
-            string uri = string.Format(@"api/exchanges/{0}/{1}/bindings/", vhost.SanitizeVirtualHostName(), exchangeName);
-            if (exchangeAsSource)
-                uri += "source";
-            else
-                uri += "destination";
-
-            return Get<IEnumerable<Binding>>(uri);
+            return
+                Get<IEnumerable<Binding>>(string.Format("api/exchanges/{0}/{1}/bindings/{2}",
+                                                        vhost.SanitizeVirtualHostName(), exchangeName,
+                                                        exchangeAsSource ? "source" : "destination"));
         }
 
         #endregion
