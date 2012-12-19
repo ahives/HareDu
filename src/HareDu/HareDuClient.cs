@@ -2,32 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Text;
     using Model;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     public class HareDuClient
     {
-        //private string Username { get; set; }
-        //private string Password { get; set; }
-        //private string HostUrl { get; set; }
-        //private int Port { get; set; }
-        private HttpClient Client { get; set; }
+        protected HttpClient Client { get; set; }
 
         public HareDuClient(string hostUrl, int port, string username, string password)
         {
-            //Username = username;
-            //Password = password;
-            //HostUrl = hostUrl;
-            //Port = port;
-            Client = new HttpClient(new HttpClientHandler()
+            Client = new HttpClient(new HttpClientHandler
                                         {
                                             Credentials = new NetworkCredential(username, password)
                                         }) {BaseAddress = new Uri(string.Format("{0}:{1}/", hostUrl, port))};
@@ -151,12 +138,30 @@
         //        }
         //}
 
-        private T Get<T>(string path)
+        protected T Get<T>(string path)
         {
             var response = Client.GetAsync(path).Result;
             response.EnsureSuccessStatusCode();
 
             return response.Content.ReadAsAsync<T>().Result;
+        }
+
+        protected void Delete(string url)
+        {
+            var response = Client.DeleteAsync(url).Result;
+            response.EnsureSuccessStatusCode();
+        }
+
+        protected void Put<T>(string url, T value)
+        {
+            var response = Client.PutAsJsonAsync(url, value).Result;
+            response.EnsureSuccessStatusCode();
+        }
+
+        protected void Post<T>(string url, T value)
+        {
+            var response = Client.PostAsJsonAsync(url, value).Result;
+            response.EnsureSuccessStatusCode();
         }
 
         public IEnumerable<string> GetListOfVirtualHosts()
@@ -199,27 +204,21 @@
 
         public IEnumerable<QueueBinding> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
-            return Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
+            return
+                Get<IEnumerable<QueueBinding>>(string.Format("api/queues/{0}/{1}/bindings",
+                                                             virtualHostName.SanitizeVirtualHostName(), queueName));
         }
 
         public void CreateQueue(QueueRequestOperationParams queue)
         {
-            Put(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName), queue);
+            Put(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName),
+                queue);
         }
 
         public void CreateExchange(ExchangePutRequestParams exchange)
         {
             Put(string.Format("api/exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(),
                               exchange.ExchangeName), exchange);
-        }
-
-        private bool Put<T>(string path, T value)
-        {
-           // var uri = new Uri(string.Format("{0}/{1}", Client.BaseAddress.PathAndQuery, path));
-            var uri = new Uri(string.Format("http://localhost/{0}", path));
-            var response = Client.PutAsJsonAsync(uri.PathAndQuery, value).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
         }
 
         public void CreateQueueBindings(QueueBindingsPostRequestParams queueBinding)
@@ -233,22 +232,6 @@
         public void DeleteQueue(QueueRequestOperationParams queue)
         {
             Delete(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName));
-            //var request =
-            //    BuildHttpDeleteRequest(
-            //        string.Format("queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName));
-
-            //var response = request.GetResponse() as HttpWebResponse;
-            //if (response.StatusCode != HttpStatusCode.NoContent)
-            //{
-
-            //}
-        }
-
-        private bool Delete(string url)
-        {
-            var response = Client.DeleteAsync(url).Result;
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
         }
     }
 }
