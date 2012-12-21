@@ -1,88 +1,20 @@
 ﻿namespace HareDu
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Reflection;
+    using System.Threading.Tasks;
+    using Contracts;
     using Model;
 
-    public class HareDuClient
+    public class HareDuClient :
+        HareDuBase
     {
-        public HareDuClient(string hostUrl, int port, string username, string password)
+        public HareDuClient(string hostUrl, int port, string username, string password) :
+            base(hostUrl, port, username, password)
         {
-            Client = new HttpClient(new HttpClientHandler
-                                        {
-                                            Credentials = new NetworkCredential(username, password)
-                                        }) {BaseAddress = new Uri(string.Format("{0}:{1}/", hostUrl, port))};
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        protected HttpClient Client { get; set; }
-
-        /// <summary>
-        /// this method is to add workaound for isssue using forword shlash ('/') in uri
-        /// default vhost in RabbitMQ is named as '/' but '/' is uri charter so RabbitMQ suggest to uses '%2f' encoded character while passing default host name in URI
-        /// but System.URI class replaces this encoded char with '/' which changes symantics fo URI. 
-        /// This method is to overide the default System.Uri behaviour 
-        /// </summary>
-        private void LeaveDotsAndSlashesEscaped()
-        {
-            var getSyntaxMethod =
-                typeof (UriParser).GetMethod("GetSyntax", BindingFlags.Static | BindingFlags.NonPublic);
-            if (getSyntaxMethod == null)
-            {
-                throw new MissingMethodException("UriParser", "GetSyntax");
-            }
-
-            var uriParser = getSyntaxMethod.Invoke(null, new object[] {"http"});
-
-            var setUpdatableFlagsMethod =
-                uriParser.GetType().GetMethod("SetUpdatableFlags", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (setUpdatableFlagsMethod == null)
-            {
-                throw new MissingMethodException("UriParser", "SetUpdatableFlags");
-            }
-
-            setUpdatableFlagsMethod.Invoke(uriParser, new object[] {0});
-        }
-
-        protected T Get<T>(string path)
-        {
-            //if defaut vhost name is pressetnt then use LeaveDotsAndSlashesEscaped to prevent encoded charater getting overwrittern
-            if (path.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-            var response = Client.GetAsync(path).Result;
-            response.EnsureSuccessStatusCode();
-
-            return response.Content.ReadAsAsync<T>().Result;
-        }
-
-        private void Delete(string url)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-            var response = Client.DeleteAsync(url).Result;
-            response.EnsureSuccessStatusCode();
-        }
-
-        protected void Put<T>(string url, T value)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-            var response = Client.PutAsJsonAsync(url, value).Result;
-            response.EnsureSuccessStatusCode();
-        }
-
-        protected void Post<T>(string url, T value)
-        {
-            var response = Client.PostAsJsonAsync(url, value).Result;
-            response.EnsureSuccessStatusCode();
-        }
-
-        public IEnumerable<string> GetListOfVirtualHosts()
+        public Task<HttpResponseMessage> GetListOfVirtualHosts()
         {
             //var request = BuildHttpGetRequest("vhosts");
             //string response = GetHttpResponseBody(request);
@@ -90,92 +22,196 @@
 
             //return from x in parser.Children()["name"]
             //       select x.Value<string>();
-            return Get<IEnumerable<string>>("vhosts");
-            //return queues.Where(x => x.VirtualHostName == vhost).Select(x => x.Name);
+            return Get("vhosts");
+            //return queues.Where(x => x.VirtualHostName == virtualHostName).Select(x => x.Name);
         }
 
-        public IEnumerable<string> GetListOfAllQueuesInVirtualHost(string vhost)
+        public Task<HttpResponseMessage> GetListOfAllOpenConnections()
         {
-            var queues = Get<IEnumerable<Queue>>(string.Format(@"api/queues/{0}", vhost.SanitizeVirtualHostName()));
-            return queues.Where(x => x.VirtualHostName == vhost).Select(x => x.Name);
+            return Get("api/connections");
         }
 
-        public IEnumerable<Queue> GetListOfAllQueues()
+        public Task<HttpResponseMessage> GetListOfAllOpenChannels()
         {
-            return Get<IEnumerable<Queue>>("api/queues");
+            return Get("api/channels");
         }
 
-        public IEnumerable<Exchange> GetListOfAllExchanges()
+        #region Virtual Hosts
+
+        public Task<HttpResponseMessage> CreateVirtualHost(string virtualHostName)
         {
-            return Get<IEnumerable<Exchange>>("api/exchanges");
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            return Put(string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName()),
+                       new StringContent(string.Empty));
         }
 
-        public IEnumerable<Connection> GetListOfAllOpenConnections()
+        public Task<HttpResponseMessage> DeleteVirtualHost(string virtualHostName)
         {
-            return Get<IEnumerable<Connection>>("api/connections");
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            if (virtualHostName.SanitizeVirtualHostName() == "2%f")
+            {
+            }
+
+            return Delete(string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName()));
         }
 
-        public IEnumerable<Channel> GetListOfAllOpenChannels()
+        #endregion
+
+        #region Queues
+
+        public Task<HttpResponseMessage> GetListOfAllQueues()
         {
-            return Get<IEnumerable<Channel>>("api/channels");
+            return Get("api/queues");
         }
 
-        public IEnumerable<Binding> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
-        {
-            return
-                Get<IEnumerable<Binding>>(string.Format("api/queues/{0}/{1}/bindings",
-                                                        virtualHostName.SanitizeVirtualHostName(), queueName));
-        }
-
-        public void CreateQueue(QueueRequestOperationParams queue)
-        {
-            Put(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName),
-                queue);
-        }
-
-        public void CreateQueueBindings(QueueBindingsPostRequestParams queueBinding)
-        {
-            queueBinding.RoutingKey = queueBinding.RoutingKey ?? string.Empty;
-            Put(
-                string.Format("api/bindings/{0}/e/{1}/q/{2}", queueBinding.VirtualHostName.SanitizeVirtualHostName(),
-                              queueBinding.ExchangeName, queueBinding.QueueName), queueBinding);
-        }
-
-        public void DeleteQueue(QueueRequestOperationParams queue)
-        {
-            Delete(string.Format("api/queues/{0}/{1}", queue.VirtualHostName.SanitizeVirtualHostName(), queue.QueueName));
-        }
-
-        #region exchanges
-
-        public IEnumerable<Exchange> GetListOfAllExchangesInVirtualHost(string vhost)
-        {
-            return Get<IEnumerable<Exchange>>(string.Format(@"api/exchanges/{0}", vhost.SanitizeVirtualHostName()));
-        }
-
-        public Exchange GetExchange(string vhost, string exchangeName)
-        {
-            return Get<Exchange>(string.Format(@"api/exchanges/{0}/{1}", vhost.SanitizeVirtualHostName(), exchangeName));
-        }
-
-        public void CreateExchange(ExchangePutRequestParams exchange)
-        {
-            Put(string.Format("api/exchanges/{0}/{1}", exchange.VirtualHostName.SanitizeVirtualHostName(),
-                              exchange.ExchangeName), exchange);
-        }
-
-        public void DeleteExchange(string vhost, string exchangeName)
-        {
-            Delete(string.Format("api/exchanges/{0}/{1}", vhost.SanitizeVirtualHostName(), exchangeName));
-        }
-
-        public IEnumerable<Binding> GetListOfAllBindingsOnExchange(string vhost, string exchangeName,
-                                                                   bool exchangeAsSource)
+        public Task<HttpResponseMessage> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName)
         {
             return
-                Get<IEnumerable<Binding>>(string.Format("api/exchanges/{0}/{1}/bindings/{2}",
-                                                        vhost.SanitizeVirtualHostName(), exchangeName,
-                                                        exchangeAsSource ? "source" : "destination"));
+                Get(string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName));
+        }
+
+        public Task<HttpResponseMessage> CreateQueue(string virtualHostName, string queueName,
+                                                     Action<CreateQueueCmd> cmdParams)
+        {
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException("queueName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            var queue = new CreateQueueCmdImpl();
+            cmdParams(queue);
+
+            return Put(string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName), queue);
+        }
+
+        public Task<HttpResponseMessage> CreateQueue(string virtualHostName, string node, string queueName,
+                                                     Action<CreateQueueCmd> cmdParams)
+        {
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException("queueName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            if (string.IsNullOrEmpty(node) || string.IsNullOrWhiteSpace(node))
+                throw new ArgumentNullException("node");
+
+            var queue = new CreateQueueCmdImpl {Node = node};
+            cmdParams(queue);
+
+            return Put(string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName), queue);
+        }
+
+        public Task<HttpResponseMessage> BindQueueToExchange(string virtualHostName, string exchangeName,
+                                                             string queueName,
+                                                             Action<BindQueueCmd> cmdParams)
+        {
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException("exchangeName");
+
+            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
+                throw new ArgumentNullException("queueName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            var queueBinding = new BindQueueCmdImpl();
+            cmdParams(queueBinding);
+
+            return Post(
+                string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(),
+                              exchangeName, queueName), queueBinding);
+        }
+
+        public Task<HttpResponseMessage> BindQueueToExchange(string virtualHostName, string exchangeName,
+                                                             string queueName)
+        {
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException("queueName");
+
+            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
+                throw new ArgumentNullException("exchangeName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            var queueBinding = new BindQueueCmdImpl();
+
+            return Post(
+                string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(),
+                              exchangeName, queueName), queueBinding);
+        }
+
+        public Task<HttpResponseMessage> DeleteQueue(string virtualHostName, string queueName)
+        {
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException("queueName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            return Delete(string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName));
+        }
+
+        #endregion
+
+        #region Exchanges
+
+        public Task<HttpResponseMessage> GetListOfAllExchanges()
+        {
+            return Get("api/exchanges");
+        }
+
+        public Task<HttpResponseMessage> GetListOfAllExchangesInVirtualHost(string vhost)
+        {
+            return Get(string.Format(@"api/exchanges/{0}", vhost.SanitizeVirtualHostName()));
+        }
+
+        public Task<HttpResponseMessage> GetExchange(string vhost, string exchangeName)
+        {
+            return Get(string.Format(@"api/exchanges/{0}/{1}", vhost.SanitizeVirtualHostName(), exchangeName));
+        }
+
+        public Task<HttpResponseMessage> GetListOfAllBindingsOnExchange(string virtualHostName, string exchangeName,
+                                                                        bool exchangeAsSource)
+        {
+            return
+                Get(string.Format("api/exchanges/{0}/{1}/bindings/{2}",
+                                  virtualHostName.SanitizeVirtualHostName(), exchangeName,
+                                  exchangeAsSource ? "source" : "destination"));
+        }
+
+        public Task<HttpResponseMessage> CreateExchange(string virtualHostName, string exchangeName,
+                                                        Action<CreateExchangeCmd> cmdParams)
+        {
+            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
+                throw new ArgumentNullException("exchangeName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            var exchange = new CreateExchangeCmdImpl();
+            cmdParams(exchange);
+
+            return Put(string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(),
+                                     exchangeName), exchange);
+        }
+
+        public Task<HttpResponseMessage> DeleteExchange(string virtualHostName, string exchangeName)
+        {
+            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
+                throw new ArgumentNullException("exchangeName");
+
+            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
+                throw new ArgumentNullException("virtualHostName");
+
+            return
+                Delete(string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName));
         }
 
         #endregion
