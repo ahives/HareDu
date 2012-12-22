@@ -4,12 +4,13 @@
     using Contracts;
     using Newtonsoft.Json;
 
-    public class CreateExchangeCmdImpl :
-        CreateExchangeCmd
+    public class CreateExchangeArgsImpl :
+        CreateExchangeArgs
     {
-        public CreateExchangeCmdImpl()
+        public CreateExchangeArgsImpl()
         {
             Arguments = new List<string>();
+            Type = ExchangeRoutingType.Direct;
         }
 
         [JsonProperty(PropertyName = "type", Order = 1)]

@@ -4,10 +4,10 @@
     using Contracts;
     using Newtonsoft.Json;
 
-    public class CreateQueueCmdImpl :
-        CreateQueueCmd
+    public class CreateQueueArgsImpl :
+        CreateQueueArgs
     {
-        public CreateQueueCmdImpl()
+        public CreateQueueArgsImpl()
         {
             Arguments = new List<string>();
         }

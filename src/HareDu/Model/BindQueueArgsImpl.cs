@@ -4,10 +4,10 @@
     using Contracts;
     using Newtonsoft.Json;
 
-    public class BindQueueCmdImpl :
-        BindQueueCmd
+    public class BindQueueArgsImpl :
+        BindQueueArgs
     {
-        public BindQueueCmdImpl()
+        public BindQueueArgsImpl()
         {
             Arguments = new List<string>();
             RoutingKey = string.Empty;

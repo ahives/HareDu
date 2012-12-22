@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Threading;
     using Model;
     using NUnit.Framework;
 
@@ -24,7 +25,7 @@
         public void Test_Exchanges()
         {
             string exchangeName = "Test123";
-            //var exhangeputreq = new CreateExchangeCmdImpl
+            //var exhangeputreq = new CreateExchangeArgsImpl
             //                        {
             //                            ExchangeName = exchangeName,
             //                            Type = "direct",
@@ -97,7 +98,8 @@
         public void Verify_Creating_Queues_Are_Working()
         {
             var client = new HareDuClient("http://localhost", 15672, "guest", "guest");
-            client.CreateQueue("hydro", "MyFluentAPITest1", x => { x.IsDurable(); });
+            var tokenSource = new CancellationTokenSource();
+            client.CreateQueue("hydro", "MyFluentAPITest2", x => { x.IsDurable(); }, tokenSource.Token);
             //client.CreateQueue("/", "rabbit@ahives-t5500", "MyFluentAPITest1", x =>
             //{
             //    x.Durable();

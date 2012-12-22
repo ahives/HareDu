@@ -2,12 +2,10 @@
 {
     using System.Collections.Generic;
 
-    public interface CreateExchangeCmd
+    public interface CreateQueueArgs
     {
         void IsDurable();
         void AutoDeleteWhenNotInUse();
-        void IsForInternalUse();
         void UsingArguments(List<string> args);
-        void RoutingType(string routingType);
     }
 }

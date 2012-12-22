@@ -54,24 +54,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\CreateQueueCmd.cs" />
-    <Compile Include="Contracts\BindQueueCmd.cs" />
-    <Compile Include="Contracts\CreateExchangeCmd.cs" />
+    <Compile Include="Contracts\CreateQueueArgs.cs" />
+    <Compile Include="Contracts\BindQueueArgs.cs" />
+    <Compile Include="Contracts\CreateExchangeArgs.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
     <Compile Include="HareDuBase.cs" />
-    <Compile Include="Model\CreateExchangeCmdImpl.cs" />
+    <Compile Include="Model\CreateExchangeArgsImpl.cs" />
     <Compile Include="Model\Channel.cs" />
     <Compile Include="HareDuClient.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Exchange.cs" />
     <Compile Include="Extensions\JsonValueExtensions.cs" />
+    <Compile Include="Model\ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Binding.cs" />
-    <Compile Include="Model\CreateQueueCmdImpl.cs" />
-    <Compile Include="Model\BindQueueCmdImpl.cs" />
+    <Compile Include="Model\CreateQueueArgsImpl.cs" />
+    <Compile Include="Model\BindQueueArgsImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
