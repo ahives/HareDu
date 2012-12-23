@@ -1,7 +1,7 @@
-﻿namespace HareDu.Model
+﻿namespace HareDu.Internal
 {
     using System.Collections.Generic;
-    using Contracts;
+    using HareDu.Contracts;
     using Newtonsoft.Json;
 
     public class CreateQueueArgsImpl :

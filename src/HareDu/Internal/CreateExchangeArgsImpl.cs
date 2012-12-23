@@ -1,7 +1,9 @@
-﻿namespace HareDu.Model
+﻿namespace HareDu.Internal
 {
+    using System;
     using System.Collections.Generic;
-    using Contracts;
+    using HareDu.Contracts;
+    using Model;
     using Newtonsoft.Json;
 
     public class CreateExchangeArgsImpl :
@@ -50,6 +52,9 @@
 
         public void RoutingType(string routingType)
         {
+            if (routingType == null)
+                throw new ArgumentNullException("routingType");
+
             Type = routingType;
         }
     }

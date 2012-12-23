@@ -59,7 +59,7 @@
     <Compile Include="Contracts\CreateExchangeArgs.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
     <Compile Include="HareDuBase.cs" />
-    <Compile Include="Model\CreateExchangeArgsImpl.cs" />
+    <Compile Include="Internal\CreateExchangeArgsImpl.cs" />
     <Compile Include="Model\Channel.cs" />
     <Compile Include="HareDuClient.cs" />
     <Compile Include="Model\Connection.cs" />
@@ -69,10 +69,16 @@
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
+    <Compile Include="Model\UserPermissions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Binding.cs" />
-    <Compile Include="Model\CreateQueueArgsImpl.cs" />
-    <Compile Include="Model\BindQueueArgsImpl.cs" />
+    <Compile Include="Internal\CreateQueueArgsImpl.cs" />
+    <Compile Include="Internal\BindQueueArgsImpl.cs" />
+    <Compile Include="Contracts\UserArgs.cs" />
+    <Compile Include="Internal\UserArgsImpl.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Contracts\UserPermissionsArgs.cs" />
+    <Compile Include="Internal\UserPermissionsArgsImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -110,7 +110,7 @@
         public void Verify_Binding_Queue_To_Exchange_Working()
         {
             var client = new HareDuClient("http://localhost", 55672, "guest", "guest");
-            client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3");
+            client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3", x => x.UsingRoutingKey(string.Empty));
         }
 
         [Test]

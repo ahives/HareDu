@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Contracts;
-    using Model;
+    using Internal;
 
     public class HareDuClient :
         HareDuBase
@@ -15,36 +15,143 @@
         {
         }
 
-        public Task<HttpResponseMessage> GetListOfVirtualHosts()
-        {
-            //var request = BuildHttpGetRequest("vhosts");
-            //string response = GetHttpResponseBody(request);
-            //var parser = JArray.Parse(response);
+        #region Connectivity
 
-            //return from x in parser.Children()["name"]
-            //       select x.Value<string>();
-            return Get("vhosts");
-            //return queues.Where(x => x.VirtualHostName == virtualHostName).Select(x => x.Name);
+        public Task<HttpResponseMessage> GetListOfAllOpenConnections(CancellationToken cancellationToken =
+                                                                         default(CancellationToken))
+        {
+            return cancellationToken == default(CancellationToken)
+                       ? Get("api/connections")
+                       : Get("api/connections", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllOpenConnections()
+        public Task<HttpResponseMessage> GetListOfAllOpenChannels(CancellationToken cancellationToken =
+                                                                      default(CancellationToken))
         {
-            return Get("api/connections");
+            return cancellationToken == default(CancellationToken)
+                       ? Get("api/channels")
+                       : Get("api/channels", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllOpenChannels()
+        public virtual Task<HttpResponseMessage> SendEKG(string virtualHostName, CancellationToken cancellationToken =
+                                                                                     default(CancellationToken))
         {
-            return Get("api/channels");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+
+            string url = string.Format("api/aliveness-test/{0}", virtualHostName);
+
+            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
+
+        #endregion
+
+        #region Permissions
+
+        public virtual Task<HttpResponseMessage> GetUserPermissions(string virtualHostName, string userName,
+                                                                    CancellationToken cancellationToken =
+                                                                        default(CancellationToken))
+        {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            userName.CheckIfArgValid("userName");
+
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
+
+            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> CreateUserPermissions(string virtualHostName, string userName,
+                                                                       Action<UserPermissionsArgs> args,
+                                                                       CancellationToken cancellationToken =
+                                                                           default(CancellationToken))
+        {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            userName.CheckIfArgValid("userName");
+            args.CheckIfArgValid("args");
+
+            var permissions = new UserPermissionsArgsImpl();
+            args(permissions);
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
+
+            return cancellationToken == default(CancellationToken)
+                       ? Put(url, permissions)
+                       : Put(url, permissions, cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> DeleteUserPermissions(string virtualHostName, string userName,
+                                                                       CancellationToken cancellationToken =
+                                                                           default(CancellationToken))
+        {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            userName.CheckIfArgValid("userName");
+
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
+
+            return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+        }
+
+        #endregion
+
+        #region Users
+
+        public virtual Task<HttpResponseMessage> GetUsers(CancellationToken cancellationToken =
+                                                              default(CancellationToken))
+        {
+            return cancellationToken == default(CancellationToken)
+                       ? Get("api/users")
+                       : Get("api/users", cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> GetUser(string userName, CancellationToken cancellationToken =
+                                                                              default(CancellationToken))
+        {
+            userName.CheckIfArgValid("userName");
+
+            string url = string.Format("api/users/{0}", userName);
+
+            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> CreateUser(string userName, Action<UserArgs> args,
+                                                            CancellationToken cancellationToken =
+                                                                default(CancellationToken))
+        {
+            userName.CheckIfArgValid("userName");
+            args.CheckIfArgValid("args");
+
+            var user = new UserArgsImpl();
+            args(user);
+            string url = string.Format("api/users/{0}", userName);
+
+            return cancellationToken == default(CancellationToken) ? Put(url, user) : Put(url, user, cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> DeleteUser(string userName, CancellationToken cancellationToken =
+                                                                                 default(CancellationToken))
+        {
+            userName.CheckIfArgValid("userName");
+
+            string url = string.Format("api/users/{0}", userName);
+
+            return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+        }
+
+        #endregion
 
         #region Virtual Hosts
 
-        public Task<HttpResponseMessage> CreateVirtualHost(string virtualHostName,
-                                                           CancellationToken cancellationToken =
-                                                               default(CancellationToken))
+        public Task<HttpResponseMessage> GetListOfVirtualHosts(CancellationToken cancellationToken =
+                                                                   default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            return cancellationToken == default(CancellationToken)
+                       ? Get("api/vhosts")
+                       : Get("api/vhosts", cancellationToken);
+        }
+
+        public virtual Task<HttpResponseMessage> CreateVirtualHost(string virtualHostName,
+                                                                   CancellationToken cancellationToken =
+                                                                       default(CancellationToken))
+        {
+            virtualHostName.CheckIfArgValid("virtualHostName");
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
 
@@ -53,11 +160,11 @@
                        : Put(url, new StringContent(string.Empty), cancellationToken);
         }
 
-        public Task<HttpResponseMessage> DeleteVirtualHost(string virtualHostName, CancellationToken cancellationToken =
-                                                                                       default(CancellationToken))
+        public virtual Task<HttpResponseMessage> DeleteVirtualHost(string virtualHostName,
+                                                                   CancellationToken cancellationToken =
+                                                                       default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
 
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
@@ -84,6 +191,9 @@
                                                                              CancellationToken cancellationToken =
                                                                                  default(CancellationToken))
         {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            queueName.CheckIfArgValid("queueName");
+
             string url = string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(),
                                        queueName);
 
@@ -95,18 +205,12 @@
                                                              CancellationToken cancellationToken =
                                                                  default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
-                throw new ArgumentNullException("queueName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
-
-            if (args == null)
-                throw new ArgumentNullException("args");
+            queueName.CheckIfArgValid("queueName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            args.CheckIfArgValid("args");
 
             var queue = new CreateQueueArgsImpl();
             args(queue);
-
             string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
             return cancellationToken == default(CancellationToken)
@@ -119,19 +223,13 @@
                                                              CancellationToken cancellationToken =
                                                                  default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
-                throw new ArgumentNullException("queueName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
-
-            if (string.IsNullOrEmpty(node) || string.IsNullOrWhiteSpace(node))
-                throw new ArgumentNullException("node");
+            queueName.CheckIfArgValid("queueName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            node.CheckIfArgValid("node");
+            args.CheckIfArgValid("args");
 
             var queue = new CreateQueueArgsImpl {Node = node};
-            if (args != null)
-                args(queue);
-
+            args(queue);
             string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
             return cancellationToken == default(CancellationToken)
@@ -141,23 +239,17 @@
 
         public virtual Task<HttpResponseMessage> BindQueueToExchange(string virtualHostName, string exchangeName,
                                                                      string queueName,
-                                                                     Action<BindQueueArgs> args = null,
+                                                                     Action<BindQueueArgs> args,
                                                                      CancellationToken cancellationToken =
                                                                          default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
-                throw new ArgumentNullException("exchangeName");
-
-            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
-                throw new ArgumentNullException("queueName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            queueName.CheckIfArgValid("queueName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            exchangeName.CheckIfArgValid("exchangeName");
+            args.CheckIfArgValid("args");
 
             var queueBinding = new BindQueueArgsImpl();
-            if (args != null)
-                args(queueBinding);
-
+            args(queueBinding);
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(),
                                        exchangeName, queueName);
 
@@ -170,11 +262,8 @@
                                                              CancellationToken cancellationToken =
                                                                  default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(queueName) || string.IsNullOrWhiteSpace(queueName))
-                throw new ArgumentNullException("queueName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            queueName.CheckIfArgValid("queueName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
 
             string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
@@ -185,37 +274,47 @@
 
         #region Exchanges
 
-        public Task<HttpResponseMessage> GetListOfAllExchanges(CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public virtual Task<HttpResponseMessage> GetListOfAllExchanges(CancellationToken cancellationToken =
+                                                                           default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/exchanges")
                        : Get("api/exchanges", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllExchangesInVirtualHost(string virtualHostName,
-                                                                            CancellationToken cancellationToken =
-                                                                                default(CancellationToken))
+        public virtual Task<HttpResponseMessage> GetListOfAllExchangesInVirtualHost(string virtualHostName,
+                                                                                    CancellationToken cancellationToken
+                                                                                        =
+                                                                                        default(CancellationToken))
         {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+
             string url = string.Format(@"api/exchanges/{0}", virtualHostName.SanitizeVirtualHostName());
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetExchange(string virtualHostName, string exchangeName,
-                                                     CancellationToken cancellationToken =
-                                                         default(CancellationToken))
+        public virtual Task<HttpResponseMessage> GetExchange(string virtualHostName, string exchangeName,
+                                                             CancellationToken cancellationToken =
+                                                                 default(CancellationToken))
         {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            exchangeName.CheckIfArgValid("exchangeName");
+
             string url = string.Format(@"api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllBindingsOnExchange(string virtualHostName, string exchangeName,
-                                                                        bool exchangeAsSource,
-                                                                        CancellationToken cancellationToken =
-                                                                            default(CancellationToken))
+        public virtual Task<HttpResponseMessage> GetListOfAllBindingsOnExchange(string virtualHostName,
+                                                                                string exchangeName,
+                                                                                bool exchangeAsSource,
+                                                                                CancellationToken cancellationToken =
+                                                                                    default(CancellationToken))
         {
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            exchangeName.CheckIfArgValid("exchangeName");
+
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
                                        virtualHostName.SanitizeVirtualHostName(), exchangeName,
                                        exchangeAsSource ? "source" : "destination");
@@ -223,21 +322,17 @@
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> CreateExchange(string virtualHostName, string exchangeName,
-                                                        Action<CreateExchangeArgs> args = null,
-                                                        CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public virtual Task<HttpResponseMessage> CreateExchange(string virtualHostName, string exchangeName,
+                                                                Action<CreateExchangeArgs> args = null,
+                                                                CancellationToken cancellationToken =
+                                                                    default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
-                throw new ArgumentNullException("exchangeName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            exchangeName.CheckIfArgValid("exchangeName");
 
             var exchange = new CreateExchangeArgsImpl();
             if (args != null)
                 args(exchange);
-
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
             return cancellationToken == default(CancellationToken)
@@ -245,15 +340,12 @@
                        : Put(url, exchange, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> DeleteExchange(string virtualHostName, string exchangeName,
-                                                        CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public virtual Task<HttpResponseMessage> DeleteExchange(string virtualHostName, string exchangeName,
+                                                                CancellationToken cancellationToken =
+                                                                    default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(exchangeName) || string.IsNullOrWhiteSpace(exchangeName))
-                throw new ArgumentNullException("exchangeName");
-
-            if (string.IsNullOrEmpty(virtualHostName) || string.IsNullOrWhiteSpace(virtualHostName))
-                throw new ArgumentNullException("virtualHostName");
+            virtualHostName.CheckIfArgValid("virtualHostName");
+            exchangeName.CheckIfArgValid("exchangeName");
 
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
