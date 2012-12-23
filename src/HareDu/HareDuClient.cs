@@ -16,14 +16,7 @@
 
         public Task<HttpResponseMessage> GetListOfVirtualHosts()
         {
-            //var request = BuildHttpGetRequest("vhosts");
-            //string response = GetHttpResponseBody(request);
-            //var parser = JArray.Parse(response);
-
-            //return from x in parser.Children()["name"]
-            //       select x.Value<string>();
             return Get("api/vhosts");
-            //return queues.Where(x => x.VirtualHostName == virtualHostName).Select(x => x.Name);
         }
 
         public Task<HttpResponseMessage> GetListOfAllOpenConnections()

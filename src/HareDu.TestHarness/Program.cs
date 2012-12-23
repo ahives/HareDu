@@ -74,21 +74,6 @@ namespace HareDu.TestHarness
                                                                 }
                                                             });
             responseTask.Wait();
-            //Task.Factory.StartNew(() => requestTask);
-            //Task.Factory.StartNew(() => responseTask);
-            //.Result.Content.ReadAsAsync<IEnumerable<Channel>>().Result;
-
-            //foreach (var channelInfo in channels)
-            //{
-            //    Console.WriteLine(channelInfo.MessageStats.Published);
-            //    Console.WriteLine(channelInfo.MessageStats.Acknowledged);
-            //    Console.WriteLine(channelInfo.MessageStats.Delivered);
-            //    Console.WriteLine(channelInfo.MessageStats.DeliveredOrGet);
-            //    Console.WriteLine(channelInfo.MessageStats.Unacknowledged);
-            //    Console.WriteLine(channelInfo.MessageStats.Unconfirmed);
-            //    Console.WriteLine(channelInfo.MessageStats.Uncommitted);
-            //    Console.WriteLine(channelInfo.MessageStats.AcknowledgesUncommitted);
-            //}
         }
     }
 }
