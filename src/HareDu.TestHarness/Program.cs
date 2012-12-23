@@ -8,6 +8,7 @@ namespace HareDu.TestHarness
     {
         private static void Main(string[] args)
         {
+            Console.WriteLine("HareDu Test Harness");
             string url;
             string username;
             string password;
@@ -49,8 +50,11 @@ namespace HareDu.TestHarness
                                                                         response.GetResponse<IEnumerable<VirtualHost>>()
                                                                     )
                                                                 {
-                                                                    Console.WriteLine(virtualHost.Name);
-                                                                    Console.WriteLine(virtualHost.Tracing);
+                                                                    Console.WriteLine("-------------------");
+                                                                    Console.WriteLine("START");
+                                                                    Console.WriteLine("Virtual Host Name:" + virtualHost.Name);
+                                                                    Console.WriteLine("Virtual Host tracingflag: " + virtualHost.Tracing);
+                                                                    Console.WriteLine("END");
                                                                 }
                                                             });
             responseTask.Wait();
