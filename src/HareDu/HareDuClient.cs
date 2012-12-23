@@ -14,15 +14,25 @@
         {
         }
 
+        #region Connections
+
         public Task<HttpResponseMessage> GetListOfAllOpenConnections()
         {
             return Get("api/connections");
         }
 
+        #endregion
+
+
+        #region Channels
+
         public Task<HttpResponseMessage> GetListOfAllOpenChannels()
         {
             return Get("api/channels");
         }
+
+        #endregion
+
 
         #region Virtual Hosts
 
