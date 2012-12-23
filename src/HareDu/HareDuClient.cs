@@ -33,10 +33,6 @@
 
         #endregion
 
-        #region Channels
-
-        public Task<HttpResponseMessage> GetListOfAllOpenChannels()
-
         #region Connectivity
 
         //old
@@ -298,7 +294,7 @@
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }
 
-        #endregion
+#endregion
 
         #region Exchanges
 
