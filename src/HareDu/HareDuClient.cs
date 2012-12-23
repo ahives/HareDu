@@ -23,6 +23,16 @@
 
         #endregion
 
+        #region api/whoami
+
+        public Task<HttpResponseMessage> WhoAmI()
+        {
+            return Get("api/whoami");
+        }
+
+        #endregion
+
+
 
         #region Channels
 

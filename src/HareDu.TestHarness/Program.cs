@@ -37,11 +37,40 @@ namespace HareDu.TestHarness
                 password = "guest";
             }
 
-            outputVirtualHostInfo(new HareDuClientParameters(url, port, username, password));
+            var hareDuClientParameters = new HareDuClientParameters(url, port, username, password);
 
-            outputOpenChannelInfo(new HareDuClientParameters(url, port, username, password));
+            outputWhoAmIInfo(hareDuClientParameters);
 
-            deleteVirtualHost(new HareDuClientParameters(url, port, username, password), hostToDelete);
+            outputVirtualHostInfo(hareDuClientParameters);
+
+            outputOpenChannelInfo(hareDuClientParameters);
+
+            deleteVirtualHost(hareDuClientParameters, hostToDelete);
+        }
+
+        private static void outputWhoAmIInfo(HareDuClientParameters hareDuClientParameters)
+        {
+            Console.WriteLine("************ WhoAmI *************");
+            var client = CreateHareDuClient(hareDuClientParameters);
+            var myrequestTask = client.WhoAmI();
+            var responseTask = myrequestTask.ContinueWith((requestTask) =>
+                            {
+                                HttpResponseMessage response = requestTask.Result;
+                                response.EnsureSuccessStatusCode();
+
+                                var r = response.GetResponse<WhoAmI>();
+                                Console.WriteLine("Name:" + r.Name);
+                                Console.WriteLine("Tags:" + r.Tags);
+                                Console.WriteLine("AuthBackend:" + r.AuthBackend);
+                            });
+            responseTask.Wait();
+        }
+
+        private static HareDuClient CreateHareDuClient(HareDuClientParameters hareDuClientParameters)
+        {
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
+                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
+            return client;
         }
 
         private static void deleteVirtualHost(HareDuClientParameters hareDuClientParameters, string hostToDelete)
@@ -51,9 +80,7 @@ namespace HareDu.TestHarness
                 Console.WriteLine("No virtual host to delete specified - deleting skipped");
                 return;
             }
-            //var hareDuClientParameters = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
-            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
-                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = CreateHareDuClient(hareDuClientParameters);
             var requestTask = client.DeleteVirtualHost(hostToDelete);
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
@@ -67,8 +94,7 @@ namespace HareDu.TestHarness
         public static void outputVirtualHostInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ VIRTUAL HOSTS *************");
-            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
-                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = CreateHareDuClient(hareDuClientParameters);
             var requestTask = client.GetListOfVirtualHosts();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
@@ -94,8 +120,7 @@ namespace HareDu.TestHarness
         public static void outputOpenChannelInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ Open Channels *************");
-            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
-                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = CreateHareDuClient(hareDuClientParameters);
             var requestTask = client.GetListOfAllOpenChannels();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
