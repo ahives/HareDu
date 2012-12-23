@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public interface BindQueueCmd
+    public interface BindQueueArgs
     {
         void UsingRoutingKey(string routingKey);
         void UsingArguments(List<string> args);

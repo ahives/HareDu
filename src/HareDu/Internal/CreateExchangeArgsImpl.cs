@@ -1,15 +1,18 @@
-﻿namespace HareDu.Model
+﻿namespace HareDu.Internal
 {
+    using System;
     using System.Collections.Generic;
-    using Contracts;
+    using HareDu.Contracts;
+    using Model;
     using Newtonsoft.Json;
 
-    public class CreateExchangeCmdImpl :
-        CreateExchangeCmd
+    public class CreateExchangeArgsImpl :
+        CreateExchangeArgs
     {
-        public CreateExchangeCmdImpl()
+        public CreateExchangeArgsImpl()
         {
             Arguments = new List<string>();
+            Type = ExchangeRoutingType.Direct;
         }
 
         [JsonProperty(PropertyName = "type", Order = 1)]
@@ -49,6 +52,9 @@
 
         public void RoutingType(string routingType)
         {
+            if (routingType == null)
+                throw new ArgumentNullException("routingType");
+
             Type = routingType;
         }
     }

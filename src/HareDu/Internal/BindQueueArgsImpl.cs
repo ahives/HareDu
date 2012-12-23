@@ -1,13 +1,13 @@
-﻿namespace HareDu
+﻿namespace HareDu.Internal
 {
     using System.Collections.Generic;
-    using Contracts;
+    using HareDu.Contracts;
     using Newtonsoft.Json;
 
-    public class BindQueueCmdImpl :
-        BindQueueCmd
+    public class BindQueueArgsImpl :
+        BindQueueArgs
     {
-        public BindQueueCmdImpl()
+        public BindQueueArgsImpl()
         {
             Arguments = new List<string>();
             RoutingKey = string.Empty;

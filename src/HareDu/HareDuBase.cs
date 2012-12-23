@@ -5,6 +5,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Reflection;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public class HareDuBase
@@ -55,12 +56,28 @@
             return Client.GetAsync(url);
         }
 
+        protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
+        {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
+            return Client.GetAsync(url, cancellationToken);
+        }
+
         protected virtual Task<HttpResponseMessage> Delete(string url)
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
             return Client.DeleteAsync(url);
+        }
+
+        protected virtual Task<HttpResponseMessage> Delete(string url, CancellationToken cancellationToken)
+        {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
+            return Client.DeleteAsync(url, cancellationToken);
         }
 
         protected virtual Task<HttpResponseMessage> Put<T>(string url, T value)
@@ -71,12 +88,28 @@
             return Client.PutAsJsonAsync(url, value);
         }
 
+        protected virtual Task<HttpResponseMessage> Put<T>(string url, T value, CancellationToken cancellationToken)
+        {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
+            return Client.PutAsJsonAsync(url, value, cancellationToken);
+        }
+
         protected virtual Task<HttpResponseMessage> Post<T>(string url, T value)
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
             return Client.PostAsJsonAsync(url, value);
+        }
+
+        protected virtual Task<HttpResponseMessage> Post<T>(string url, T value, CancellationToken cancellationToken)
+        {
+            if (url.Contains("/%2f"))
+                LeaveDotsAndSlashesEscaped();
+
+            return Client.PostAsJsonAsync(url, value, cancellationToken);
         }
     }
 }
