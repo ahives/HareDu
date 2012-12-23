@@ -14,11 +14,6 @@
         {
         }
 
-        public Task<HttpResponseMessage> GetListOfVirtualHosts()
-        {
-            return Get("api/vhosts");
-        }
-
         public Task<HttpResponseMessage> GetListOfAllOpenConnections()
         {
             return Get("api/connections");
@@ -30,6 +25,11 @@
         }
 
         #region Virtual Hosts
+
+        public Task<HttpResponseMessage> GetListOfVirtualHosts()
+        {
+            return Get("api/vhosts");
+        }
 
         public Task<HttpResponseMessage> CreateVirtualHost(string virtualHostName)
         {
