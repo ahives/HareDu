@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using HareDu.Model;
 
 namespace HareDu.TestHarness
@@ -12,6 +13,7 @@ namespace HareDu.TestHarness
             string url;
             string username;
             string password;
+            string hostToDelete;
             const int port = 55672;
             const bool promptForParameters = true;
             if (promptForParameters)
@@ -24,6 +26,9 @@ namespace HareDu.TestHarness
 
                 Console.Write("Password: ");
                 password = Console.ReadLine();
+
+                Console.Write("Host To Delete: ");
+                hostToDelete = Console.ReadLine();
             }
             else
             {
@@ -33,13 +38,37 @@ namespace HareDu.TestHarness
             }
 
             outputVirtualHostInfo(new HareDuClientParameters(url, port, username, password));
+
             outputOpenChannelInfo(new HareDuClientParameters(url, port, username, password));
+
+            deleteVirtualHost(new HareDuClientParameters(url, port, username, password), hostToDelete);
+        }
+
+        private static void deleteVirtualHost(HareDuClientParameters hareDuClientParameters, string hostToDelete)
+        {
+            if (string.IsNullOrWhiteSpace(hostToDelete))
+            {
+                Console.WriteLine("No virtual host to delete specified - deleting skipped");
+                return;
+            }
+            //var hareDuClientParameters = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
+                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var requestTask = client.DeleteVirtualHost(hostToDelete);
+            var responseTask = requestTask.ContinueWith(x =>
+                                                            {
+                                                                HttpResponseMessage response = x.Result;
+                                                                Console.WriteLine("response.IsSuccessStatusCode" +
+                                                                                  response.IsSuccessStatusCode);
+                                                            });
+            responseTask.Wait();
         }
 
         public static void outputVirtualHostInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ VIRTUAL HOSTS *************");
-            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
+                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
             var requestTask = client.GetListOfVirtualHosts();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
@@ -52,8 +81,10 @@ namespace HareDu.TestHarness
                                                                 {
                                                                     Console.WriteLine("-------------------");
                                                                     Console.WriteLine("START");
-                                                                    Console.WriteLine("Virtual Host Name:" + virtualHost.Name);
-                                                                    Console.WriteLine("Virtual Host tracingflag: " + virtualHost.Tracing);
+                                                                    Console.WriteLine("Virtual Host Name:" +
+                                                                                      virtualHost.Name);
+                                                                    Console.WriteLine("Virtual Host tracingflag: " +
+                                                                                      virtualHost.Tracing);
                                                                     Console.WriteLine("END");
                                                                 }
                                                             });
@@ -63,7 +94,8 @@ namespace HareDu.TestHarness
         public static void outputOpenChannelInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ Open Channels *************");
-            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port,
+                                          hareDuClientParameters.Username, hareDuClientParameters.Password);
             var requestTask = client.GetListOfAllOpenChannels();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
