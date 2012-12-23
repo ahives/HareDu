@@ -59,6 +59,7 @@
     <Compile Include="Contracts\CreateExchangeCmd.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
     <Compile Include="HareDuBase.cs" />
+    <Compile Include="HareDuClientParameters.cs" />
     <Compile Include="Model\CreateExchangeCmdImpl.cs" />
     <Compile Include="Model\Channel.cs" />
     <Compile Include="HareDuClient.cs" />

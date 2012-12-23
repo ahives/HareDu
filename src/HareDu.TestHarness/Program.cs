@@ -31,14 +31,14 @@ namespace HareDu.TestHarness
                 password = "guest";
             }
 
-            outputVirtualHostInfo(url, port, username, password);
-            outputOpenChannelInfo(url, port, username, password);
+            outputVirtualHostInfo(new HareDuClientParameters(url, port, username, password));
+            outputOpenChannelInfo(new HareDuClientParameters(url, port, username, password));
         }
 
-        public static void outputVirtualHostInfo(string url, int port, string username, string password)
+        public static void outputVirtualHostInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ VIRTUAL HOSTS *************");
-            var client = new HareDuClient(url, port, username, password);
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
             var requestTask = client.GetListOfVirtualHosts();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
@@ -56,10 +56,10 @@ namespace HareDu.TestHarness
             responseTask.Wait();
         }
 
-        public static void outputOpenChannelInfo(string url, int port, string username, string password)
+        public static void outputOpenChannelInfo(HareDuClientParameters hareDuClientParameters)
         {
             Console.WriteLine("************ Open Channels *************");
-            var client = new HareDuClient(url, port, username, password);
+            var client = new HareDuClient(hareDuClientParameters.Url, hareDuClientParameters.Port, hareDuClientParameters.Username, hareDuClientParameters.Password);
             var requestTask = client.GetListOfAllOpenChannels();
             var responseTask = requestTask.ContinueWith(x =>
                                                             {
