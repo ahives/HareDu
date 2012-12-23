@@ -1,49 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using HareDu.Model;
 
 namespace HareDu.TestHarness
 {
-    using Model;
-
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.Write("URL: ");
-            string url = Console.ReadLine();
-            Console.Write("Username: ");
-            
-            string username = Console.ReadLine();
-            Console.Write("Password: ");
-            string password = Console.ReadLine();
+            string url;
+            string username;
+            string password;
+            const int port = 55672;
+            const bool promptForParameters = true;
+            if (promptForParameters)
+            {
+                Console.Write("URL: ");
+                url = Console.ReadLine();
 
-            url = "http://localhost";
-            int port = 55672;
+                Console.Write("Username: ");
+                username = Console.ReadLine();
 
-            outputAllVirtualHosts(url, port, username, password);
-            outputAllOpenChannels(url, port, username, password);
+                Console.Write("Password: ");
+                password = Console.ReadLine();
+            }
+            else
+            {
+                url = "http://localhost";
+                username = "guest";
+                password = "guest";
+            }
+
+            outputVirtualHostInfo(url, port, username, password);
+            outputOpenChannelInfo(url, port, username, password);
         }
 
-        private static void outputAllVirtualHosts(string url, int port, string username, string password)
+        public static void outputVirtualHostInfo(string url, int port, string username, string password)
         {
             Console.WriteLine("************ VIRTUAL HOSTS *************");
             var client = new HareDuClient(url, port, username, password);
             var requestTask = client.GetListOfVirtualHosts();
             var responseTask = requestTask.ContinueWith(x =>
-            {
-                var response = x.Result;
+                                                            {
+                                                                var response = x.Result;
 
-                foreach (
-                    var virtualHost in response.GetResponse<IEnumerable<VirtualHost>>())
-                {
-                    Console.WriteLine(virtualHost.Name);
-                    Console.WriteLine(virtualHost.Tracing);
-                }
-            });
+                                                                foreach (
+                                                                    var virtualHost in
+                                                                        response.GetResponse<IEnumerable<VirtualHost>>()
+                                                                    )
+                                                                {
+                                                                    Console.WriteLine(virtualHost.Name);
+                                                                    Console.WriteLine(virtualHost.Tracing);
+                                                                }
+                                                            });
             responseTask.Wait();
         }
 
-        private static void outputAllOpenChannels(string url, int port, string username, string password)
+        public static void outputOpenChannelInfo(string url, int port, string username, string password)
         {
             Console.WriteLine("************ Open Channels *************");
             var client = new HareDuClient(url, port, username, password);
@@ -53,7 +66,8 @@ namespace HareDu.TestHarness
                                                                 var response = x.Result;
 
                                                                 foreach (
-                                                                    var channel in response.GetResponse<IEnumerable<Channel>>())
+                                                                    var channel in
+                                                                        response.GetResponse<IEnumerable<Channel>>())
                                                                 {
                                                                     Console.WriteLine(channel.Name);
                                                                     Console.WriteLine(channel.Node);
