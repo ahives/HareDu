@@ -68,6 +68,7 @@
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
+    <Compile Include="Model\VirtualHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Binding.cs" />
     <Compile Include="Model\CreateQueueCmdImpl.cs" />

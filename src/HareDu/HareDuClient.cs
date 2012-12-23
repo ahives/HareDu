@@ -22,7 +22,7 @@
 
             //return from x in parser.Children()["name"]
             //       select x.Value<string>();
-            return Get("vhosts");
+            return Get("api/vhosts");
             //return queues.Where(x => x.VirtualHostName == virtualHostName).Select(x => x.Name);
         }
 
