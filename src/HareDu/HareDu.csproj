@@ -68,6 +68,7 @@
     <Compile Include="Extensions\JsonValueExtensions.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
+    <Compile Include="Model\Permission.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\VirtualHost.cs" />
     <Compile Include="Model\WhoAmI.cs" />

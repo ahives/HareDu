@@ -32,7 +32,14 @@
 
         #endregion
 
+        #region Permissions
 
+        public Task<HttpResponseMessage> Permissions()
+        {
+            return Get("api/permissions");
+        }
+
+        #endregion
 
         #region Channels
 

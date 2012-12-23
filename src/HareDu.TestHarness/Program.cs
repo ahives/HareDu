@@ -39,13 +39,20 @@ namespace HareDu.TestHarness
 
             var hareDuClientParameters = new HareDuClientParameters(url, port, username, password);
 
+            DumpInfoToConsole(hareDuClientParameters);
+
+            deleteVirtualHost(hareDuClientParameters, hostToDelete);
+        }
+
+        private static void DumpInfoToConsole(HareDuClientParameters hareDuClientParameters)
+        {
             outputWhoAmIInfo(hareDuClientParameters);
+
+            outputPermissionInfo(hareDuClientParameters);
 
             outputVirtualHostInfo(hareDuClientParameters);
 
             outputOpenChannelInfo(hareDuClientParameters);
-
-            deleteVirtualHost(hareDuClientParameters, hostToDelete);
         }
 
         private static void outputWhoAmIInfo(HareDuClientParameters hareDuClientParameters)
@@ -63,6 +70,33 @@ namespace HareDu.TestHarness
                                 Console.WriteLine("Tags:" + r.Tags);
                                 Console.WriteLine("AuthBackend:" + r.AuthBackend);
                             });
+            responseTask.Wait();
+        }
+
+        private static void outputPermissionInfo(HareDuClientParameters hareDuClientParameters)
+        {
+            Console.WriteLine("************ API/PERMISSIONS *************");
+            var client = CreateHareDuClient(hareDuClientParameters);
+            var myrequestTask = client.Permissions();
+            var responseTask = myrequestTask.ContinueWith((requestTask) =>
+            {
+                HttpResponseMessage response = requestTask.Result;
+                response.EnsureSuccessStatusCode();
+
+                var r = response.GetResponse < IEnumerable<Permission>>();
+                foreach (var permission in r )
+                {
+                    Console.WriteLine("-------------------");
+                    Console.WriteLine("START");
+                    Console.WriteLine("User:" + permission.User);
+                    Console.WriteLine("Virtual Host:" + permission.VirtualHost);
+                    Console.WriteLine("Configure:" + permission.Configure);
+                    Console.WriteLine("Write:" + permission.Write);
+                    Console.WriteLine("Read:" + permission.Read);
+                    Console.WriteLine("END");
+
+                }
+            });
             responseTask.Wait();
         }
 
