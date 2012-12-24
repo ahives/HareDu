@@ -15,7 +15,40 @@
         {
         }
 
+        #region api/overview
+
+        public Task<HttpResponseMessage> Overview()
+        {
+            return Get("api/overview");
+        }
+
+        #endregion
+
+        #region api/whoami
+
+        public Task<HttpResponseMessage> WhoAmI()
+        {
+            return Get("api/whoami");
+        }
+
+        #endregion
+
+        #region Permissions
+
+        public Task<HttpResponseMessage> Permissions()
+        {
+            return Get("api/permissions");
+        }
+
+        #endregion
+
         #region Connectivity
+
+        //old
+        public Task<HttpResponseMessage> GetListOfAllOpenConnections()
+        {
+            return Get("api/connections");
+        }
 
         public Task<HttpResponseMessage> GetListOfAllOpenConnections(CancellationToken cancellationToken =
                                                                          default(CancellationToken))
@@ -270,7 +303,7 @@
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }
 
-        #endregion
+#endregion
 
         #region Exchanges
 
