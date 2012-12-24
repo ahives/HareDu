@@ -15,6 +15,15 @@
         {
         }
 
+        #region api/overview
+
+        public Task<HttpResponseMessage> Overview()
+        {
+            return Get("api/overview");
+        }
+
+        #endregion
+
         #region api/whoami
 
         public Task<HttpResponseMessage> WhoAmI()

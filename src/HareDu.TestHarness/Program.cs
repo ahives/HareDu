@@ -46,6 +46,8 @@ namespace HareDu.TestHarness
 
         private static void DumpInfoToConsole(HareDuClientParameters hareDuClientParameters)
         {
+            outputOverviewInfo(hareDuClientParameters);
+
             outputWhoAmIInfo(hareDuClientParameters);
 
             outputPermissionInfo(hareDuClientParameters);
@@ -53,6 +55,22 @@ namespace HareDu.TestHarness
             outputVirtualHostInfo(hareDuClientParameters);
 
             outputOpenChannelInfo(hareDuClientParameters);
+        }
+
+        private static void outputOverviewInfo(HareDuClientParameters hareDuClientParameters)
+        {
+            Console.WriteLine("************ Overview *************");
+            var client = CreateHareDuClient(hareDuClientParameters);
+            var myrequestTask = client.Overview();
+            var responseTask = myrequestTask.ContinueWith((requestTask) =>
+            {
+                HttpResponseMessage response = requestTask.Result;
+                response.EnsureSuccessStatusCode();
+
+                var r = response.GetResponse<Overview>();
+                Console.WriteLine(r.queue_totals.messages);
+            });
+            responseTask.Wait();
         }
 
         private static void outputWhoAmIInfo(HareDuClientParameters hareDuClientParameters)
