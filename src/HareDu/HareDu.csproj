@@ -69,6 +69,7 @@
     <Compile Include="Model\ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
+    <Compile Include="Model\Overview.cs" />
     <Compile Include="Model\Permission.cs" />
     <Compile Include="Model\VirtualHost.cs" />
     <Compile Include="Model\WhoAmI.cs" />
