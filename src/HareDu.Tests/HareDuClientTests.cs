@@ -14,7 +14,11 @@
         [SetUp]
         public void SetUp()
         {
-            _client = new HareDuClient("http://localhost", 55672, "guest", "guest");
+            _client = HareDuFactory.New(x =>
+                                            {
+                                                x.ConnectTo("http://localhost:55672");
+                                                x.UsingCredentials("guest", "guest");
+                                            });
         }
 
         private HareDuClient _client;
@@ -97,9 +101,9 @@
         [Test]
         public void Verify_Creating_Queues_Are_Working()
         {
-            var client = new HareDuClient("http://localhost", 15672, "guest", "guest");
+            //var client = new HareDuClientImpl("http://localhost", 15672, "guest", "guest");
             var tokenSource = new CancellationTokenSource();
-            client.CreateQueue("hydro", "MyFluentAPITest2", x => { x.IsDurable(); }, tokenSource.Token);
+            _client.CreateQueue("hydro", "MyFluentAPITest2", x => { x.IsDurable(); }, tokenSource.Token);
             //client.CreateQueue("/", "rabbit@ahives-t5500", "MyFluentAPITest1", x =>
             //{
             //    x.Durable();
@@ -109,15 +113,15 @@
         [Test]
         public void Verify_Binding_Queue_To_Exchange_Working()
         {
-            var client = new HareDuClient("http://localhost", 55672, "guest", "guest");
-            client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3", x => x.UsingRoutingKey(string.Empty));
+            //var client = new HareDuClientImpl("http://localhost", 55672, "guest", "guest");
+            _client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3", x => x.UsingRoutingKey(string.Empty));
         }
 
         [Test]
         public void Verify_GetInfoOnOpenChannels_Working()
         {
-            var client = new HareDuClient("http://localhost", 15672, "guest", "guest");
-            var channels = client.GetListOfAllOpenChannels().Result.Content.ReadAsAsync<IEnumerable<Channel>>().Result;
+            //var client = new HareDuClientImpl("http://localhost", 15672, "guest", "guest");
+            var channels = _client.GetListOfAllOpenChannels().Result.Content.ReadAsAsync<IEnumerable<Channel>>().Result;
 
             foreach (var channelInfo in channels)
             {

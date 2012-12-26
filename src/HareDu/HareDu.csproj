@@ -54,14 +54,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />
     <Compile Include="Contracts\CreateQueueArgs.cs" />
     <Compile Include="Contracts\BindQueueArgs.cs" />
     <Compile Include="Contracts\CreateExchangeArgs.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
-    <Compile Include="HareDuBase.cs" />
+    <Compile Include="HareDuClientBase.cs" />
+    <Compile Include="Exceptions\HareDuClientInitException.cs" />
+    <Compile Include="HareDuFactory.cs" />
+    <Compile Include="HareDuClient.cs" />
+    <Compile Include="Contracts\HareDuInitArgs.cs" />
+    <Compile Include="Internal\HareDuInitArgsImpl.cs" />
     <Compile Include="Internal\CreateExchangeArgsImpl.cs" />
     <Compile Include="Model\Channel.cs" />
-    <Compile Include="HareDuClient.cs" />
+    <Compile Include="HareDuClientImpl.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Exchange.cs" />
     <Compile Include="Extensions\JsonValueExtensions.cs" />
@@ -79,6 +85,7 @@
     <Compile Include="Model\User.cs" />
     <Compile Include="Contracts\UserPermissionsArgs.cs" />
     <Compile Include="Internal\UserPermissionsArgsImpl.cs" />
+    <Compile Include="Model\VirtualHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

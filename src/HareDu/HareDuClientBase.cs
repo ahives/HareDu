@@ -8,14 +8,18 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class HareDuBase
+    public abstract class HareDuClientBase
     {
-        public HareDuBase(string hostUrl, int port, string username, string password)
+        protected HareDuClientBase(HareDuInitArgsImpl args)
         {
+            args.HostUrl.CheckIfArgValid("hostUrl");
+            args.Username.CheckIfArgValid("username");
+            args.Password.CheckIfArgValid("password");
+
             Client = new HttpClient(new HttpClientHandler
                                         {
-                                            Credentials = new NetworkCredential(username, password)
-                                        }) {BaseAddress = new Uri(string.Format("{0}:{1}/", hostUrl, port))};
+                                            Credentials = new NetworkCredential(args.Username, args.Password)
+                                        }) {BaseAddress = new Uri(string.Format("{0}/", args.HostUrl))};
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 

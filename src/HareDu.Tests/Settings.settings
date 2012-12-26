@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HareDu.Tests" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HostUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:55672</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">guest</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">guest</Value>
+    </Setting>
+    <Setting Name="VirtualHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestVirtualHost</Value>
+    </Setting>
+    <Setting Name="Exchange" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestExchange</Value>
+    </Setting>
+    <Setting Name="Queue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestQueue</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

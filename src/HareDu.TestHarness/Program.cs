@@ -23,7 +23,11 @@ namespace HareDu.TestHarness
             string password = Console.ReadLine();
 
             url = "http://localhost";
-            var client = new HareDuClient(url, 55672, username, password);
+            var client = HareDuFactory.New(x =>
+                                               {
+                                                   x.ConnectTo("http://localhost:55672");
+                                                   x.UsingCredentials(username, password);
+                                               });
             var requestTask = client.GetListOfAllOpenChannels();
                                  var responseTask = requestTask.ContinueWith(x =>
                                                    {
