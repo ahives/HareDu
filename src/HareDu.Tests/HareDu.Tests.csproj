@@ -61,6 +61,7 @@
     <Compile Include="HareDuClientTests.cs" />
     <Compile Include="HareDuTestBase.cs" />
     <Compile Include="IntegrationTests.cs" />
+    <Compile Include="PermissionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueueTests.cs" />
     <Compile Include="Settings.Designer.cs">
@@ -68,6 +69,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="UserTests.cs" />
     <Compile Include="VirtualHostTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,22 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Model
+namespace HareDu.Tests
 {
-    using Newtonsoft.Json;
-
-    public class MessageStats
+    public class UserTests
     {
-        [JsonProperty("publish")]
-        public int Published { get; set; }
-
-        [JsonProperty("ack")]
-        public int Acknowledged { get; set; }
-
-        [JsonProperty("deliver")]
-        public int Delivered { get; set; }
-
-        [JsonProperty("deliver_get")]
-        public int DeliveredOrGet { get; set; }
     }
 }

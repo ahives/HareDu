@@ -1,4 +1,18 @@
-﻿namespace HareDu.Tests
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+namespace HareDu.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -70,7 +84,8 @@
                                                             {
                                                                 var response = x.Result;
                                                                 var bindings =
-                                                                    response.GetResponse<IEnumerable<Binding>>().ToList();
+                                                                    response.GetResponse<IEnumerable<Binding>>()
+                                                                            .ToList();
                                                                 if (_enableTracing)
                                                                     bindings.ForEach(p => Console.WriteLine(p.Source));
                                                             });
@@ -99,6 +114,14 @@
         }
 
         [Test]
+        public void Verify_Binding_Queue_To_Exchange_Working()
+        {
+            //var client = new HareDuClientImpl("http://localhost", 55672, "guest", "guest");
+            _client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3",
+                                        x => x.UsingRoutingKey(string.Empty));
+        }
+
+        [Test]
         public void Verify_Creating_Queues_Are_Working()
         {
             //var client = new HareDuClientImpl("http://localhost", 15672, "guest", "guest");
@@ -108,13 +131,6 @@
             //{
             //    x.Durable();
             //});
-        }
-
-        [Test]
-        public void Verify_Binding_Queue_To_Exchange_Working()
-        {
-            //var client = new HareDuClientImpl("http://localhost", 55672, "guest", "guest");
-            _client.BindQueueToExchange("/", "RouteControllerTest", "HareDuTestQueue3", x => x.UsingRoutingKey(string.Empty));
         }
 
         [Test]
