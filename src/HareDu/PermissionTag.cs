@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Model
+namespace HareDu
 {
-    public class ExchangeRoutingType
+    public class PermissionTag
     {
-        public static string Direct = "direct";
-        public static string Topic = "topic";
-        public static string Fanout = "fanout";
+        public static readonly string Admin = "administrator";
+        public static readonly string Monitoring = "monitoring";
+        public static readonly string None = string.Empty;
     }
 }

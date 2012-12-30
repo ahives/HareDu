@@ -19,7 +19,7 @@ namespace HareDu.Model
     public class UserPermissions
     {
         [JsonProperty("user")]
-        public string UserName { get; set; }
+        public string Username { get; set; }
 
         [JsonProperty("vhost")]
         public string VirtualHostName { get; set; }

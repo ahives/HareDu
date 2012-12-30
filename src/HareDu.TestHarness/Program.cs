@@ -28,7 +28,7 @@ namespace HareDu.TestHarness
                                                    x.ConnectTo("http://localhost:55672");
                                                    x.UsingCredentials(username, password);
                                                });
-            var requestTask = client.GetListOfAllOpenChannels();
+            var requestTask = client.GetAllChannels();
                                  var responseTask = requestTask.ContinueWith(x =>
                                                    {
                                                        var response = x.Result;

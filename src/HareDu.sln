@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2D8490
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HareDu.Tests", "HareDu.Tests\HareDu.Tests.csproj", "{CBEA7454-489D-4F36-9AA9-1FBA791B85A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HareDu.TestHarness", "HareDu.TestHarness\HareDu.TestHarness.csproj", "{E3FBFD8A-86BB-40AE-9543-911DC943DE82}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,16 +42,6 @@ Global
 		{CBEA7454-489D-4F36-9AA9-1FBA791B85A6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CBEA7454-489D-4F36-9AA9-1FBA791B85A6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CBEA7454-489D-4F36-9AA9-1FBA791B85A6}.Release|x86.ActiveCfg = Release|Any CPU
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Debug|x86.ActiveCfg = Debug|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Debug|x86.Build.0 = Debug|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Release|Any CPU.ActiveCfg = Release|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Release|Mixed Platforms.Build.0 = Release|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Release|x86.ActiveCfg = Release|x86
-		{E3FBFD8A-86BB-40AE-9543-911DC943DE82}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

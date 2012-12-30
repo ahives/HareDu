@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace HareDu
 {
     using System;
@@ -20,15 +21,17 @@ namespace HareDu
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common.Logging;
 
     public abstract class HareDuClientBase
     {
-        protected HareDuClientBase(HareDuInitArgsImpl args)
+        protected HareDuClientBase(ClientInitArgsImpl args)
         {
             args.HostUrl.CheckIfArgValid("hostUrl");
             args.Username.CheckIfArgValid("username");
             args.Password.CheckIfArgValid("password");
 
+            Logger = args.Logger;
             Client = new HttpClient(new HttpClientHandler
                                         {
                                             Credentials = new NetworkCredential(args.Username, args.Password)
@@ -36,7 +39,8 @@ namespace HareDu
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        protected HttpClient Client { get; set; }
+        protected HttpClient Client { get; private set; }
+        protected ILog Logger { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri
@@ -65,68 +69,48 @@ namespace HareDu
             setUpdatableFlagsMethod.Invoke(uriParser, new object[] {0});
         }
 
-        protected virtual Task<HttpResponseMessage> Get(string url)
+        protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken =
+                                                                        default(CancellationToken))
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
-            return Client.GetAsync(url);
+            return cancellationToken == default(CancellationToken)
+                       ? Client.GetAsync(url)
+                       : Client.GetAsync(url, cancellationToken);
         }
 
-        protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
+        protected virtual Task<HttpResponseMessage> Delete(string url, CancellationToken cancellationToken =
+                                                                           default(CancellationToken))
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
-            return Client.GetAsync(url, cancellationToken);
+            return cancellationToken == default(CancellationToken)
+                       ? Client.DeleteAsync(url)
+                       : Client.DeleteAsync(url, cancellationToken);
         }
 
-        protected virtual Task<HttpResponseMessage> Delete(string url)
+        protected virtual Task<HttpResponseMessage> Put<T>(string url, T value, CancellationToken cancellationToken =
+                                                                                    default(CancellationToken))
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
-            return Client.DeleteAsync(url);
+            return cancellationToken == default(CancellationToken)
+                        ? Client.PutAsJsonAsync(url, value)
+                        : Client.PutAsJsonAsync(url, value, cancellationToken);
         }
 
-        protected virtual Task<HttpResponseMessage> Delete(string url, CancellationToken cancellationToken)
+        protected virtual Task<HttpResponseMessage> Post<T>(string url, T value, CancellationToken cancellationToken =
+                                                                                     default(CancellationToken))
         {
             if (url.Contains("/%2f"))
                 LeaveDotsAndSlashesEscaped();
 
-            return Client.DeleteAsync(url, cancellationToken);
-        }
-
-        protected virtual Task<HttpResponseMessage> Put<T>(string url, T value)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-
-            return Client.PutAsJsonAsync(url, value);
-        }
-
-        protected virtual Task<HttpResponseMessage> Put<T>(string url, T value, CancellationToken cancellationToken)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-
-            return Client.PutAsJsonAsync(url, value, cancellationToken);
-        }
-
-        protected virtual Task<HttpResponseMessage> Post<T>(string url, T value)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-
-            return Client.PostAsJsonAsync(url, value);
-        }
-
-        protected virtual Task<HttpResponseMessage> Post<T>(string url, T value, CancellationToken cancellationToken)
-        {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
-
-            return Client.PostAsJsonAsync(url, value, cancellationToken);
+            return cancellationToken == default(CancellationToken)
+                       ? Client.PostAsJsonAsync(url, value)
+                       : Client.PostAsJsonAsync(url, value, cancellationToken);
         }
     }
 }

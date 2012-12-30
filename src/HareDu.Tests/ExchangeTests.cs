@@ -39,21 +39,6 @@ namespace HareDu.Tests
         }
 
         [Test]
-        public void Verify_Can_Create_Exchange_TPL()
-        {
-            var request = Client.CreateExchange(
-                Settings.Default.VirtualHost,
-                Settings.Default.Exchange,
-                x =>
-                    {
-                        x.IsDurable();
-                        x.RoutingType(ExchangeRoutingType.Fanout);
-                    });
-            var responseTask = request.ContinueWith(x => { Assert.AreEqual(true, x.Result.IsSuccessStatusCode); });
-            responseTask.Wait();
-        }
-
-        [Test]
         public void Verify_Can_Delete_Exchanges()
         {
             var request = Client.DeleteExchange(Settings.Default.VirtualHost, Settings.Default.Exchange);
@@ -62,48 +47,77 @@ namespace HareDu.Tests
         }
 
         [Test]
-        public void Verify_Can_Delete_Exchanges_Using_TPL()
+        public void Verify_Can_Return_All_Bindings_On_Exchange()
         {
-            var request = Client.DeleteExchange(Settings.Default.VirtualHost, Settings.Default.Exchange);
-            var response = request.ContinueWith(x => { Assert.AreEqual(true, x.Result.IsSuccessStatusCode); });
-            response.Wait();
-        }
-
-        [Test]
-        public void Verify_Can_Return_All_Exchanges()
-        {
-            var exchanges = Client.GetListOfAllExchanges()
+            var bindings = Client.GetAllBindingsOnExchange(Settings.Default.VirtualHost, Settings.Default.Exchange, true)
                                   .Result
-                                  .GetResponse<IEnumerable<Exchange>>();
+                                  .GetResponse<IEnumerable<Binding>>();
 
-            foreach (var exchange in exchanges)
+            foreach (var binding in bindings)
             {
-                Console.WriteLine("name: {0}", exchange.Name);
-                Console.WriteLine("type: {0}", exchange.Type);
-                Console.WriteLine("vhost: {0}", exchange.VirtualHostName);
-                Console.WriteLine("durable: {0}", exchange.IsDurable);
-                Console.WriteLine("internal: {0}", exchange.IsInternal);
-                Console.WriteLine("auto delete: {0}", exchange.IsSetToAutoDelete);
+                Console.WriteLine("Source: {0}", binding.Source);
+                Console.WriteLine("Destination: {0}", binding.Destination);
+                Console.WriteLine("Destination Type: {0}", binding.DestinationType);
+                Console.WriteLine("Virtual Host: {0}", binding.VirtualHostName);
+                Console.WriteLine("Routing Key: {0}", binding.RoutingKey);
+                Console.WriteLine("Properties Key: {0}", binding.PropertiesKey);
                 Console.WriteLine("****************************************************");
                 Console.WriteLine();
             }
         }
 
         [Test]
-        public void Verify_Can_Return_All_Exchanges_Using_TPL()
+        public void Verify_Can_Return_An_Exchange()
         {
-            var exchanges = Client.GetListOfAllExchanges()
+            var exchange = Client.GetExchange(Settings.Default.VirtualHost, Settings.Default.Exchange)
+                                  .Result
+                                  .GetResponse<Exchange>();
+
+            Console.WriteLine("Name: {0}", exchange.Name);
+            Console.WriteLine("Type: {0}", exchange.Type);
+            Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+            Console.WriteLine("Durable: {0}", exchange.IsDurable);
+            Console.WriteLine("Internal: {0}", exchange.IsInternal);
+            Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+            Console.WriteLine("****************************************************");
+            Console.WriteLine();
+        }
+
+        [Test]
+        public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
+        {
+            var exchanges = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost)
                                   .Result
                                   .GetResponse<IEnumerable<Exchange>>();
 
             foreach (var exchange in exchanges)
             {
-                Console.WriteLine("name: {0}", exchange.Name);
-                Console.WriteLine("type: {0}", exchange.Type);
-                Console.WriteLine("vhost: {0}", exchange.VirtualHostName);
-                Console.WriteLine("durable: {0}", exchange.IsDurable);
-                Console.WriteLine("internal: {0}", exchange.IsInternal);
-                Console.WriteLine("auto delete: {0}", exchange.IsSetToAutoDelete);
+                Console.WriteLine("Name: {0}", exchange.Name);
+                Console.WriteLine("Type: {0}", exchange.Type);
+                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+                Console.WriteLine("Durable: {0}", exchange.IsDurable);
+                Console.WriteLine("Internal: {0}", exchange.IsInternal);
+                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test]
+        public void Verify_Can_Return_All_Exchanges()
+        {
+            var exchanges = Client.GetAllExchanges()
+                                  .Result
+                                  .GetResponse<IEnumerable<Exchange>>();
+
+            foreach (var exchange in exchanges)
+            {
+                Console.WriteLine("Name: {0}", exchange.Name);
+                Console.WriteLine("Type: {0}", exchange.Type);
+                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+                Console.WriteLine("Durable: {0}", exchange.IsDurable);
+                Console.WriteLine("Internal: {0}", exchange.IsInternal);
+                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
                 Console.WriteLine("****************************************************");
                 Console.WriteLine();
             }

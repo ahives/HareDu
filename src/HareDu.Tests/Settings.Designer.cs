@@ -38,24 +38,24 @@ namespace HareDu.Tests {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("guest")]
-        public string Username {
+        public string LoginUsername {
             get {
-                return ((string)(this["Username"]));
+                return ((string)(this["LoginUsername"]));
             }
             set {
-                this["Username"] = value;
+                this["LoginUsername"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("guest")]
-        public string Password {
+        public string LoginPassword {
             get {
-                return ((string)(this["Password"]));
+                return ((string)(this["LoginPassword"]));
             }
             set {
-                this["Password"] = value;
+                this["LoginPassword"] = value;
             }
         }
         
@@ -92,6 +92,66 @@ namespace HareDu.Tests {
             }
             set {
                 this["Queue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("test_user")]
+        public string Username {
+            get {
+                return ((string)(this["Username"]));
+            }
+            set {
+                this["Username"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("test_user_password")]
+        public string UserPassword {
+            get {
+                return ((string)(this["UserPassword"]));
+            }
+            set {
+                this["UserPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("administration")]
+        public string UserPermissionsTags {
+            get {
+                return ((string)(this["UserPermissionsTags"]));
+            }
+            set {
+                this["UserPermissionsTags"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1:13507 -> 127.0.0.1:5672")]
+        public string Channel {
+            get {
+                return ((string)(this["Channel"]));
+            }
+            set {
+                this["Channel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1:13507 -> 127.0.0.1:5672")]
+        public string Connection {
+            get {
+                return ((string)(this["Connection"]));
+            }
+            set {
+                this["Connection"] = value;
             }
         }
     }

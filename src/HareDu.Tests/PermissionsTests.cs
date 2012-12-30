@@ -14,7 +14,71 @@
 
 namespace HareDu.Tests
 {
-    public class PermissionsTests
+    using System;
+    using System.Collections.Generic;
+    using Model;
+    using NUnit.Framework;
+
+    [TestFixture]
+    public class PermissionsTests :
+        HareDuTestBase
     {
+        [Test]
+        public void Verify_Can_Create_User_Persmissions()
+        {
+            var request = Client.CreateUserPermissions(
+                Settings.Default.VirtualHost,
+                Settings.Default.LoginUsername,
+                x =>
+                    {
+                        x.AssignConfigurePermissions(".*");
+                        x.AssignReadPermissions(".*");
+                        x.AssignWritePermissions(".*");
+                    });
+
+            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+        }
+
+        [Test]
+        public void Verify_Can_Delete_User_Permissions()
+        {
+            var request = Client.DeleteUserPermissions(Settings.Default.VirtualHost, Settings.Default.LoginUsername);
+            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+        }
+
+        [Test]
+        public void Verify_Can_Return_All_User_Permissions()
+        {
+            var request = Client.GetAlllUserPermissions()
+                                .Result
+                                .GetResponse<IEnumerable<UserPermissions>>();
+
+            foreach (var userPermissions in request)
+            {
+                Console.WriteLine("Virtual Host: {0}", userPermissions.VirtualHostName);
+                Console.WriteLine("Username: {0}", userPermissions.Username);
+                Console.WriteLine("Configure Permissions: {0}", userPermissions.ConfigurePermissions);
+                Console.WriteLine("Read Permissions: {0}", userPermissions.ReadPermissions);
+                Console.WriteLine("Write Permissions: {0}", userPermissions.WritePermissions);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test]
+        public void Verify_Can_Return_Individual_User_Permissions()
+        {
+            var request = Client.GetIndividualUser(Settings.Default.LoginUsername)
+                                .Result
+                                .GetResponse<UserPermissions>();
+
+            Console.WriteLine("Virtual Host: {0}", request.VirtualHostName);
+            Console.WriteLine("Username: {0}", request.Username);
+            Console.WriteLine("Configure Permissions: {0}", request.ConfigurePermissions);
+            Console.WriteLine("Read Permissions: {0}", request.ReadPermissions);
+            Console.WriteLine("Write Permissions: {0}", request.WritePermissions);
+            Console.WriteLine("****************************************************");
+            Console.WriteLine();
+        }
     }
 }

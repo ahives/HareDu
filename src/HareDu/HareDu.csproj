@@ -33,6 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net1211">
+      <HintPath>..\packages\Common.Logging.Log4Net1211.2.1.2\lib\net40\Common.Logging.Log4Net1211.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -63,19 +72,20 @@
     <Compile Include="Exceptions\HareDuClientInitException.cs" />
     <Compile Include="HareDuFactory.cs" />
     <Compile Include="HareDuClient.cs" />
-    <Compile Include="Contracts\HareDuInitArgs.cs" />
-    <Compile Include="Internal\HareDuInitArgsImpl.cs" />
+    <Compile Include="Contracts\ClientInitArgs.cs" />
+    <Compile Include="Internal\ClientInitArgsImpl.cs" />
     <Compile Include="Internal\CreateExchangeArgsImpl.cs" />
     <Compile Include="Model\Channel.cs" />
     <Compile Include="HareDuClientImpl.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Exchange.cs" />
     <Compile Include="Extensions\JsonValueExtensions.cs" />
-    <Compile Include="Model\ExchangeRoutingType.cs" />
+    <Compile Include="ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\UserPermissions.cs" />
+    <Compile Include="PermissionTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Binding.cs" />
     <Compile Include="Internal\CreateQueueArgsImpl.cs" />
@@ -88,6 +98,7 @@
     <Compile Include="Model\VirtualHost.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

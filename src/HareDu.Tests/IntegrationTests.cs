@@ -14,7 +14,98 @@
 
 namespace HareDu.Tests
 {
-    public class IntegrationTests
+    using System;
+    using NUnit.Framework;
+
+    [TestFixture]
+    public class IntegrationTests :
+        HareDuTestBase
     {
+        [Test, Explicit]
+        public void Create_Virtual_Host()
+        {
+            try
+            {
+                CreateVirtualHost(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        [Test]
+        public void Create_Exchange()
+        {
+            try
+            {
+                CreateExchange();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        [Test]
+        public void Create_Queue()
+        {
+            try
+            {
+                CreateExchange();
+                var createQueueRequest = Client.CreateQueue(
+                    Settings.Default.VirtualHost,
+                    Settings.Default.Queue,
+                    x => x.IsDurable());
+                createQueueRequest.Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
+        private void CreateExchange()
+        {
+            CreateVirtualHost(false);
+            var createExchangeRequest = Client.CreateExchange(
+                Settings.Default.VirtualHost,
+                Settings.Default.Exchange,
+                x =>
+                    {
+                        x.IsDurable();
+                        x.RoutingType(ExchangeRoutingType.Fanout);
+                    });
+            createExchangeRequest.Wait();
+        }
+
+        private void CreateVirtualHost(bool useDefaultUser)
+        {
+            if (!useDefaultUser)
+            {
+                var createUserRequest = Client.CreateUser(
+                    Settings.Default.Username,
+                    x =>
+                        {
+                            x.WithPassword(Settings.Default.UserPassword);
+                            x.WithTags(PermissionTag.Admin);
+                        });
+            }
+
+            var createVirtualHostRequest = Client.CreateVirtualHost(Settings.Default.VirtualHost);
+            createVirtualHostRequest.Wait();
+
+            var createUserPremissionsRequest = Client.CreateUserPermissions(
+                Settings.Default.VirtualHost,
+                useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
+                    x =>
+                    {
+                        x.AssignConfigurePermissions(".*");
+                        x.AssignReadPermissions(".*");
+                        x.AssignWritePermissions(".*");
+                    });
+            createUserPremissionsRequest.Wait();
+        }
     }
 }

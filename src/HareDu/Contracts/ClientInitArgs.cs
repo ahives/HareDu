@@ -12,28 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    using Contracts;
-
-    public class HareDuInitArgsImpl :
-        HareDuInitArgs
+    public interface ClientInitArgs
     {
-        public string HostUrl { get; private set; }
-
-        public string Username { get; private set; }
-
-        public string Password { get; private set; }
-
-        public void ConnectTo(string hostUrl)
-        {
-            HostUrl = hostUrl;
-        }
-
-        public void UsingCredentials(string username, string password)
-        {
-            Username = username;
-            Password = password;
-        }
+        void ConnectTo(string hostUrl);
+        void UsingCredentials(string username, string password);
+        void UseLog4Net();
     }
 }

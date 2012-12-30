@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace HareDu
 {
     using System;
@@ -24,7 +25,7 @@ namespace HareDu
         HareDuClientBase,
         HareDuClient
     {
-        public HareDuClientImpl(HareDuInitArgsImpl args) :
+        public HareDuClientImpl(ClientInitArgsImpl args) :
             base(args)
         {
         }
@@ -72,17 +73,17 @@ namespace HareDu
 
         #region Connectivity
 
-        public Task<HttpResponseMessage> GetListOfAllOpenConnections(CancellationToken cancellationToken =
-                                                                         default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllConnections(CancellationToken cancellationToken =
+                                                               default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/connections")
                        : Get("api/connections", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetOpenConnection(string connectionName,
-                                                           CancellationToken cancellationToken =
-                                                               default(CancellationToken))
+        public Task<HttpResponseMessage> GetConnection(string connectionName,
+                                                       CancellationToken cancellationToken =
+                                                           default(CancellationToken))
         {
             connectionName.CheckIfArgValid("connectionName");
 
@@ -93,17 +94,17 @@ namespace HareDu
                        : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllOpenChannels(CancellationToken cancellationToken =
-                                                                      default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllChannels(CancellationToken cancellationToken =
+                                                            default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/channels")
                        : Get("api/channels", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetOpenChannel(string channelName,
-                                                        CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public Task<HttpResponseMessage> GetChannel(string channelName,
+                                                    CancellationToken cancellationToken =
+                                                        default(CancellationToken))
         {
             channelName.CheckIfArgValid("channelName");
 
@@ -114,8 +115,9 @@ namespace HareDu
                        : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> SendEKG(string virtualHostName, CancellationToken cancellationToken =
-                                                                             default(CancellationToken))
+        public Task<HttpResponseMessage> ExecuteAlivenessTest(string virtualHostName,
+                                                              CancellationToken cancellationToken =
+                                                                  default(CancellationToken))
         {
             virtualHostName.CheckIfArgValid("virtualHostName");
 
@@ -128,9 +130,9 @@ namespace HareDu
 
         #region Permissions
 
-        public Task<HttpResponseMessage> GetUserPermissions(string virtualHostName, string userName,
-                                                            CancellationToken cancellationToken =
-                                                                default(CancellationToken))
+        public Task<HttpResponseMessage> GetIndividualUserPermissions(string virtualHostName, string userName,
+                                                                      CancellationToken cancellationToken =
+                                                                          default(CancellationToken))
         {
             virtualHostName.CheckIfArgValid("virtualHostName");
             userName.CheckIfArgValid("userName");
@@ -138,6 +140,14 @@ namespace HareDu
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+        }
+
+        public Task<HttpResponseMessage> GetAlllUserPermissions(
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return cancellationToken == default(CancellationToken)
+                       ? Get("api/permissions")
+                       : Get("api/permissions", cancellationToken);
         }
 
         public Task<HttpResponseMessage> CreateUserPermissions(string virtualHostName, string userName,
@@ -174,16 +184,16 @@ namespace HareDu
 
         #region Users
 
-        public Task<HttpResponseMessage> GetUsers(CancellationToken cancellationToken =
-                                                      default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllUsers(CancellationToken cancellationToken =
+                                                         default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/users")
                        : Get("api/users", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetUser(string userName, CancellationToken cancellationToken =
-                                                                      default(CancellationToken))
+        public Task<HttpResponseMessage> GetIndividualUser(string userName, CancellationToken cancellationToken =
+                                                                                default(CancellationToken))
         {
             userName.CheckIfArgValid("userName");
 
@@ -202,6 +212,7 @@ namespace HareDu
             var user = new UserArgsImpl();
             args(user);
             string url = string.Format("api/users/{0}", userName);
+            //Logger.Info(x => x("Putting {0} to {1}", JsonConvert.SerializeObject(user), url));
 
             return cancellationToken == default(CancellationToken) ? Put(url, user) : Put(url, user, cancellationToken);
         }
@@ -220,8 +231,8 @@ namespace HareDu
 
         #region Virtual Hosts
 
-        public Task<HttpResponseMessage> GetListOfAllVirtualHosts(CancellationToken cancellationToken =
-                                                                      default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllVirtualHosts(CancellationToken cancellationToken =
+                                                                default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/vhosts")
@@ -261,7 +272,7 @@ namespace HareDu
 
         #region Queues
 
-        public Task<HttpResponseMessage> GetListOfAllQueues(
+        public Task<HttpResponseMessage> GetAllQueues(
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
@@ -269,9 +280,9 @@ namespace HareDu
                        : Get("api/queues", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllBindingsOnQueue(string virtualHostName, string queueName,
-                                                                     CancellationToken cancellationToken =
-                                                                         default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllBindingsOnQueue(string virtualHostName, string queueName,
+                                                               CancellationToken cancellationToken =
+                                                                   default(CancellationToken))
         {
             virtualHostName.CheckIfArgValid("virtualHostName");
             queueName.CheckIfArgValid("queueName");
@@ -334,18 +345,18 @@ namespace HareDu
 
         #region Exchanges
 
-        public Task<HttpResponseMessage> GetListOfAllExchanges(CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllExchanges(CancellationToken cancellationToken =
+                                                             default(CancellationToken))
         {
             return cancellationToken == default(CancellationToken)
                        ? Get("api/exchanges")
                        : Get("api/exchanges", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllExchangesInVirtualHost(string virtualHostName,
-                                                                            CancellationToken cancellationToken
-                                                                                =
-                                                                                default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllExchangesInVirtualHost(string virtualHostName,
+                                                                      CancellationToken cancellationToken
+                                                                          =
+                                                                          default(CancellationToken))
         {
             virtualHostName.CheckIfArgValid("virtualHostName");
 
@@ -366,18 +377,18 @@ namespace HareDu
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetListOfAllBindingsOnExchange(string virtualHostName,
-                                                                        string exchangeName,
-                                                                        bool exchangeAsSource,
-                                                                        CancellationToken cancellationToken =
-                                                                            default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllBindingsOnExchange(string virtualHostName,
+                                                                  string exchangeName,
+                                                                  bool isSource,
+                                                                  CancellationToken cancellationToken =
+                                                                      default(CancellationToken))
         {
             virtualHostName.CheckIfArgValid("virtualHostName");
             exchangeName.CheckIfArgValid("exchangeName");
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
                                        virtualHostName.SanitizeVirtualHostName(), exchangeName,
-                                       exchangeAsSource ? "source" : "destination");
+                                       isSource ? "source" : "destination");
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }

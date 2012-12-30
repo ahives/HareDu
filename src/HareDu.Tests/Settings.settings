@@ -5,10 +5,10 @@
     <Setting Name="HostUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:55672</Value>
     </Setting>
-    <Setting Name="Username" Type="System.String" Scope="User">
+    <Setting Name="LoginUsername" Type="System.String" Scope="User">
       <Value Profile="(Default)">guest</Value>
     </Setting>
-    <Setting Name="Password" Type="System.String" Scope="User">
+    <Setting Name="LoginPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">guest</Value>
     </Setting>
     <Setting Name="VirtualHost" Type="System.String" Scope="User">
@@ -19,6 +19,21 @@
     </Setting>
     <Setting Name="Queue" Type="System.String" Scope="User">
       <Value Profile="(Default)">MyTestQueue</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">test_user</Value>
+    </Setting>
+    <Setting Name="UserPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">test_user_password</Value>
+    </Setting>
+    <Setting Name="UserPermissionsTags" Type="System.String" Scope="User">
+      <Value Profile="(Default)">administration</Value>
+    </Setting>
+    <Setting Name="Channel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1:13507 -&gt; 127.0.0.1:5672</Value>
+    </Setting>
+    <Setting Name="Connection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1:13507 -&gt; 127.0.0.1:5672</Value>
     </Setting>
   </Settings>
 </SettingsFile>

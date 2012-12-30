@@ -12,29 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu
 {
+    using Common.Logging;
     using Contracts;
-    using Newtonsoft.Json;
 
-    public class UserArgsImpl :
-        UserArgs
+    public class ClientInitArgsImpl :
+        ClientInitArgs
     {
-        [JsonProperty(PropertyName = "password", Order = 1)]
-        public string Password { get; set; }
+        public string HostUrl { get; private set; }
 
-        [JsonProperty(PropertyName = "tags", Order = 2)]
-        public string Tags { get; set; }
+        public string Username { get; private set; }
 
-        public void WithPassword(string password)
+        public string Password { get; private set; }
+
+        public ILog Logger { get; private set; }
+
+        public void ConnectTo(string hostUrl)
         {
-            password.CheckIfArgValid("password");
+            HostUrl = hostUrl;
+        }
+
+        public void UsingCredentials(string username, string password)
+        {
+            Username = username;
             Password = password;
         }
 
-        public void WithTags(string tags)
+        public void UseLog4Net()
         {
-            Tags = tags;
+            if (Logger.IsNull())
+            {
+                Logger = LogManager.GetLogger("HarDuLogger");
+            }
         }
     }
 }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace HareDu
 {
     using System;
@@ -18,20 +19,20 @@ namespace HareDu
 
     public static class HareDuFactory
     {
-         public static HareDuClient New(Action<HareDuInitArgs> args)
-         {
-             try
-             {
-                 var hareDuInitArgs = new HareDuInitArgsImpl();
-                 args(hareDuInitArgs);
-                 var client = new HareDuClientImpl(hareDuInitArgs);
+        public static HareDuClient New(Action<ClientInitArgs> args)
+        {
+            try
+            {
+                var hareDuInitArgs = new ClientInitArgsImpl();
+                args(hareDuInitArgs);
+                var client = new HareDuClientImpl(hareDuInitArgs);
 
-                 return client;
-             }
-             catch (Exception e)
-             {
-                 throw new HareDuClientInitException("", e);
-             }
-         }
+                return client;
+            }
+            catch (Exception e)
+            {
+                throw new HareDuClientInitException("", e);
+            }
+        }
     }
 }

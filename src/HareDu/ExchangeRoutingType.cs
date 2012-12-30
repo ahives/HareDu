@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu
 {
-    public interface HareDuInitArgs
+    public class ExchangeRoutingType
     {
-        void ConnectTo(string hostUrl);
-        void UsingCredentials(string username, string password);
+        public static readonly string Direct = "direct";
+        public static readonly string Topic = "topic";
+        public static readonly string Fanout = "fanout";
     }
 }
