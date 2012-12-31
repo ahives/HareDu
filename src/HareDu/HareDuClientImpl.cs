@@ -234,6 +234,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllVirtualHosts(CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
+            if (IsLoggerEnabled)
+                Logger.Info(x => x("Returning all of the virtual hosts on the specified RabbitMQ server."));
+            
             return cancellationToken == default(CancellationToken)
                        ? Get("api/vhosts")
                        : Get("api/vhosts", cancellationToken);
@@ -246,6 +249,8 @@ namespace HareDu
             virtualHostName.CheckIfArgValid("virtualHostName");
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
+            if (IsLoggerEnabled)
+                Logger.Info(x => x("Creating a new virtual host on the specified RabbitMQ server called '{0}'", virtualHostName));
 
             return cancellationToken == default(CancellationToken)
                        ? Put(url, new StringContent(string.Empty))
@@ -258,12 +263,16 @@ namespace HareDu
         {
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
+                if (IsLoggerEnabled)
+                    Logger.Error(x => x("Cannot delete the default virtual host."));
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
             virtualHostName.CheckIfArgValid("virtualHostName");
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
+            if (IsLoggerEnabled)
+                Logger.Info(x => x("Deleting a virtual host on the specified RabbitMQ server called '{0}'", virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }

@@ -32,6 +32,7 @@ namespace HareDu
             args.Password.CheckIfArgValid("password");
 
             Logger = args.Logger;
+            IsLoggerEnabled = !Logger.IsNull();
             Client = new HttpClient(new HttpClientHandler
                                         {
                                             Credentials = new NetworkCredential(args.Username, args.Password)
@@ -41,6 +42,7 @@ namespace HareDu
 
         protected HttpClient Client { get; private set; }
         protected ILog Logger { get; private set; }
+        protected bool IsLoggerEnabled { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri
@@ -72,45 +74,81 @@ namespace HareDu
         protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken =
                                                                         default(CancellationToken))
         {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
+            try
+            {
+                if (url.Contains("/%2f"))
+                    LeaveDotsAndSlashesEscaped();
 
-            return cancellationToken == default(CancellationToken)
-                       ? Client.GetAsync(url)
-                       : Client.GetAsync(url, cancellationToken);
+                return cancellationToken == default(CancellationToken)
+                           ? Client.GetAsync(url)
+                           : Client.GetAsync(url, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                if (IsLoggerEnabled)
+                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                throw;
+            }
         }
 
         protected virtual Task<HttpResponseMessage> Delete(string url, CancellationToken cancellationToken =
                                                                            default(CancellationToken))
         {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
+            try
+            {
+                if (url.Contains("/%2f"))
+                    LeaveDotsAndSlashesEscaped();
 
-            return cancellationToken == default(CancellationToken)
-                       ? Client.DeleteAsync(url)
-                       : Client.DeleteAsync(url, cancellationToken);
+                return cancellationToken == default(CancellationToken)
+                           ? Client.DeleteAsync(url)
+                           : Client.DeleteAsync(url, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                if (IsLoggerEnabled)
+                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                throw;
+            }
         }
 
         protected virtual Task<HttpResponseMessage> Put<T>(string url, T value, CancellationToken cancellationToken =
                                                                                     default(CancellationToken))
         {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
+            try
+            {
+                if (url.Contains("/%2f"))
+                    LeaveDotsAndSlashesEscaped();
 
-            return cancellationToken == default(CancellationToken)
-                        ? Client.PutAsJsonAsync(url, value)
-                        : Client.PutAsJsonAsync(url, value, cancellationToken);
+                return cancellationToken == default(CancellationToken)
+                           ? Client.PutAsJsonAsync(url, value)
+                           : Client.PutAsJsonAsync(url, value, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                if (IsLoggerEnabled)
+                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                throw;
+            }
         }
 
         protected virtual Task<HttpResponseMessage> Post<T>(string url, T value, CancellationToken cancellationToken =
                                                                                      default(CancellationToken))
         {
-            if (url.Contains("/%2f"))
-                LeaveDotsAndSlashesEscaped();
+            try
+            {
+                if (url.Contains("/%2f"))
+                    LeaveDotsAndSlashesEscaped();
 
-            return cancellationToken == default(CancellationToken)
-                       ? Client.PostAsJsonAsync(url, value)
-                       : Client.PostAsJsonAsync(url, value, cancellationToken);
+                return cancellationToken == default(CancellationToken)
+                           ? Client.PostAsJsonAsync(url, value)
+                           : Client.PostAsJsonAsync(url, value, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                if (IsLoggerEnabled)
+                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                throw;
+            }
         }
     }
 }
