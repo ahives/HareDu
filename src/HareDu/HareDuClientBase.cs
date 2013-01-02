@@ -27,12 +27,13 @@ namespace HareDu
     {
         protected HareDuClientBase(ClientInitArgsImpl args)
         {
-            args.HostUrl.CheckIfArgValid("hostUrl");
-            args.Username.CheckIfArgValid("username");
-            args.Password.CheckIfArgValid("password");
+            args.HostUrl.CheckIfMethodParamIsValid("hostUrl");
+            args.Username.CheckIfMethodParamIsValid("username");
+            args.Password.CheckIfMethodParamIsValid("password");
 
+            InitArgs = args;
             Logger = args.Logger;
-            IsLoggerEnabled = !Logger.IsNull();
+            IsLoggingEnabled = !Logger.IsNull();
             Client = new HttpClient(new HttpClientHandler
                                         {
                                             Credentials = new NetworkCredential(args.Username, args.Password)
@@ -42,7 +43,8 @@ namespace HareDu
 
         protected HttpClient Client { get; private set; }
         protected ILog Logger { get; private set; }
-        protected bool IsLoggerEnabled { get; private set; }
+        protected bool IsLoggingEnabled { get; private set; }
+        protected ClientInitArgsImpl InitArgs { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri
@@ -85,7 +87,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggerEnabled)
+                if (IsLoggingEnabled)
                     Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
                 throw;
             }
@@ -105,7 +107,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggerEnabled)
+                if (IsLoggingEnabled)
                     Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
                 throw;
             }
@@ -125,7 +127,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggerEnabled)
+                if (IsLoggingEnabled)
                     Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
                 throw;
             }
@@ -145,7 +147,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggerEnabled)
+                if (IsLoggingEnabled)
                     Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
                 throw;
             }

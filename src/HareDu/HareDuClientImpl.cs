@@ -37,9 +37,9 @@ namespace HareDu
                                                             CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
-            queueName.CheckIfArgValid("queueName");
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            args.CheckIfArgValid("args");
+            queueName.CheckIfMethodParamIsValid("queueName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            args.CheckIfMethodParamIsValid("args");
 
             CreateQueueArgsImpl queue;
             if (string.IsNullOrEmpty(node) || string.IsNullOrWhiteSpace(node))
@@ -48,12 +48,24 @@ namespace HareDu
             }
             else
             {
-                node.CheckIfArgValid("node");
+                node.CheckIfMethodParamIsValid("node");
                 queue = new CreateQueueArgsImpl {Node = node};
             }
 
             args(queue);
             string url = string.Format("queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
+
+            if (IsLoggingEnabled)
+            {
+                var msg = string.IsNullOrEmpty(node)
+                              ? string.Format(
+                                  "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queueName, virtualHostName)
+                              : string.Format(
+                                  "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.", queueName, virtualHostName, node);
+
+                if (IsLoggingEnabled)
+                    Logger.Info(x => x(msg));
+            }
 
             return cancellationToken == default(CancellationToken)
                        ? Put(url, queue)
@@ -66,6 +78,9 @@ namespace HareDu
 
         public void CancelPendingRequests()
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Cancel all pending requests."));
+
             Client.CancelPendingRequests();
         }
 
@@ -76,6 +91,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllConnections(CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to all connections on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/connections")
                        : Get("api/connections", cancellationToken);
@@ -85,9 +103,12 @@ namespace HareDu
                                                        CancellationToken cancellationToken =
                                                            default(CancellationToken))
         {
-            connectionName.CheckIfArgValid("connectionName");
+            connectionName.CheckIfMethodParamIsValid("connectionName");
 
             string url = string.Format("api/connections/{0}", connectionName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
 
             return cancellationToken == default(CancellationToken)
                        ? Get(url)
@@ -97,6 +118,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllChannels(CancellationToken cancellationToken =
                                                             default(CancellationToken))
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to all channels on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/channels")
                        : Get("api/channels", cancellationToken);
@@ -106,9 +130,12 @@ namespace HareDu
                                                     CancellationToken cancellationToken =
                                                         default(CancellationToken))
         {
-            channelName.CheckIfArgValid("channelName");
+            channelName.CheckIfMethodParamIsValid("channelName");
 
             string url = string.Format("api/channels/{0}", channelName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.", channelName));
 
             return cancellationToken == default(CancellationToken)
                        ? Get(url)
@@ -119,9 +146,12 @@ namespace HareDu
                                                               CancellationToken cancellationToken =
                                                                   default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
             string url = string.Format("api/aliveness-test/{0}", virtualHostName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.", virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
@@ -134,10 +164,13 @@ namespace HareDu
                                                                       CancellationToken cancellationToken =
                                                                           default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            userName.CheckIfArgValid("userName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            userName.CheckIfMethodParamIsValid("userName");
 
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.", userName, virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
@@ -145,35 +178,36 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAlllUserPermissions(
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all user permission information pertaining to all users on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/permissions")
                        : Get("api/permissions", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> CreateUserPermissions(string virtualHostName, string userName,
-                                                               Action<UserPermissionsArgs> args,
-                                                               CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public Task<HttpResponseMessage> CreateUserPermissions(string userName, string virtualHostName, Action<UserPermissionsArgs> args, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            userName.CheckIfArgValid("userName");
-            args.CheckIfArgValid("args");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            userName.CheckIfMethodParamIsValid("userName");
+            args.CheckIfMethodParamIsValid("args");
 
             var permissions = new UserPermissionsArgsImpl();
             args(permissions);
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to the RabbitMQ server to create permissions for user '{0}' on virtual host '{1}'.", userName, virtualHostName));
 
             return cancellationToken == default(CancellationToken)
                        ? Put(url, permissions)
                        : Put(url, permissions, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> DeleteUserPermissions(string virtualHostName, string userName,
-                                                               CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public Task<HttpResponseMessage> DeleteUserPermissions(string userName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            userName.CheckIfArgValid("userName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            userName.CheckIfMethodParamIsValid("userName");
 
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
 
@@ -187,6 +221,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllUsers(CancellationToken cancellationToken =
                                                          default(CancellationToken))
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to all users on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/users")
                        : Get("api/users", cancellationToken);
@@ -195,9 +232,12 @@ namespace HareDu
         public Task<HttpResponseMessage> GetIndividualUser(string userName, CancellationToken cancellationToken =
                                                                                 default(CancellationToken))
         {
-            userName.CheckIfArgValid("userName");
+            userName.CheckIfMethodParamIsValid("userName");
 
             string url = string.Format("api/users/{0}", userName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
@@ -206,13 +246,15 @@ namespace HareDu
                                                     CancellationToken cancellationToken =
                                                         default(CancellationToken))
         {
-            userName.CheckIfArgValid("userName");
-            args.CheckIfArgValid("args");
+            userName.CheckIfMethodParamIsValid("userName");
+            args.CheckIfMethodParamIsValid("args");
 
             var user = new UserArgsImpl();
             args(user);
             string url = string.Format("api/users/{0}", userName);
-            //Logger.Info(x => x("Putting {0} to {1}", JsonConvert.SerializeObject(user), url));
+            
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to the RabbitMQ server to create user '{0}'.", userName));
 
             return cancellationToken == default(CancellationToken) ? Put(url, user) : Put(url, user, cancellationToken);
         }
@@ -220,9 +262,21 @@ namespace HareDu
         public Task<HttpResponseMessage> DeleteUser(string userName, CancellationToken cancellationToken =
                                                                          default(CancellationToken))
         {
-            userName.CheckIfArgValid("userName");
+            userName.CheckIfMethodParamIsValid("userName");
+
+            if (userName == InitArgs.Username)
+            {
+                if (IsLoggingEnabled)
+                    Logger.Info(x => x("Sent request to RabbitMQ server to delete user '{0}'.", userName));
+                throw new CannotDeleteSessionLoginUserException(
+                    string.Format(
+                        "Cannot delete user '{0}' because it is being used to send requests login to the current client session.", userName));
+            }
 
             string url = string.Format("api/users/{0}", userName);
+            
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to delete user '{0}'.", userName));
 
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }
@@ -234,9 +288,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllVirtualHosts(CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
-            if (IsLoggerEnabled)
-                Logger.Info(x => x("Returning all of the virtual hosts on the specified RabbitMQ server."));
-            
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information on all virtual hosts on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/vhosts")
                        : Get("api/vhosts", cancellationToken);
@@ -246,11 +300,12 @@ namespace HareDu
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
-            if (IsLoggerEnabled)
-                Logger.Info(x => x("Creating a new virtual host on the specified RabbitMQ server called '{0}'", virtualHostName));
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
 
             return cancellationToken == default(CancellationToken)
                        ? Put(url, new StringContent(string.Empty))
@@ -263,16 +318,17 @@ namespace HareDu
         {
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
-                if (IsLoggerEnabled)
+                if (IsLoggingEnabled)
                     Logger.Error(x => x("Cannot delete the default virtual host."));
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
-            virtualHostName.CheckIfArgValid("virtualHostName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
-            if (IsLoggerEnabled)
-                Logger.Info(x => x("Deleting a virtual host on the specified RabbitMQ server called '{0}'", virtualHostName));
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }
@@ -284,6 +340,9 @@ namespace HareDu
         public Task<HttpResponseMessage> GetAllQueues(
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/queues")
                        : Get("api/queues", cancellationToken);
@@ -293,11 +352,13 @@ namespace HareDu
                                                                CancellationToken cancellationToken =
                                                                    default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            queueName.CheckIfArgValid("queueName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            queueName.CheckIfMethodParamIsValid("queueName");
 
-            string url = string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(),
-                                       queueName);
+            string url = string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.", queueName, virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
@@ -323,15 +384,18 @@ namespace HareDu
                                                              CancellationToken cancellationToken =
                                                                  default(CancellationToken))
         {
-            queueName.CheckIfArgValid("queueName");
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            exchangeName.CheckIfArgValid("exchangeName");
-            args.CheckIfArgValid("args");
+            queueName.CheckIfMethodParamIsValid("queueName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            exchangeName.CheckIfMethodParamIsValid("exchangeName");
+            args.CheckIfMethodParamIsValid("args");
 
             var queueBinding = new BindQueueArgsImpl();
             args(queueBinding);
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(),
                                        exchangeName, queueName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.", queueName, exchangeName, virtualHostName));
 
             return cancellationToken == default(CancellationToken)
                        ? Post(url, queueBinding)
@@ -342,10 +406,13 @@ namespace HareDu
                                                      CancellationToken cancellationToken =
                                                          default(CancellationToken))
         {
-            queueName.CheckIfArgValid("queueName");
-            virtualHostName.CheckIfArgValid("virtualHostName");
+            queueName.CheckIfMethodParamIsValid("queueName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
             string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.", queueName, virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }
@@ -354,80 +421,83 @@ namespace HareDu
 
         #region Exchanges
 
-        public Task<HttpResponseMessage> GetAllExchanges(CancellationToken cancellationToken =
-                                                             default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllExchanges(CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to all exchanges on all virtual hosts on current RabbitMQ server."));
+
             return cancellationToken == default(CancellationToken)
                        ? Get("api/exchanges")
                        : Get("api/exchanges", cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetAllExchangesInVirtualHost(string virtualHostName,
-                                                                      CancellationToken cancellationToken
-                                                                          =
-                                                                          default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllExchangesInVirtualHost(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
             string url = string.Format("api/exchanges/{0}", virtualHostName.SanitizeVirtualHostName());
 
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to return all information pertaining to all exchanges belonging to virtual host '{0}'.", virtualHostName));
+
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetExchange(string virtualHostName, string exchangeName,
-                                                     CancellationToken cancellationToken =
-                                                         default(CancellationToken))
+        public Task<HttpResponseMessage> GetExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            exchangeName.CheckIfArgValid("exchangeName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            exchangeName.CheckIfMethodParamIsValid("exchangeName");
 
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
+
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> GetAllBindingsOnExchange(string virtualHostName,
-                                                                  string exchangeName,
-                                                                  bool isSource,
-                                                                  CancellationToken cancellationToken =
-                                                                      default(CancellationToken))
+        public Task<HttpResponseMessage> GetAllBindingsOnExchange(string exchangeName, string virtualHostName, bool isSource, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            exchangeName.CheckIfArgValid("exchangeName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            exchangeName.CheckIfMethodParamIsValid("exchangeName");
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
                                        virtualHostName.SanitizeVirtualHostName(), exchangeName,
                                        isSource ? "source" : "destination");
 
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
+
             return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> CreateExchange(string virtualHostName, string exchangeName,
-                                                        Action<CreateExchangeArgs> args = null,
-                                                        CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public Task<HttpResponseMessage> CreateExchange(string exchangeName, string virtualHostName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            exchangeName.CheckIfArgValid("exchangeName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            exchangeName.CheckIfMethodParamIsValid("exchangeName");
 
             var exchange = new CreateExchangeArgsImpl();
             if (args != null)
                 args(exchange);
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchangeName, virtualHostName));
+
             return cancellationToken == default(CancellationToken)
                        ? Put(url, exchange)
                        : Put(url, exchange, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> DeleteExchange(string virtualHostName, string exchangeName,
-                                                        CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public Task<HttpResponseMessage> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            virtualHostName.CheckIfArgValid("virtualHostName");
-            exchangeName.CheckIfArgValid("exchangeName");
+            virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+            exchangeName.CheckIfMethodParamIsValid("exchangeName");
 
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
+
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.", exchangeName, virtualHostName));
 
             return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
         }

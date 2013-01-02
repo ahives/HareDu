@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
     <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />
     <Compile Include="Contracts\CreateQueueArgs.cs" />
     <Compile Include="Contracts\BindQueueArgs.cs" />

@@ -34,13 +34,13 @@ namespace HareDu
             return (value == null);
         }
 
-        public static void CheckIfArgValid(this string value, string paramName)
+        public static void CheckIfMethodParamIsValid(this string value, string paramName)
         {
             if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(paramName);
         }
 
-        public static void CheckIfArgValid<T>(this T value, string paramName)
+        public static void CheckIfMethodParamIsValid<T>(this T value, string paramName)
             where T : class
         {
             if (value.IsNull())

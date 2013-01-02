@@ -26,15 +26,13 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.CreateUserPermissions(
-                Settings.Default.VirtualHost,
-                Settings.Default.LoginUsername,
-                x =>
-                    {
-                        x.AssignConfigurePermissions(".*");
-                        x.AssignReadPermissions(".*");
-                        x.AssignWritePermissions(".*");
-                    });
+            var request = Client.CreateUserPermissions(Settings.Default.LoginUsername,
+                Settings.Default.VirtualHost, x =>
+                                                  {
+                                                      x.AssignConfigurePermissions(".*");
+                                                      x.AssignReadPermissions(".*");
+                                                      x.AssignWritePermissions(".*");
+                                                  });
 
             Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
         }
@@ -42,7 +40,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var request = Client.DeleteUserPermissions(Settings.Default.VirtualHost, Settings.Default.LoginUsername);
+            var request = Client.DeleteUserPermissions(Settings.Default.LoginUsername, Settings.Default.VirtualHost);
             Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
         }
 

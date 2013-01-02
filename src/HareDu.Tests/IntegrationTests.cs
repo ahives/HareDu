@@ -15,12 +15,30 @@
 namespace HareDu.Tests
 {
     using System;
+    using System.Collections.Generic;
+    using Model;
     using NUnit.Framework;
 
     [TestFixture]
     public class IntegrationTests :
         HareDuTestBase
     {
+        [Test]
+        public void Return_All_Virtual_Hosts()
+        {
+            var vhosts = Client.GetAllVirtualHosts()
+                               .Result
+                               .GetResponse<IEnumerable<VirtualHost>>();
+
+            foreach (var vhost in vhosts)
+            {
+                Console.WriteLine("Name: {0}", vhost.Name);
+                Console.WriteLine("Tracing: {0}", vhost.Tracing);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
         [Test, Explicit]
         public void Create_Virtual_Host()
         {
@@ -34,7 +52,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Explicit]
         public void Create_Exchange()
         {
             try
@@ -47,7 +65,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Explicit]
         public void Create_Queue()
         {
             try
@@ -69,14 +87,12 @@ namespace HareDu.Tests
         private void CreateExchange()
         {
             CreateVirtualHost(false);
-            var createExchangeRequest = Client.CreateExchange(
-                Settings.Default.VirtualHost,
-                Settings.Default.Exchange,
-                x =>
-                    {
-                        x.IsDurable();
-                        x.RoutingType(ExchangeRoutingType.Fanout);
-                    });
+            var createExchangeRequest = Client.CreateExchange(Settings.Default.Exchange,
+                Settings.Default.VirtualHost, x =>
+                                                  {
+                                                      x.IsDurable();
+                                                      x.RoutingType(ExchangeRoutingType.Fanout);
+                                                  });
             createExchangeRequest.Wait();
         }
 
@@ -96,15 +112,13 @@ namespace HareDu.Tests
             var createVirtualHostRequest = Client.CreateVirtualHost(Settings.Default.VirtualHost);
             createVirtualHostRequest.Wait();
 
-            var createUserPremissionsRequest = Client.CreateUserPermissions(
-                Settings.Default.VirtualHost,
-                useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
-                    x =>
-                    {
-                        x.AssignConfigurePermissions(".*");
-                        x.AssignReadPermissions(".*");
-                        x.AssignWritePermissions(".*");
-                    });
+            var createUserPremissionsRequest = Client.CreateUserPermissions(useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
+                    Settings.Default.VirtualHost, x =>
+                                                      {
+                                                          x.AssignConfigurePermissions(".*");
+                                                          x.AssignReadPermissions(".*");
+                                                          x.AssignWritePermissions(".*");
+                                                      });
             createUserPremissionsRequest.Wait();
         }
     }

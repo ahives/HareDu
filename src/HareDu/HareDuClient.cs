@@ -84,21 +84,21 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="userName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> CreateUserPermissions(string virtualHostName, string userName, Action<UserPermissionsArgs> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> CreateUserPermissions(string userName, string virtualHostName, Action<UserPermissionsArgs> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="userName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> DeleteUserPermissions(string virtualHostName, string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> DeleteUserPermissions(string userName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -230,39 +230,39 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="exchangeName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> GetExchange(string virtualHostName, string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> GetExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="exchangeName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="isSource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> GetAllBindingsOnExchange(string virtualHostName, string exchangeName, bool isSource, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> GetAllBindingsOnExchange(string exchangeName, string virtualHostName, bool isSource, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="exchangeName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> CreateExchange(string virtualHostName, string exchangeName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> CreateExchange(string exchangeName, string virtualHostName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="exchangeName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HttpResponseMessage> DeleteExchange(string virtualHostName, string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpResponseMessage> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

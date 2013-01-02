@@ -26,14 +26,12 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Create_Exchange()
         {
-            var request = Client.CreateExchange(
-                Settings.Default.VirtualHost,
-                Settings.Default.Exchange,
-                x =>
-                    {
-                        x.IsDurable();
-                        x.RoutingType(ExchangeRoutingType.Fanout);
-                    });
+            var request = Client.CreateExchange(Settings.Default.Exchange,
+                Settings.Default.VirtualHost, x =>
+                                                  {
+                                                      x.IsDurable();
+                                                      x.RoutingType(ExchangeRoutingType.Fanout);
+                                                  });
 
             Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
         }
@@ -41,7 +39,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Delete_Exchanges()
         {
-            var request = Client.DeleteExchange(Settings.Default.VirtualHost, Settings.Default.Exchange);
+            var request = Client.DeleteExchange(Settings.Default.Exchange, Settings.Default.VirtualHost);
 
             Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
         }
@@ -49,7 +47,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_All_Bindings_On_Exchange()
         {
-            var bindings = Client.GetAllBindingsOnExchange(Settings.Default.VirtualHost, Settings.Default.Exchange, true)
+            var bindings = Client.GetAllBindingsOnExchange(Settings.Default.Exchange, Settings.Default.VirtualHost, true)
                                   .Result
                                   .GetResponse<IEnumerable<Binding>>();
 
@@ -69,7 +67,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_An_Exchange()
         {
-            var exchange = Client.GetExchange(Settings.Default.VirtualHost, Settings.Default.Exchange)
+            var exchange = Client.GetExchange(Settings.Default.Exchange, Settings.Default.VirtualHost)
                                   .Result
                                   .GetResponse<Exchange>();
 

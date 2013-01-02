@@ -12,29 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu
 {
-    using Contracts;
-    using Newtonsoft.Json;
+    using System;
 
-    public class UserArgsImpl :
-        UserArgs
+    public class CannotDeleteSessionLoginUserException :
+        Exception
     {
-        [JsonProperty(PropertyName = "password", Order = 1)]
-        public string Password { get; set; }
-
-        [JsonProperty(PropertyName = "tags", Order = 2)]
-        public string Tags { get; set; }
-
-        public void WithPassword(string password)
+        public CannotDeleteSessionLoginUserException(string message) :
+            base(message)
         {
-            password.CheckIfMethodParamIsValid("password");
-            Password = password;
-        }
-
-        public void WithTags(string tags)
-        {
-            Tags = tags;
         }
     }
 }
