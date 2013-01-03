@@ -15,11 +15,14 @@
 namespace HareDu
 {
     using System;
+    using System.Collections.Generic;
+    using System.Net;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Contracts;
     using Internal;
+    using Model;
 
     internal class HareDuClientImpl :
         HareDuClientBase,
@@ -32,7 +35,7 @@ namespace HareDu
 
         #region Helpers
 
-        private Task<HttpResponseMessage> CreateQueueHelper(string node, string virtualHostName, string queueName,
+        private AsyncResponse CreateQueueHelper(string node, string virtualHostName, string queueName,
                                                             Action<CreateQueueArgs> args,
                                                             CancellationToken cancellationToken =
                                                                 default(CancellationToken))
@@ -67,9 +70,12 @@ namespace HareDu
                     Logger.Info(x => x(msg));
             }
 
-            return cancellationToken == default(CancellationToken)
+            var asyncTask = cancellationToken == default(CancellationToken)
                        ? Put(url, queue)
                        : Put(url, queue, cancellationToken);
+
+            //return new AsyncResponseImpl(asyncTask);
+            return null;
         }
 
         #endregion
@@ -218,6 +224,18 @@ namespace HareDu
 
         #region Users
 
+        public AsyncResponse<IEnumerable<User>> GetAllUsers2(CancellationToken cancellationToken =
+                                                         default(CancellationToken))
+        {
+            if (IsLoggingEnabled)
+                Logger.Info(x => x("Sent request to return all information pertaining to all users on current RabbitMQ server."));
+
+             var asyncTask = cancellationToken == default(CancellationToken)
+                       ? Get("api/users")
+                       : Get("api/users", cancellationToken);
+             return new AsyncResponseImpl<IEnumerable<User>>(asyncTask);
+        }
+
         public Task<HttpResponseMessage> GetAllUsers(CancellationToken cancellationToken =
                                                          default(CancellationToken))
         {
@@ -285,18 +303,23 @@ namespace HareDu
 
         #region Virtual Hosts
 
-        public Task<HttpResponseMessage> GetAllVirtualHosts(CancellationToken cancellationToken =
+        public Task<IEnumerable<VirtualHost>> GetAllVirtualHosts(CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to return all information on all virtual hosts on current RabbitMQ server."));
 
-            return cancellationToken == default(CancellationToken)
-                       ? Get("api/vhosts")
-                       : Get("api/vhosts", cancellationToken);
+            return Get("api/vhosts", cancellationToken)
+                .ContinueWith(t =>
+                                  {
+                                      t.Result.EnsureSuccessStatusCode();
+                                      return t.Result.Content.ReadAsAsync<IEnumerable<VirtualHost>>();
+                                  }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,
+                              TaskScheduler.Current)
+                .Unwrap();
         }
 
-        public Task<HttpResponseMessage> CreateVirtualHost(string virtualHostName,
+        public Task<AsyncResponse> CreateVirtualHost(string virtualHostName,
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
@@ -307,12 +330,16 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
 
-            return cancellationToken == default(CancellationToken)
-                       ? Put(url, new StringContent(string.Empty))
-                       : Put(url, new StringContent(string.Empty), cancellationToken);
+            return Put(url, new StringContent(string.Empty), cancellationToken)
+                .ContinueWith(t =>
+                                  {
+                                      AsyncResponse response = new AsyncResponseImpl(t.Result.ReasonPhrase, t.Result.StatusCode);
+                                      return response;
+                                  },
+                              cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Current);
         }
 
-        public Task<HttpResponseMessage> DeleteVirtualHost(string virtualHostName,
+        public AsyncResponse DeleteVirtualHost(string virtualHostName,
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
@@ -330,27 +357,30 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+
+            //return new AsyncResponseImpl(asyncTask);
+            return null;
         }
 
         #endregion
 
         #region Queues
 
-        public Task<HttpResponseMessage> GetAllQueues(
+        public AsyncResponse<IEnumerable<Queue>> GetAllQueues(
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server."));
 
-            return cancellationToken == default(CancellationToken)
+            var asyncTask = cancellationToken == default(CancellationToken)
                        ? Get("api/queues")
                        : Get("api/queues", cancellationToken);
+
+            return new AsyncResponseImpl<IEnumerable<Queue>>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> GetAllBindingsOnQueue(string virtualHostName, string queueName,
-                                                               CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public AsyncResponse<IEnumerable<Binding>> GetAllBindingsOnQueue(string queueName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
             queueName.CheckIfMethodParamIsValid("queueName");
@@ -360,10 +390,12 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.", queueName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+
+            return new AsyncResponseImpl<IEnumerable<Binding>>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> CreateQueue(string virtualHostName, string queueName,
+        public AsyncResponse CreateQueue(string virtualHostName, string queueName,
                                                      Action<CreateQueueArgs> args,
                                                      CancellationToken cancellationToken =
                                                          default(CancellationToken))
@@ -371,18 +403,14 @@ namespace HareDu
             return CreateQueueHelper(null, virtualHostName, queueName, args, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> CreateQueue(string node, string virtualHostName, string queueName,
+        public AsyncResponse CreateQueue(string node, string virtualHostName, string queueName,
                                                      Action<CreateQueueArgs> args,
                                                      CancellationToken cancellationToken = default(CancellationToken))
         {
             return CreateQueueHelper(node, virtualHostName, queueName, args, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> BindQueueToExchange(string virtualHostName, string exchangeName,
-                                                             string queueName,
-                                                             Action<BindQueueArgs> args,
-                                                             CancellationToken cancellationToken =
-                                                                 default(CancellationToken))
+        public AsyncResponse BindQueueToExchange(string queueName, string exchangeName, string virtualHostName, Action<BindQueueArgs> args, CancellationToken cancellationToken = default(CancellationToken))
         {
             queueName.CheckIfMethodParamIsValid("queueName");
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
@@ -397,12 +425,15 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.", queueName, exchangeName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken)
+            var asyncTask = cancellationToken == default(CancellationToken)
                        ? Post(url, queueBinding)
                        : Post(url, queueBinding, cancellationToken);
+
+            //return new AsyncResponseImpl(asyncTask);
+            return null;
         }
 
-        public Task<HttpResponseMessage> DeleteQueue(string virtualHostName, string queueName,
+        public AsyncResponse DeleteQueue(string virtualHostName, string queueName,
                                                      CancellationToken cancellationToken =
                                                          default(CancellationToken))
         {
@@ -414,24 +445,29 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.", queueName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+
+            //return new AsyncResponseImpl(asyncTask);
+            return null;
         }
 
         #endregion
 
         #region Exchanges
 
-        public Task<HttpResponseMessage> GetAllExchanges(CancellationToken cancellationToken = default(CancellationToken))
+        public AsyncResponse<IEnumerable<Exchange>> GetAllExchanges(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to return all information pertaining to all exchanges on all virtual hosts on current RabbitMQ server."));
 
-            return cancellationToken == default(CancellationToken)
+            var asyncTask = cancellationToken == default(CancellationToken)
                        ? Get("api/exchanges")
                        : Get("api/exchanges", cancellationToken);
+
+            return new AsyncResponseImpl<IEnumerable<Exchange>>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> GetAllExchangesInVirtualHost(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        public AsyncResponse<IEnumerable<Exchange>> GetAllExchangesInVirtualHost(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
 
@@ -440,10 +476,12 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to return all information pertaining to all exchanges belonging to virtual host '{0}'.", virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+
+            return new AsyncResponseImpl<IEnumerable<Exchange>>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> GetExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        public AsyncResponse<Exchange> GetExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
             exchangeName.CheckIfMethodParamIsValid("exchangeName");
@@ -453,10 +491,12 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+
+            return new AsyncResponseImpl<Exchange>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> GetAllBindingsOnExchange(string exchangeName, string virtualHostName, bool isSource, CancellationToken cancellationToken = default(CancellationToken))
+        public AsyncResponse<IEnumerable<Binding>> GetAllBindingsOnExchange(string exchangeName, string virtualHostName, bool isSource, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
             exchangeName.CheckIfMethodParamIsValid("exchangeName");
@@ -468,10 +508,12 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Get(url) : Get(url, cancellationToken);
+
+            return new AsyncResponseImpl<IEnumerable<Binding>>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> CreateExchange(string exchangeName, string virtualHostName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken))
+        public AsyncResponse CreateExchange(string exchangeName, string virtualHostName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
             exchangeName.CheckIfMethodParamIsValid("exchangeName");
@@ -484,12 +526,29 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchangeName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken)
+            var asyncTask = cancellationToken == default(CancellationToken)
                        ? Put(url, exchange)
                        : Put(url, exchange, cancellationToken);
+
+            return new AsyncResponseImpl<Exchange>(asyncTask);
         }
 
-        public Task<HttpResponseMessage> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        //public AsyncResponse DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
+        //    exchangeName.CheckIfMethodParamIsValid("exchangeName");
+
+        //    string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
+
+        //    if (IsLoggingEnabled)
+        //        Logger.Info(x => x("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.", exchangeName, virtualHostName));
+
+        //    var asyncTask = cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+
+        //    return new AsyncResponseImpl<Exchange>(asyncTask);
+        //}
+
+        public Task<AsyncResponse> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
             virtualHostName.CheckIfMethodParamIsValid("virtualHostName");
             exchangeName.CheckIfMethodParamIsValid("exchangeName");
@@ -499,9 +558,77 @@ namespace HareDu
             if (IsLoggingEnabled)
                 Logger.Info(x => x("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.", exchangeName, virtualHostName));
 
-            return cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+            var asyncTask = cancellationToken == default(CancellationToken) ? Delete(url) : Delete(url, cancellationToken);
+
+            //return new Task<AsyncResponse>(() => new AsyncResponseImpl(asyncTask));
+            return null;
         }
 
         #endregion
+    }
+
+    internal class AsyncResponseImpl<T> :
+        AsyncResponseImpl,
+        AsyncResponse<T>
+    {
+        private Task<HttpResponseMessage> AsyncTask { get; set; }
+
+        public AsyncResponseImpl(Task<HttpResponseMessage> asyncTask) :
+            //base(asyncTask)
+            base(string.Empty, HttpStatusCode.OK)
+        {
+            AsyncTask = asyncTask;
+        }
+
+        public T GetResponse()
+        {
+            AsyncTask.Result.EnsureSuccessStatusCode();
+            var task = AsyncTask.Result.Content.ReadAsAsync<T>().ContinueWith(x => x.Result);
+
+            return task.Result;
+        }
+    }
+
+    internal class AsyncResponseImpl :
+        AsyncResponse
+    {
+        private Task<HttpResponseMessage> AsyncTask { get; set; }
+
+        public AsyncResponseImpl(string serverResponse, HttpStatusCode statusCode)
+        {
+            ServerResponse = serverResponse;
+            StatusCode = statusCode;
+        }
+
+        public Task<HttpResponseMessage> GetAsyncTask()
+        {
+            return AsyncTask;
+        }
+
+        public HttpResponseMessage GetHttpResponseMessage()
+        {
+            return GetAsyncTask().Result;
+        }
+
+        public string ServerResponse { get; private set; }
+        public HttpStatusCode StatusCode { get; private set; }
+    }
+
+    public interface AsyncResponse<T> :
+        AsyncResponse
+    {
+        T GetResponse();
+    }
+
+    //public interface AsyncResponse
+    //{
+    //    Task<HttpResponseMessage> GetAsyncTask();
+    //    HttpResponseMessage GetHttpResponseMessage();
+    //}
+
+    public interface AsyncResponse
+    {
+        string ServerResponse { get; }
+        HttpStatusCode StatusCode { get; }
     }
 }

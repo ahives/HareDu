@@ -26,100 +26,105 @@ namespace HareDu.Tests
         [Test]
         public void Return_All_Virtual_Hosts()
         {
-            var vhosts = Client.GetAllVirtualHosts()
-                               .Result
-                               .GetResponse<IEnumerable<VirtualHost>>();
+            //var vhosts = Client.GetAllVirtualHosts()
+            //                   .Result
+            //                   .GetResponse<IEnumerable<VirtualHost>>();
+            //IResult result = Client.GetAllVirtualHosts()
+            //                   .Result
+            //                   .GetResponse<IEnumerable<VirtualHost>>();
+            //var request = result.GetTask();
+            //var rst = result.GetResponse();
 
-            foreach (var vhost in vhosts)
-            {
-                Console.WriteLine("Name: {0}", vhost.Name);
-                Console.WriteLine("Tracing: {0}", vhost.Tracing);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
+            //var vhosts = Client.GetAllVirtualHosts().GetResponse();
+            //foreach (var vhost in vhosts)
+            //{
+            //    Console.WriteLine("Name: {0}", vhost.Name);
+            //    Console.WriteLine("Tracing: {0}", vhost.Tracing);
+            //    Console.WriteLine("****************************************************");
+            //    Console.WriteLine();
+            //}
         }
 
-        [Test, Explicit]
-        public void Create_Virtual_Host()
-        {
-            try
-            {
-                CreateVirtualHost(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
+        //[Test, Explicit]
+        //public void Create_Virtual_Host()
+        //{
+        //    try
+        //    {
+        //        CreateVirtualHost(true);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
+        //}
 
-        [Test, Explicit]
-        public void Create_Exchange()
-        {
-            try
-            {
-                CreateExchange();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
+        //[Test, Explicit]
+        //public void Create_Exchange()
+        //{
+        //    try
+        //    {
+        //        CreateExchange();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
+        //}
 
-        [Test, Explicit]
-        public void Create_Queue()
-        {
-            try
-            {
-                CreateExchange();
-                var createQueueRequest = Client.CreateQueue(
-                    Settings.Default.VirtualHost,
-                    Settings.Default.Queue,
-                    x => x.IsDurable());
-                createQueueRequest.Wait();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
+        //[Test, Explicit]
+        //public void Create_Queue()
+        //{
+        //    try
+        //    {
+        //        CreateExchange();
+        //        Client.CreateQueue(
+        //            Settings.Default.VirtualHost,
+        //            Settings.Default.Queue,
+        //            x => x.IsDurable()).GetAsyncTask().Wait();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
+        //}
 
 
-        private void CreateExchange()
-        {
-            CreateVirtualHost(false);
-            var createExchangeRequest = Client.CreateExchange(Settings.Default.Exchange,
-                Settings.Default.VirtualHost, x =>
-                                                  {
-                                                      x.IsDurable();
-                                                      x.RoutingType(ExchangeRoutingType.Fanout);
-                                                  });
-            createExchangeRequest.Wait();
-        }
+        //private void CreateExchange()
+        //{
+        //    CreateVirtualHost(false);
+        //    Client.CreateExchange(Settings.Default.Exchange,
+        //        Settings.Default.VirtualHost, x =>
+        //                                          {
+        //                                              x.IsDurable();
+        //                                              x.RoutingType(ExchangeRoutingType.Fanout);
+        //                                          }).GetAsyncTask().Wait();
+        //}
 
-        private void CreateVirtualHost(bool useDefaultUser)
-        {
-            if (!useDefaultUser)
-            {
-                var createUserRequest = Client.CreateUser(
-                    Settings.Default.Username,
-                    x =>
-                        {
-                            x.WithPassword(Settings.Default.UserPassword);
-                            x.WithTags(PermissionTag.Admin);
-                        });
-            }
+        //private void CreateVirtualHost(bool useDefaultUser)
+        //{
+        //    if (!useDefaultUser)
+        //    {
+        //        var createUserRequest = Client.CreateUser(
+        //            Settings.Default.Username,
+        //            x =>
+        //                {
+        //                    x.WithPassword(Settings.Default.UserPassword);
+        //                    x.WithTags(PermissionTag.Admin);
+        //                });
+        //    }
 
-            var createVirtualHostRequest = Client.CreateVirtualHost(Settings.Default.VirtualHost);
-            createVirtualHostRequest.Wait();
+        //    Client.CreateVirtualHost(Settings.Default.VirtualHost)
+        //        .GetAsyncTask()
+        //        .Wait();
 
-            var createUserPremissionsRequest = Client.CreateUserPermissions(useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
-                    Settings.Default.VirtualHost, x =>
-                                                      {
-                                                          x.AssignConfigurePermissions(".*");
-                                                          x.AssignReadPermissions(".*");
-                                                          x.AssignWritePermissions(".*");
-                                                      });
-            createUserPremissionsRequest.Wait();
-        }
+        //    var createUserPremissionsRequest = Client.CreateUserPermissions(useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
+        //            Settings.Default.VirtualHost, x =>
+        //                                              {
+        //                                                  x.AssignConfigurePermissions(".*");
+        //                                                  x.AssignReadPermissions(".*");
+        //                                                  x.AssignWritePermissions(".*");
+        //                                              });
+        //    createUserPremissionsRequest.Wait();
+        //}
     }
 }

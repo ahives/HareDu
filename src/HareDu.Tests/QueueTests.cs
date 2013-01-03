@@ -23,26 +23,24 @@ namespace HareDu.Tests
     public class QueueTests :
         HareDuTestBase
     {
-        [Test]
-        public void Verify_Can_Create_Queue()
-        {
-            var request = Client.CreateQueue(Settings.Default.VirtualHost, Settings.Default.Queue, x => x.IsDurable());
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
-        }
+        //[Test]
+        //public void Verify_Can_Create_Queue()
+        //{
+        //    var request = Client.CreateQueue(Settings.Default.VirtualHost, Settings.Default.Queue, x => x.IsDurable()).GetHttpResponseMessage();
+        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
+        //}
 
-        [Test]
-        public void Verify_Can_Delete_Queue()
-        {
-            var request = Client.DeleteQueue(Settings.Default.VirtualHost, Settings.Default.Queue);
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
-        }
+        //[Test]
+        //public void Verify_Can_Delete_Queue()
+        //{
+        //    var request = Client.DeleteQueue(Settings.Default.VirtualHost, Settings.Default.Queue).GetHttpResponseMessage();
+        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
+        //}
 
         [Test]
         public void Verify_Can_Get_All_Queues()
         {
-            var queues = Client.GetAllQueues()
-                               .Result
-                               .GetResponse<IEnumerable<Queue>>();
+            var queues = Client.GetAllQueues().GetResponse();
 
             foreach (var queue in queues)
             {
