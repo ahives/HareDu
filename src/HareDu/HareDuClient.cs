@@ -122,7 +122,7 @@ namespace HareDu
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<User> GetIndividualUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -293,5 +293,27 @@ namespace HareDu
         /// <returns></returns>
         Task<AsyncResponse> DeleteExchange(string exchangeName, string virtualHostName,
                                            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Node>> GetAllNodesOnCluster(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Node> GetNodeOnCluster(string nodeName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Overview> GetOverview(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

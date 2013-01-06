@@ -60,7 +60,15 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Context.cs" />
+    <Compile Include="Model\Details.cs" />
+    <Compile Include="Model\Listener.cs" />
+    <Compile Include="Model\MessagesDetails.cs" />
+    <Compile Include="Model\MessagesReadyDetails.cs" />
+    <Compile Include="Model\MessagesUnacknowledgedDetails.cs" />
+    <Compile Include="Model\Application.cs" />
     <Compile Include="Arg.cs" />
+    <Compile Include="Model\AuthenticationMechanism.cs" />
     <Compile Include="Contracts\HealthCheckResponse.cs" />
     <Compile Include="Contracts\AsyncResponse.cs" />
     <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
@@ -68,6 +76,7 @@
     <Compile Include="Contracts\CreateQueueArgs.cs" />
     <Compile Include="Contracts\BindQueueArgs.cs" />
     <Compile Include="Contracts\CreateExchangeArgs.cs" />
+    <Compile Include="Model\ExchangeType.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
     <Compile Include="HareDuClientBase.cs" />
     <Compile Include="Exceptions\HareDuClientInitException.cs" />
@@ -80,6 +89,9 @@
     <Compile Include="HareDuClientImpl.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Exchange.cs" />
+    <Compile Include="Model\Node.cs" />
+    <Compile Include="Model\Overview.cs" />
+    <Compile Include="Model\QueueTotals.cs" />
     <Compile Include="Types\ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\ValueExtensions.cs" />

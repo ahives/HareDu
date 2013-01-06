@@ -53,7 +53,7 @@ namespace HareDu.Model
         [JsonProperty("user")]
         public string User { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty("message_stats")]
         public MessageStats MessageStats { get; set; }
 
         [JsonProperty("messages_unacknowledged")]

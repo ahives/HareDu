@@ -236,7 +236,7 @@ namespace HareDu
             return Get(url, cancellationToken).Response<IEnumerable<User>>(cancellationToken);
         }
 
-        public Task<User> GetIndividualUser(string userName, CancellationToken cancellationToken =
+        public Task<User> GetUser(string userName, CancellationToken cancellationToken =
                                                                                 default(CancellationToken))
         {
             Arg.Validate(userName, "userName");
@@ -490,6 +490,51 @@ namespace HareDu
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
             return Delete(url, cancellationToken).Response(cancellationToken);
+        }
+
+        #endregion
+
+        #region Nodes
+
+        public Task<IEnumerable<Node>> GetAllNodesOnCluster(
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (IsLoggingEnabled)
+                Logger.Info(
+                    x => x("Sent request to return all information pertaining to all nodes on RabbitMQ cluster."));
+
+            string url = "api/nodes";
+
+            return Get(url, cancellationToken).Response<IEnumerable<Node>>(cancellationToken);
+        }
+
+        public Task<Node> GetNodeOnCluster(string nodeName,
+                                           CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Arg.Validate(nodeName, "nodeName");
+
+            if (IsLoggingEnabled)
+                Logger.Info(
+                    x => x("Sent request to return all information pertaining to all nodes on RabbitMQ cluster."));
+
+            string url = string.Format("api/nodes/{0}", nodeName);
+
+            return Get(url, cancellationToken).Response<Node>(cancellationToken);
+        }
+
+        #endregion
+
+        #region Overview
+
+        public Task<Overview> GetOverview(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (IsLoggingEnabled)
+                Logger.Info(
+                    x => x("Sent request to return general information pertaining to current RabbitMQ server."));
+
+            string url = "api/overview";
+
+            return Get(url, cancellationToken).Response<Overview>(cancellationToken);
         }
 
         #endregion

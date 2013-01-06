@@ -62,7 +62,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_Individual_User()
         {
-            var user = Client.GetIndividualUser(Settings.Default.Username).Result;
+            var user = Client.GetUser(Settings.Default.Username).Result;
 
             Console.WriteLine("Username: {0}", user.Name);
             Console.WriteLine("Password Hash: {0}", user.PasswordHash);
