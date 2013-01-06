@@ -69,7 +69,7 @@
     <Compile Include="Model\Application.cs" />
     <Compile Include="Arg.cs" />
     <Compile Include="Model\AuthenticationMechanism.cs" />
-    <Compile Include="Contracts\HealthCheckResponse.cs" />
+    <Compile Include="Contracts\AlivenessTestResponse.cs" />
     <Compile Include="Contracts\AsyncResponse.cs" />
     <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
     <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />

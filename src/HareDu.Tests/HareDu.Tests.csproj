@@ -67,7 +67,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectivityTests.cs" />
+    <Compile Include="AlivenessTests.cs" />
+    <Compile Include="ChannelTests.cs" />
+    <Compile Include="ConnectionTests.cs" />
     <Compile Include="ExchangeTests.cs" />
     <Compile Include="HareDuTestBase.cs" />
     <Compile Include="IntegrationTests.cs" />

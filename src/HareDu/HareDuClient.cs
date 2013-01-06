@@ -65,7 +65,7 @@ namespace HareDu
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<HealthCheckResponse> IsAlive(string virtualHostName,
+        Task<AlivenessTestResponse> IsAlive(string virtualHostName,
                                           CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

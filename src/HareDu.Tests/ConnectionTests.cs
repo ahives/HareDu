@@ -15,50 +15,12 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using Model;
     using NUnit.Framework;
 
     [TestFixture]
-    public class ConnectivityTests :
+    public class ConnectionTests :
         HareDuTestBase
     {
-        [Test]
-        public void Verify_Can_Return_All_Channels()
-        {
-            var response = Client.GetAllChannels();
-
-            foreach (var channel in response.Result)
-            {
-                Console.WriteLine("Name: {0}", channel.Name);
-                Console.WriteLine("Node: {0}", channel.Node);
-                Console.WriteLine("User: {0}", channel.User);
-                Console.WriteLine("Confirm: {0}", channel.Confirm);
-                Console.WriteLine("Client Flow Blocked: {0}", channel.IsClientFlowBlocked);
-                Console.WriteLine("Is Transactional: {0}", channel.IsTransactional);
-                Console.WriteLine("Idle Since: {0}", channel.IdleSince.ToString());
-                Console.WriteLine("Virtual Host: {0}", channel.VirtualHostName);
-                Console.WriteLine("Prefetch Count: {0}", channel.PrefetchCount);
-                Console.WriteLine("Unacknowledged: {0}", channel.Unacknowledged);
-                Console.WriteLine("Uncommitted: {0}", channel.Uncommitted);
-                Console.WriteLine("Unconfirmed: {0}", channel.Unconfirmed);
-                Console.WriteLine("Acknowledges Uncommitted: {0}", channel.AcknowledgesUncommitted);
-                Console.WriteLine("Consumer Count: {0}", channel.ConsumerCount);
-
-                if (!channel.MessageStats.IsNull())
-                {
-                    Console.WriteLine("Acknowledged: {0}", channel.MessageStats.Acknowledged);
-                    Console.WriteLine("Published: {0}", channel.MessageStats.Published);
-                    Console.WriteLine("Delivered: {0}", channel.MessageStats.Delivered);
-                    Console.WriteLine("Delivered/Get: {0}", channel.MessageStats.DeliveredOrGet);
-                    Console.WriteLine("Acknowledged: {0}", channel.MessageStats.Acknowledged);
-                }
-
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
-        }
-
         [Test]
         public void Verify_Can_Return_All_Connections()
         {
@@ -91,13 +53,6 @@ namespace HareDu.Tests
         }
 
         [Test]
-        public void Verify_Can_Return_Channel()
-        {
-            var request = Client.GetChannel(Settings.Default.Channel);
-            //Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
-        }
-
-        [Test]
         public void Verify_Can_Return_Connection()
         {
             var connection = Client.GetConnection(Settings.Default.Connection).Result;
@@ -123,13 +78,6 @@ namespace HareDu.Tests
             Console.WriteLine("SSL Protocol: {0}", connection.SslProtocol);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
-        }
-
-        [Test]
-        public void Verify_RabbitMQ_Is_Alive()
-        {
-            var request = Client.IsAlive(Settings.Default.VirtualHost);
-            Assert.AreEqual(true, request.Result.Status);
         }
     }
 }

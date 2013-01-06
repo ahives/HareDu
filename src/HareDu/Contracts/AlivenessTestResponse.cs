@@ -16,7 +16,7 @@ namespace HareDu.Contracts
 {
     using Newtonsoft.Json;
 
-    public class HealthCheckResponse :
+    public class AlivenessTestResponse :
         AsyncResponse
     {
         [JsonProperty("name")]

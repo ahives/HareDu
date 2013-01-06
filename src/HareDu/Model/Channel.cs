@@ -43,10 +43,9 @@ namespace HareDu.Model
         [JsonProperty("node")]
         public string Node { get; set; }
 
-        //[JsonProperty("name")]
-        //public string PeerAddress { get; set; }
-        //[JsonProperty("name")]
-        //public int PeerPort { get; set; }
+        [JsonProperty("connection_details")]
+        public ConnectionDetails ConnectionDetails { get; set; }
+
         [JsonProperty("vhost")]
         public string VirtualHostName { get; set; }
 
@@ -67,5 +66,17 @@ namespace HareDu.Model
 
         [JsonProperty("acks_uncommitted")]
         public int AcknowledgesUncommitted { get; set; }
+    }
+
+    public class ConnectionDetails
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("peer_address")]
+        public string PeerAddress { get; set; }
+
+        [JsonProperty("peer_port")]
+        public int PeerPort { get; set; }
     }
 }

@@ -86,13 +86,15 @@ namespace HareDu
 
         #endregion
 
-        #region Connectivity
+        #region Connections
 
         public Task<IEnumerable<Connection>> GetAllConnections(CancellationToken cancellationToken =
-                                                               default(CancellationToken))
+                                                                   default(CancellationToken))
         {
             if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to all connections on current RabbitMQ server."));
+                Logger.Info(
+                    x =>
+                    x("Sent request to return all information pertaining to all connections on current RabbitMQ server."));
 
             string url = "api/connections";
 
@@ -100,18 +102,26 @@ namespace HareDu
         }
 
         public Task<Connection> GetConnection(string connectionName,
-                                                       CancellationToken cancellationToken =
-                                                           default(CancellationToken))
+                                              CancellationToken cancellationToken =
+                                                  default(CancellationToken))
         {
             Arg.Validate(connectionName, "connectionName");
 
             string url = string.Format("api/connections/{0}", connectionName);
 
             if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
+                Logger.Info(
+                    x =>
+                    x(
+                        "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
+                        connectionName));
 
             return Get(url, cancellationToken).Response<Connection>(cancellationToken);
         }
+
+        #endregion
+
+        #region Channels
 
         public Task<IEnumerable<Channel>> GetAllChannels(CancellationToken cancellationToken =
                                                             default(CancellationToken))
@@ -140,9 +150,9 @@ namespace HareDu
 
         #endregion
 
-        #region Health Monitoring
+        #region Aliveness Test
 
-        public Task<HealthCheckResponse> IsAlive(string virtualHostName,
+        public Task<AlivenessTestResponse> IsAlive(string virtualHostName,
                                            CancellationToken cancellationToken =
                                                default(CancellationToken))
         {
@@ -157,7 +167,7 @@ namespace HareDu
                 .ContinueWith(t =>
                                   {
                                       t.Result.EnsureSuccessStatusCode();
-                                      var response = t.Result.Content.ReadAsAsync<HealthCheckResponse>().Result;
+                                      var response = t.Result.Content.ReadAsAsync<AlivenessTestResponse>().Result;
                                       response.StatusCode = t.Result.StatusCode;
                                       response.ServerResponse = t.Result.ReasonPhrase;
 
