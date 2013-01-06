@@ -15,42 +15,41 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Model;
+    using System.Net;
     using NUnit.Framework;
 
     [TestFixture]
     public class ExchangeTests :
         HareDuTestBase
     {
-        //[Test]
-        //public void Verify_Can_Create_Exchange()
-        //{
-        //    var request = Client.CreateExchange(Settings.Default.Exchange,
-        //        Settings.Default.VirtualHost, x =>
-        //                                          {
-        //                                              x.IsDurable();
-        //                                              x.RoutingType(ExchangeRoutingType.Fanout);
-        //                                          }).GetHttpResponseMessage();
+        [Test]
+        public void Verify_Can_Create_Exchange()
+        {
+            var request = Client.CreateExchange(Settings.Default.Exchange,
+                                                Settings.Default.VirtualHost, x =>
+                                                                                  {
+                                                                                      x.IsDurable();
+                                                                                      x.RoutingType(
+                                                                                          ExchangeRoutingType.Fanout);
+                                                                                  });
 
-        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
-        //}
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+        }
 
-        //[Test]
-        //public void Verify_Can_Delete_Exchanges()
-        //{
-        //    var request = Client.DeleteExchange(Settings.Default.Exchange, Settings.Default.VirtualHost).GetHttpResponseMessage();
+        [Test]
+        public void Verify_Can_Delete_Exchanges()
+        {
+            var response = Client.DeleteExchange(Settings.Default.Exchange, Settings.Default.VirtualHost);
 
-        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
-        //}
+            Assert.AreEqual(HttpStatusCode.NoContent, response.Result.StatusCode);
+        }
 
         [Test]
         public void Verify_Can_Return_All_Bindings_On_Exchange()
         {
-            var bindings = Client.GetAllBindingsOnExchange(Settings.Default.Exchange, Settings.Default.VirtualHost, true).GetResponse();
+            var response = Client.GetAllBindingsOnExchange(Settings.Default.Exchange, Settings.Default.VirtualHost, true);
 
-            foreach (var binding in bindings)
+            foreach (var binding in response.Result)
             {
                 Console.WriteLine("Source: {0}", binding.Source);
                 Console.WriteLine("Destination: {0}", binding.Destination);
@@ -64,9 +63,45 @@ namespace HareDu.Tests
         }
 
         [Test]
+        public void Verify_Can_Return_All_Exchanges()
+        {
+            var response = Client.GetAllExchanges();
+
+            foreach (var exchange in response.Result)
+            {
+                Console.WriteLine("Name: {0}", exchange.Name);
+                Console.WriteLine("Type: {0}", exchange.Type);
+                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+                Console.WriteLine("Durable: {0}", exchange.IsDurable);
+                Console.WriteLine("Internal: {0}", exchange.IsInternal);
+                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test]
+        public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
+        {
+            var response = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost);
+
+            foreach (var exchange in response.Result)
+            {
+                Console.WriteLine("Name: {0}", exchange.Name);
+                Console.WriteLine("Type: {0}", exchange.Type);
+                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+                Console.WriteLine("Durable: {0}", exchange.IsDurable);
+                Console.WriteLine("Internal: {0}", exchange.IsInternal);
+                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test]
         public void Verify_Can_Return_An_Exchange()
         {
-            var exchange = Client.GetExchange(Settings.Default.Exchange, Settings.Default.VirtualHost).GetResponse();
+            var exchange = Client.GetExchange(Settings.Default.Exchange, Settings.Default.VirtualHost).Result;
 
             Console.WriteLine("Name: {0}", exchange.Name);
             Console.WriteLine("Type: {0}", exchange.Type);
@@ -76,44 +111,6 @@ namespace HareDu.Tests
             Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
-        }
-
-        [Test]
-        public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
-        {
-            var exchanges = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost).GetResponse();
-
-            foreach (var exchange in exchanges)
-            {
-                Console.WriteLine("Name: {0}", exchange.Name);
-                Console.WriteLine("Type: {0}", exchange.Type);
-                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
-                Console.WriteLine("Durable: {0}", exchange.IsDurable);
-                Console.WriteLine("Internal: {0}", exchange.IsInternal);
-                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
-        }
-
-        [Test]
-        public void Verify_Can_Return_All_Exchanges()
-        {
-            var exchanges = Client.GetAllExchanges().GetResponse();
-                                  //.Result
-                                  //.GetResponse<IEnumerable<Exchange>>();
-
-            foreach (var exchange in exchanges)
-            {
-                Console.WriteLine("Name: {0}", exchange.Name);
-                Console.WriteLine("Type: {0}", exchange.Type);
-                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
-                Console.WriteLine("Durable: {0}", exchange.IsDurable);
-                Console.WriteLine("Internal: {0}", exchange.IsInternal);
-                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
         }
     }
 }

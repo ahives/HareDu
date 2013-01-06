@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using Model;
     using NUnit.Framework;
 
@@ -26,7 +27,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.CreateUserPermissions(Settings.Default.LoginUsername,
+            var request = Client.CreateUserPermissions(Settings.Default.Username,
                 Settings.Default.VirtualHost, x =>
                                                   {
                                                       x.AssignConfigurePermissions(".*");
@@ -34,24 +35,22 @@ namespace HareDu.Tests
                                                       x.AssignWritePermissions(".*");
                                                   });
 
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
         [Test]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var request = Client.DeleteUserPermissions(Settings.Default.LoginUsername, Settings.Default.VirtualHost);
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+            var request = Client.DeleteUserPermissions(Settings.Default.Username, Settings.Default.VirtualHost);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
         [Test]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var request = Client.GetAlllUserPermissions()
-                                .Result
-                                .GetResponse<IEnumerable<UserPermissions>>();
+            var request = Client.GetAlllUserPermissions();
 
-            foreach (var userPermissions in request)
+            foreach (var userPermissions in request.Result)
             {
                 Console.WriteLine("Virtual Host: {0}", userPermissions.VirtualHostName);
                 Console.WriteLine("Username: {0}", userPermissions.Username);
@@ -66,9 +65,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_Individual_User_Permissions()
         {
-            var request = Client.GetIndividualUser(Settings.Default.LoginUsername)
-                                .Result
-                                .GetResponse<UserPermissions>();
+            var request = Client.GetIndividualUserPermissions(Settings.Default.VirtualHost, Settings.Default.Username).Result;
 
             Console.WriteLine("Virtual Host: {0}", request.VirtualHostName);
             Console.WriteLine("Username: {0}", request.Username);

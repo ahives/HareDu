@@ -15,8 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using Model;
+    using System.Net;
     using NUnit.Framework;
 
     [TestFixture]
@@ -27,30 +26,30 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User()
         {
             var request = Client.CreateUser(Settings.Default.Username, x =>
-                                                                       {
-                                                                           x.WithPassword(Settings.Default.UserPassword);
-                                                                           x.WithTags(
-                                                                               Settings.Default.UserPermissionsTags);
-                                                                       });
+                                                                           {
+                                                                               x.WithPassword(
+                                                                                   Settings.Default.UserPassword);
+                                                                               x.WithTags(
+                                                                                   Settings.Default.UserPermissionsTags);
+                                                                           });
 
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
+
 
         [Test]
         public void Verify_Can_Delete_User()
         {
             var request = Client.DeleteUser(Settings.Default.Username);
-            Assert.AreEqual(true, request.Result.IsSuccessStatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
         [Test]
         public void Verify_Can_Return_All_Users()
         {
-            var request = Client.GetAllUsers()
-                                .Result
-                                .GetResponse<IEnumerable<User>>();
+            var users = Client.GetAllUsers().Result;
 
-            foreach (var user in request)
+            foreach (var user in users)
             {
                 Console.WriteLine("Name: {0}", user.Name);
                 Console.WriteLine("Password Hash: {0}", user.PasswordHash);
@@ -63,17 +62,32 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_Individual_User()
         {
-            var request = Client.GetIndividualUser(Settings.Default.LoginUsername)
-                                .Result
-                                .GetResponse<UserPermissions>();
+            var user = Client.GetIndividualUser(Settings.Default.Username).Result;
 
-            Console.WriteLine("Virtual Host: {0}", request.VirtualHostName);
-            Console.WriteLine("Username: {0}", request.Username);
-            Console.WriteLine("Configure Permissions: {0}", request.ConfigurePermissions);
-            Console.WriteLine("Read Permissions: {0}", request.ReadPermissions);
-            Console.WriteLine("Write Permissions: {0}", request.WritePermissions);
+            Console.WriteLine("Username: {0}", user.Name);
+            Console.WriteLine("Password Hash: {0}", user.PasswordHash);
+            Console.WriteLine("Tags: {0}", user.Tags);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
+        }
+
+        [Test]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
+        {
+            var request = Client.CreateUser(Settings.Default.Username, null);
+        }
+
+        [Test]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
+        {
+            var request = Client.CreateUser(null, x =>
+                                                      {
+                                                          x.WithPassword(Settings.Default.UserPassword);
+                                                          x.WithTags(
+                                                              Settings.Default.UserPermissionsTags);
+                                                      });
         }
     }
 }

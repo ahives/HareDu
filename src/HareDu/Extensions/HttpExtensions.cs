@@ -15,13 +15,45 @@
 namespace HareDu
 {
     using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Contracts;
 
-    public static class HttpExtensions
+    internal static class HttpExtensions
     {
-        public static T GetResponse<T>(this HttpResponseMessage responseMessage)
+        public static Task<AsyncResponse> Response(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
         {
-            responseMessage.EnsureSuccessStatusCode();
-            return responseMessage.Content.ReadAsAsync<T>().Result;
+            return task.ContinueWith(t =>
+                                         {
+                                             t.Result.EnsureSuccessStatusCode();
+                                             return new AsyncResponse
+                                                        {
+                                                            ServerResponse = t.Result.ReasonPhrase,
+                                                            StatusCode = t.Result.StatusCode
+                                                        };
+                                         },
+                                     cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Current);
+        }
+
+        public static Task<T> Response<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
+        {
+            return task.ContinueWith(t =>
+                                         {
+                                             t.Result.EnsureSuccessStatusCode();
+                                             return t.Result.Content.ReadAsAsync<T>();
+                                         }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,
+                                     TaskScheduler.Current)
+                       .Unwrap();
+        }
+
+        public static string SanitizeVirtualHostName(this string value)
+        {
+            if (value == @"/")
+            {
+                return value.Replace("/", "%2f");
+            }
+
+            return value;
         }
     }
 }

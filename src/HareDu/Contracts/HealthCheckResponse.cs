@@ -12,29 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu.Contracts
 {
-    using Contracts;
     using Newtonsoft.Json;
 
-    public class UserArgsImpl :
-        UserArgs
+    public class HealthCheckResponse :
+        AsyncResponse
     {
-        [JsonProperty(PropertyName = "password", Order = 1)]
-        public string Password { get; set; }
-
-        [JsonProperty(PropertyName = "tags", Order = 2)]
-        public string Tags { get; set; }
-
-        public void WithPassword(string password)
-        {
-            Arg.Validate(password, "password");
-            Password = password;
-        }
-
-        public void WithTags(string tags)
-        {
-            Tags = tags;
-        }
+        [JsonProperty("name")]
+        public string Status { get; set; }
     }
 }

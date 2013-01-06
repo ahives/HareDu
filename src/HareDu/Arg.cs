@@ -14,18 +14,20 @@
 
 namespace HareDu
 {
-    using Newtonsoft.Json.Linq;
+    using System;
 
-    public static class JsonValueExtensions
+    internal class Arg
     {
-        public static T GetValue<T>(this JToken token)
+        public static void Validate(string value, string paramName)
         {
-            return token.IsNull() ? default(T) : token.Value<T>();
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(paramName);
         }
 
-        public static bool IsNull(this JToken token)
+        public static void Validate<T>(T value, string paramName)
         {
-            return (token == null);
+            if (value == null)
+                throw new ArgumentNullException(paramName);
         }
     }
 }

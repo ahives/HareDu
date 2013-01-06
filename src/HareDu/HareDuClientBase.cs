@@ -27,9 +27,9 @@ namespace HareDu
     {
         protected HareDuClientBase(ClientInitArgsImpl args)
         {
-            args.HostUrl.CheckIfMethodParamIsValid("hostUrl");
-            args.Username.CheckIfMethodParamIsValid("username");
-            args.Password.CheckIfMethodParamIsValid("password");
+            Arg.Validate(args.HostUrl, "hostUrl");
+            Arg.Validate(args.Username, "username");
+            Arg.Validate(args.Password, "password");
 
             InitArgs = args;
             Logger = args.Logger;

@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using Model;
     using NUnit.Framework;
 
@@ -23,12 +24,12 @@ namespace HareDu.Tests
     public class QueueTests :
         HareDuTestBase
     {
-        //[Test]
-        //public void Verify_Can_Create_Queue()
-        //{
-        //    var request = Client.CreateQueue(Settings.Default.VirtualHost, Settings.Default.Queue, x => x.IsDurable()).GetHttpResponseMessage();
-        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
-        //}
+        [Test]
+        public void Verify_Can_Create_Queue()
+        {
+            var request = Client.CreateQueue(Settings.Default.Queue, Settings.Default.VirtualHost, x => x.IsDurable()).Result;
+            Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
+        }
 
         //[Test]
         //public void Verify_Can_Delete_Queue()
@@ -40,7 +41,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Get_All_Queues()
         {
-            var queues = Client.GetAllQueues().GetResponse();
+            var queues = Client.GetAllQueues().Result;
 
             foreach (var queue in queues)
             {
@@ -58,5 +59,25 @@ namespace HareDu.Tests
                 Console.WriteLine();
             }
         }
+
+        [Test]
+        public void Verify_Can_Get_All_Queue_Bindings()
+        {
+            var queueBindings =
+                Client.GetAllBindingsOnQueue(Settings.Default.Queue, Settings.Default.VirtualHost).Result;
+
+            foreach (var queue in queueBindings)
+            {
+                Console.WriteLine("Source: {0}", queue.Source);
+                Console.WriteLine("Destination: {0}", queue.Destination);
+                Console.WriteLine("Destination Type: {0}", queue.DestinationType);
+                Console.WriteLine("Virtual Host: {0}", queue.VirtualHostName);
+                Console.WriteLine("Routing Key: {0}", queue.RoutingKey);
+                Console.WriteLine("Properties Key: {0}", queue.PropertiesKey);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
     }
 }

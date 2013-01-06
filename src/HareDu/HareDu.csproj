@@ -57,13 +57,12 @@
     <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arg.cs" />
+    <Compile Include="Contracts\HealthCheckResponse.cs" />
+    <Compile Include="Contracts\AsyncResponse.cs" />
     <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
     <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />
     <Compile Include="Contracts\CreateQueueArgs.cs" />
@@ -81,13 +80,12 @@
     <Compile Include="HareDuClientImpl.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Exchange.cs" />
-    <Compile Include="Extensions\JsonValueExtensions.cs" />
-    <Compile Include="ExchangeRoutingType.cs" />
+    <Compile Include="Types\ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
-    <Compile Include="Extensions\PrimitiveValueExtensions.cs" />
+    <Compile Include="Extensions\ValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\UserPermissions.cs" />
-    <Compile Include="PermissionTag.cs" />
+    <Compile Include="Types\PermissionTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Binding.cs" />
     <Compile Include="Internal\CreateQueueArgsImpl.cs" />

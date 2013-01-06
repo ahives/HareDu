@@ -27,9 +27,9 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Delete_Virtual_Host()
         {
-            //var request = Client.DeleteVirtualHost(Settings.Default.VirtualHost).GetHttpResponseMessage();
+            var request = Client.DeleteVirtualHost(Settings.Default.VirtualHost).Result;
 
-            //Assert.AreEqual(true, request.ReasonPhrase.IsSuccessStatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
 
         [Test]
