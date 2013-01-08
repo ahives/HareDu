@@ -79,7 +79,7 @@ namespace HareDu.Tests
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
             var request = Client.CreateUser(null, x =>
@@ -88,6 +88,13 @@ namespace HareDu.Tests
                                                           x.WithTags(
                                                               Settings.Default.UserPermissionsTags);
                                                       });
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
+        {
+            var request = Client.CreateUser(Settings.Default.Username, x => x.WithTags(Settings.Default.UserPermissionsTags));
         }
     }
 }

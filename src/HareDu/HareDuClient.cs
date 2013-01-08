@@ -75,7 +75,7 @@ namespace HareDu
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserPermissions> GetIndividualUserPermissions(string virtualHostName, string userName,
+        Task<UserPermissions> GetUserPermissions(string virtualHostName, string userName,
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken));
 
@@ -95,8 +95,8 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateUserPermissions(string userName, string virtualHostName,
-                                                  Action<UserPermissionsArgs> args,
+        Task<ModifyResponse> SetUserPermissions(string userName, string virtualHostName,
+                                                  Action<PermissionsCreateParams> args,
                                                   CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace HareDu
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> DeleteUserPermissions(string userName, string virtualHostName,
+        Task<ModifyResponse> DeleteUserPermissions(string userName, string virtualHostName,
                                                   CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -125,22 +125,22 @@ namespace HareDu
         Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Creates a user.
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateUser(string userName, Action<UserArgs> args,
+        Task<ModifyResponse> CreateUser(string userName, Action<UserCreateParams> args,
                                        CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Delete the specified user.
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> DeleteUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyResponse> DeleteUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -156,16 +156,16 @@ namespace HareDu
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateVirtualHost(string virtualHostName,
+        Task<ModifyResponse> CreateVirtualHost(string virtualHostName,
                                               CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Deletes the specified virtual host.
         /// </summary>
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> DeleteVirtualHost(string virtualHostName,
+        Task<ModifyResponse> DeleteVirtualHost(string virtualHostName,
                                               CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -187,18 +187,18 @@ namespace HareDu
                                                              default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Creates a queue within the specified virtual host on the current node.
         /// </summary>
         /// <param name="queueName"></param>
         /// <param name="virtualHostName"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateQueue(string queueName, string virtualHostName, Action<CreateQueueArgs> args,
+        Task<ModifyResponse> CreateQueue(string queueName, string virtualHostName, Action<QueueCreateParams> args,
                                         CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Creates a queue within the specified virtual host on the specified node.
         /// </summary>
         /// <param name="queueName"></param>
         /// <param name="node"></param>
@@ -206,8 +206,8 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateQueue(string queueName, string node, string virtualHostName,
-                                        Action<CreateQueueArgs> args,
+        Task<ModifyResponse> CreateQueue(string queueName, string node, string virtualHostName,
+                                        Action<QueueCreateParams> args,
                                         CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -219,19 +219,18 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> BindQueueToExchange(string queueName, string exchangeName, string virtualHostName,
-                                                Action<BindQueueArgs> args,
+        Task<ModifyResponse> BindQueueToExchange(string queueName, string exchangeName, string virtualHostName,
+                                                Action<QueueBindParams> args,
                                                 CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Deletes the specified queue form the specified virtual host.
         /// </summary>
-        /// <param name="virtualHostName"></param>
         /// <param name="queueName"></param>
+        /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> DeleteQueue(string virtualHostName, string queueName,
-                                        CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyResponse> DeleteQueue(string queueName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -273,25 +272,25 @@ namespace HareDu
                                                                 default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Creates an exchange on the specified virtual host.
         /// </summary>
         /// <param name="exchangeName"></param>
         /// <param name="virtualHostName"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> CreateExchange(string exchangeName, string virtualHostName,
-                                           Action<CreateExchangeArgs> args = null,
+        Task<ModifyResponse> CreateExchange(string exchangeName, string virtualHostName,
+                                           Action<ExchangeCreateParams> args = null,
                                            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Deletes an exchange from the specified virtual host.
         /// </summary>
         /// <param name="exchangeName"></param>
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AsyncResponse> DeleteExchange(string exchangeName, string virtualHostName,
+        Task<ModifyResponse> DeleteExchange(string exchangeName, string virtualHostName,
                                            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -302,7 +301,7 @@ namespace HareDu
         Task<IEnumerable<Node>> GetAllNodesOnCluster(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Returns the information pertaining to a specific node in the RabbitMQ cluster.
         /// </summary>
         /// <param name="nodeName"></param>
         /// <param name="cancellationToken"></param>

@@ -12,13 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Model
 {
-    using System.Collections.Generic;
+    using Newtonsoft.Json;
 
-    public interface BindQueueArgs
+    public class ConnectionDetails
     {
-        void UsingRoutingKey(string routingKey);
-        void UsingArguments(List<string> args);
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("peer_address")]
+        public string PeerAddress { get; set; }
+
+        [JsonProperty("peer_port")]
+        public int PeerPort { get; set; }
     }
 }

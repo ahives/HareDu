@@ -25,26 +25,26 @@ namespace HareDu
 
     public abstract class HareDuClientBase
     {
-        protected HareDuClientBase(ClientInitArgsImpl args)
+        protected HareDuClientBase(ClientInitParamsImpl @params)
         {
-            Arg.Validate(args.HostUrl, "hostUrl");
-            Arg.Validate(args.Username, "username");
-            Arg.Validate(args.Password, "password");
+            Arg.Validate(@params.HostUrl, "hostUrl");
+            Arg.Validate(@params.Username, "username");
+            Arg.Validate(@params.Password, "password");
 
-            InitArgs = args;
-            Logger = args.Logger;
+            InitParams = @params;
+            Logger = @params.Logger;
             IsLoggingEnabled = !Logger.IsNull();
             Client = new HttpClient(new HttpClientHandler
                                         {
-                                            Credentials = new NetworkCredential(args.Username, args.Password)
-                                        }) {BaseAddress = new Uri(string.Format("{0}/", args.HostUrl))};
+                                            Credentials = new NetworkCredential(@params.Username, @params.Password)
+                                        }) {BaseAddress = new Uri(string.Format("{0}/", @params.HostUrl))};
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         protected HttpClient Client { get; private set; }
         protected ILog Logger { get; private set; }
         protected bool IsLoggingEnabled { get; private set; }
-        protected ClientInitArgsImpl InitArgs { get; private set; }
+        protected ClientInitParamsImpl InitParams { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri
@@ -87,8 +87,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggingEnabled)
-                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                LogError(e);
                 throw;
             }
         }
@@ -107,8 +106,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggingEnabled)
-                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                LogError(e);
                 throw;
             }
         }
@@ -127,8 +125,7 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggingEnabled)
-                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                LogError(e);
                 throw;
             }
         }
@@ -147,10 +144,27 @@ namespace HareDu
             }
             catch (Exception e)
             {
-                if (IsLoggingEnabled)
-                    Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+                LogError(e);
                 throw;
             }
+        }
+
+        protected virtual void LogError(Exception e)
+        {
+            if (IsLoggingEnabled)
+                Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
+        }
+
+        protected virtual void LogError(string message)
+        {
+            if (IsLoggingEnabled)
+                Logger.Error(message);
+        }
+
+        protected virtual void LogInfo(string message)
+        {
+            if (IsLoggingEnabled)
+                Logger.Info(message);
         }
     }
 }

@@ -14,12 +14,8 @@
 
 namespace HareDu.Contracts
 {
-    using Newtonsoft.Json;
-
-    public class AlivenessTestResponse :
+    public class ModifyResponse :
         ResponseBase
     {
-        [JsonProperty("name")]
-        public string Status { get; set; }
     }
 }

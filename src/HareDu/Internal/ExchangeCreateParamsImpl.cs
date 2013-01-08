@@ -14,29 +14,35 @@
 
 namespace HareDu.Internal
 {
+    using System;
     using System.Collections.Generic;
     using Contracts;
+    using Model;
     using Newtonsoft.Json;
 
-    public class CreateQueueArgsImpl :
-        CreateQueueArgs
+    public class ExchangeCreateParamsImpl :
+        ExchangeCreateParams
     {
-        public CreateQueueArgsImpl()
+        public ExchangeCreateParamsImpl()
         {
             Arguments = new List<string>();
+            RoutingType = ExchangeRoutingType.Direct;
         }
 
-        [JsonProperty(PropertyName = "durable", Order = 2)]
-        public bool Durable { get; private set; }
+        [JsonProperty(PropertyName = "type", Order = 1)]
+        public string RoutingType { get; set; }
 
-        [JsonProperty(PropertyName = "auto_delete", Order = 1)]
-        public bool AutoDelete { get; private set; }
+        [JsonProperty(PropertyName = "auto_delete", Order = 2)]
+        public bool AutoDelete { get; set; }
 
-        [JsonProperty(PropertyName = "arguments", Order = 3, Required = Required.Default)]
+        [JsonProperty(PropertyName = "durable", Order = 3)]
+        public bool Durable { get; set; }
+
+        [JsonProperty(PropertyName = "internal", Order = 4)]
+        public bool Internal { get; set; }
+
+        [JsonProperty(PropertyName = "arguments", Order = 5, Required = Required.Default)]
         public List<string> Arguments { get; set; }
-
-        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default)]
-        public string Node { get; set; }
 
         public void IsDurable()
         {
@@ -48,9 +54,19 @@ namespace HareDu.Internal
             AutoDelete = true;
         }
 
+        public void IsForInternalUse()
+        {
+            Internal = true;
+        }
+
         public void UsingArguments(List<string> args)
         {
             Arguments = args;
+        }
+
+        public void UsingRoutingType(string routingType)
+        {
+            RoutingType = routingType;
         }
     }
 }

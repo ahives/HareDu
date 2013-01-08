@@ -21,12 +21,12 @@ namespace HareDu
 
     internal static class HttpExtensions
     {
-        public static Task<AsyncResponse> Response(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
+        public static Task<ModifyResponse> Response(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
         {
             return task.ContinueWith(t =>
                                          {
                                              t.Result.EnsureSuccessStatusCode();
-                                             return new AsyncResponse
+                                             return new ModifyResponse
                                                         {
                                                             ServerResponse = t.Result.ReasonPhrase,
                                                             StatusCode = t.Result.StatusCode

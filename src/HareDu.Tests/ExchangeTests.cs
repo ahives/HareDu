@@ -29,7 +29,7 @@ namespace HareDu.Tests
                                                 Settings.Default.VirtualHost, x =>
                                                                                   {
                                                                                       x.IsDurable();
-                                                                                      x.RoutingType(
+                                                                                      x.UsingRoutingType(
                                                                                           ExchangeRoutingType.Fanout);
                                                                                   });
 

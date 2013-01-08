@@ -26,13 +26,13 @@
     <Setting Name="UserPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">test_user_password</Value>
     </Setting>
-    <Setting Name="UserPermissionsTags" Type="System.String" Scope="User">
+    <Setting Name="UserPermissionsTags" RoutingType="System.String" Scope="User">
       <Value Profile="(Default)">administration</Value>
     </Setting>
-    <Setting Name="Channel" Type="System.String" Scope="User">
+    <Setting Name="Channel" RoutingType="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1:13507 -&gt; 127.0.0.1:5672</Value>
     </Setting>
-    <Setting Name="Connection" Type="System.String" Scope="User">
+    <Setting Name="Connection" RoutingType="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1:13507 -&gt; 127.0.0.1:5672</Value>
     </Setting>
   </Settings>

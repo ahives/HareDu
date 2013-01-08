@@ -16,10 +16,9 @@ namespace HareDu.Contracts
 {
     using System.Collections.Generic;
 
-    public interface CreateQueueArgs
+    public interface QueueBindParams
     {
-        void IsDurable();
-        void AutoDeleteWhenNotInUse();
+        void UsingRoutingKey(string routingKey);
         void UsingArguments(List<string> args);
     }
 }

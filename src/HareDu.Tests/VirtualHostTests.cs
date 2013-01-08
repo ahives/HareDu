@@ -15,9 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
-    using Model;
     using NUnit.Framework;
 
     [TestFixture]
@@ -52,6 +50,15 @@ namespace HareDu.Tests
             var request = Client.CreateVirtualHost(Settings.Default.VirtualHost).Result;
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
+        }
+
+        [Test]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Throw_Exception_When_Virtual_Host_Missing()
+        {
+            var request = Client.DeleteVirtualHost(string.Empty).Result;
+
+            Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
     }
 }

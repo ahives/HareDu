@@ -14,12 +14,10 @@
 
 namespace HareDu.Contracts
 {
-    using Newtonsoft.Json;
-
-    public class AlivenessTestResponse :
-        ResponseBase
+    public interface PermissionsCreateParams
     {
-        [JsonProperty("name")]
-        public string Status { get; set; }
+        void AssignConfigurePermissions(string configurePermissions);
+        void AssignWritePermissions(string writePermissions);
+        void AssignReadPermissions(string readPermissions);
     }
 }

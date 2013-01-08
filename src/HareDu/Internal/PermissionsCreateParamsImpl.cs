@@ -18,8 +18,8 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class UserPermissionsArgsImpl :
-        UserPermissionsArgs
+    public class PermissionsCreateParamsImpl :
+        PermissionsCreateParams
     {
         [JsonProperty(PropertyName = "configure", Order = 1)]
         public string ConfigurePermissions { get; set; }
@@ -32,25 +32,16 @@ namespace HareDu.Internal
 
         public void AssignConfigurePermissions(string configurePermissions)
         {
-            if (configurePermissions == null)
-                throw new ArgumentNullException("configurePermissions");
-
             ConfigurePermissions = configurePermissions;
         }
 
         public void AssignWritePermissions(string writePermissions)
         {
-            if (writePermissions == null)
-                throw new ArgumentNullException("writePermissions");
-
             WritePermissions = writePermissions;
         }
 
         public void AssignReadPermissions(string readPermissions)
         {
-            if (readPermissions == null)
-                throw new ArgumentNullException("readPermissions");
-
             ReadPermissions = readPermissions;
         }
     }

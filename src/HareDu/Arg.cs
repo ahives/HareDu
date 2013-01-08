@@ -24,6 +24,15 @@ namespace HareDu
                 throw new ArgumentNullException(paramName);
         }
 
+        public static void Validate(string value, string paramName, Action logging)
+        {
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            {
+                logging();
+                throw new ArgumentNullException(paramName);
+            }
+        }
+
         public static void Validate<T>(T value, string paramName)
         {
             if (value == null)

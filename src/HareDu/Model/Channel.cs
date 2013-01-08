@@ -67,16 +67,4 @@ namespace HareDu.Model
         [JsonProperty("acks_uncommitted")]
         public int AcknowledgesUncommitted { get; set; }
     }
-
-    public class ConnectionDetails
-    {
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("peer_address")]
-        public string PeerAddress { get; set; }
-
-        [JsonProperty("peer_port")]
-        public int PeerPort { get; set; }
-    }
 }

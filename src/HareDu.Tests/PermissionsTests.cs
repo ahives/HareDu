@@ -27,7 +27,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.CreateUserPermissions(Settings.Default.Username,
+            var request = Client.SetUserPermissions(Settings.Default.Username,
                 Settings.Default.VirtualHost, x =>
                                                   {
                                                       x.AssignConfigurePermissions(".*");
@@ -65,7 +65,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_Individual_User_Permissions()
         {
-            var request = Client.GetIndividualUserPermissions(Settings.Default.VirtualHost, Settings.Default.Username).Result;
+            var request = Client.GetUserPermissions(Settings.Default.VirtualHost, Settings.Default.Username).Result;
 
             Console.WriteLine("Virtual Host: {0}", request.VirtualHostName);
             Console.WriteLine("Username: {0}", request.Username);

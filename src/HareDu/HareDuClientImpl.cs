@@ -27,47 +27,47 @@ namespace HareDu
         HareDuClientBase,
         HareDuClient
     {
-        public HareDuClientImpl(ClientInitArgsImpl args) :
-            base(args)
+        public HareDuClientImpl(ClientInitParamsImpl @params) :
+            base(@params)
         {
         }
 
         #region Helpers
 
-        private Task<AsyncResponse> CreateQueueHelper(string node, string virtualHostName, string queueName,
-                                                            Action<CreateQueueArgs> args,
+        private Task<ModifyResponse> CreateQueueHelper(string node, string virtualHostName, string queueName,
+                                                            Action<QueueCreateParams> args,
                                                             CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
-            Arg.Validate(queueName, "queueName");
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(args, "args");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("CreateQueue method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(queueName, "queueName",
+                () => LogError("CreateQueue method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            CreateQueueArgsImpl queue;
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            QueueCreateParamsImpl queue;
             if (string.IsNullOrEmpty(node) || string.IsNullOrWhiteSpace(node))
             {
-                queue = new CreateQueueArgsImpl();
+                queue = new QueueCreateParamsImpl();
             }
             else
             {
-                Arg.Validate(node, "node");
-                queue = new CreateQueueArgsImpl {Node = node};
+                Arg.Validate(node, "node",
+                    () => LogError("CreateQueue method threw an ArgumentNullException exception because node name was invalid (i.e. empty, null, or all whitespaces)"));
+                queue = new QueueCreateParamsImpl { Node = node };
             }
 
             args(queue);
-            string url = string.Format("queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
-            if (IsLoggingEnabled)
-            {
-                var msg = string.IsNullOrEmpty(node)
-                              ? string.Format(
-                                  "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queueName, virtualHostName)
-                              : string.Format(
-                                  "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.", queueName, virtualHostName, node);
+            string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
-                if (IsLoggingEnabled)
-                    Logger.Info(x => x(msg));
-            }
+            LogInfo(string.IsNullOrEmpty(node)
+                            ? string.Format(
+                                "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queueName, virtualHostName)
+                            : string.Format(
+                                "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.", queueName, virtualHostName, node));
 
             return Put(url, queue, cancellationToken).Response(cancellationToken);
         }
@@ -78,8 +78,7 @@ namespace HareDu
 
         public void CancelPendingRequests()
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Cancel all pending requests."));
+            LogInfo("Cancel all pending requests.");
 
             Client.CancelPendingRequests();
         }
@@ -88,13 +87,9 @@ namespace HareDu
 
         #region Connections
 
-        public Task<IEnumerable<Connection>> GetAllConnections(CancellationToken cancellationToken =
-                                                                   default(CancellationToken))
+        public Task<IEnumerable<Connection>> GetAllConnections(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(
-                    x =>
-                    x("Sent request to return all information pertaining to all connections on current RabbitMQ server."));
+            LogInfo("Sent request to return all information pertaining to all connections on current RabbitMQ server.");
 
             string url = "api/connections";
 
@@ -102,19 +97,14 @@ namespace HareDu
         }
 
         public Task<Connection> GetConnection(string connectionName,
-                                              CancellationToken cancellationToken =
-                                                  default(CancellationToken))
+                                              CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(connectionName, "connectionName");
+            Arg.Validate(connectionName, "connectionName",
+                () => LogError("GetConnection method threw an ArgumentNullException exception because connection name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/connections/{0}", connectionName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(
-                    x =>
-                    x(
-                        "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
-                        connectionName));
+            LogInfo(string.Format("Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
 
             return Get(url, cancellationToken).Response<Connection>(cancellationToken);
         }
@@ -123,11 +113,9 @@ namespace HareDu
 
         #region Channels
 
-        public Task<IEnumerable<Channel>> GetAllChannels(CancellationToken cancellationToken =
-                                                            default(CancellationToken))
+        public Task<IEnumerable<Channel>> GetAllChannels(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to all channels on current RabbitMQ server."));
+            LogInfo("Sent request to return all information pertaining to all channels on current RabbitMQ server.");
 
             string url = "api/channels";
 
@@ -138,12 +126,12 @@ namespace HareDu
                                                     CancellationToken cancellationToken =
                                                         default(CancellationToken))
         {
-            Arg.Validate(channelName, "channelName");
+            Arg.Validate(channelName, "channelName",
+                () => LogError("GetChannel method threw an ArgumentNullException exception because channel name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/channels/{0}", channelName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.", channelName));
+            LogInfo(string.Format("Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.", channelName));
 
             return Get(url, cancellationToken).Response<Channel>(cancellationToken);
         }
@@ -156,12 +144,12 @@ namespace HareDu
                                            CancellationToken cancellationToken =
                                                default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("IsAlive method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/aliveness-test/{0}", virtualHostName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.", virtualHostName));
+            LogInfo(string.Format("Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.", virtualHostName));
 
             return Get(url, cancellationToken)
                 .ContinueWith(t =>
@@ -180,17 +168,19 @@ namespace HareDu
 
         #region Permissions
 
-        public Task<UserPermissions> GetIndividualUserPermissions(string virtualHostName, string userName,
+        public Task<UserPermissions> GetUserPermissions(string virtualHostName, string userName,
                                                                       CancellationToken cancellationToken =
                                                                           default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(userName, "userName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("GetUserPermissions method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(userName, "userName",
+                () => LogError("GetUserPermissions method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.", userName, virtualHostName));
+            LogInfo(
+                string.Format("Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.", userName, virtualHostName));
 
             return Get(url, cancellationToken).Response<UserPermissions>(cancellationToken);
         }
@@ -198,34 +188,46 @@ namespace HareDu
         public Task<IEnumerable<UserPermissions>> GetAlllUserPermissions(
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all user permission information pertaining to all users on current RabbitMQ server."));
+            LogInfo("Sent request to return all user permission information pertaining to all users on current RabbitMQ server.");
 
             string url = "api/permissions";
 
             return Get(url, cancellationToken).Response<IEnumerable<UserPermissions>>(cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateUserPermissions(string userName, string virtualHostName, Action<UserPermissionsArgs> args, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> SetUserPermissions(string userName, string virtualHostName, Action<PermissionsCreateParams> args, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(userName, "userName");
-            Arg.Validate(args, "args");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("SetUserPermissions method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(userName, "userName",
+                () => LogError("SetUserPermissions method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            var permissions = new UserPermissionsArgsImpl();
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            var permissions = new PermissionsCreateParamsImpl();
             args(permissions);
+
+            Arg.Validate(permissions.ConfigurePermissions, "configurePermissions",
+                () => LogError("SetUserPermissions method threw an ArgumentNullException exception because configure permissions was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(permissions.WritePermissions, "writePermissions",
+                () => LogError("SetUserPermissions method threw an ArgumentNullException exception because write permissions was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(permissions.ReadPermissions, "readPermissions",
+                () => LogError("SetUserPermissions method threw an ArgumentNullException exception because read permissions was invalid (i.e. empty, null, or all whitespaces)"));
+
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to the RabbitMQ server to create permissions for user '{0}' on virtual host '{1}'.", userName, virtualHostName));
+            LogInfo(string.Format("Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.", userName, virtualHostName));
 
             return Put(url, permissions, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<AsyncResponse> DeleteUserPermissions(string userName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> DeleteUserPermissions(string userName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(userName, "userName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("DeleteUserPermissions method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(userName, "userName",
+                () => LogError("DeleteUserPermissions method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/permissions/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), userName);
 
@@ -238,8 +240,7 @@ namespace HareDu
 
         public Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to all users on current RabbitMQ server."));
+            LogInfo("Sent request to return all information pertaining to all users on current RabbitMQ server.");
 
             string url = "api/users";
 
@@ -249,49 +250,54 @@ namespace HareDu
         public Task<User> GetUser(string userName, CancellationToken cancellationToken =
                                                                                 default(CancellationToken))
         {
-            Arg.Validate(userName, "userName");
+            Arg.Validate(userName, "userName",
+                () => LogError("GetUser method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
+            LogInfo(string.Format("Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
 
             string url = string.Format("api/users/{0}", userName);
 
             return Get(url, cancellationToken).Response<User>(cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateUser(string userName, Action<UserArgs> args,
+        public Task<ModifyResponse> CreateUser(string userName, Action<UserCreateParams> args,
                                                     CancellationToken cancellationToken =
                                                         default(CancellationToken))
         {
-            Arg.Validate(userName, "userName");
-            Arg.Validate(args, "args");
+            Arg.Validate(userName, "userName",
+                () => LogError("CreateUser method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to the RabbitMQ server to create user '{0}'.", userName));
+            LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
 
-            var user = new UserArgsImpl();
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            var user = new UserCreateParamsImpl();
             args(user);
+
+            Arg.Validate(user.Password, "password",
+                () => LogError("CreateUser method threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
+
             string url = string.Format("api/users/{0}", userName);
 
             return Put(url, user, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<AsyncResponse> DeleteUser(string userName, CancellationToken cancellationToken =
+        public Task<ModifyResponse> DeleteUser(string userName, CancellationToken cancellationToken =
                                                                          default(CancellationToken))
         {
-            Arg.Validate(userName, "userName");
+            Arg.Validate(userName, "userName",
+                () => LogError("DeleteUser method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (userName == InitArgs.Username)
+            if (userName == InitParams.Username)
             {
-                if (IsLoggingEnabled)
-                    Logger.Info(x => x("Sent request to RabbitMQ server to delete user '{0}'.", userName));
+                LogError("DeleteUser method threw a CannotDeleteSessionLoginUserException exception because attempted to delete the login user");
                 throw new CannotDeleteSessionLoginUserException(
                     string.Format(
                         "Cannot delete user '{0}' because it is being used to send requests login to the current client session.", userName));
             }
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to delete user '{0}'.", userName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userName));
 
             string url = string.Format("api/users/{0}", userName);
 
@@ -305,45 +311,43 @@ namespace HareDu
         public Task<IEnumerable<VirtualHost>> GetAllVirtualHosts(CancellationToken cancellationToken =
                                                                 default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information on all virtual hosts on current RabbitMQ server."));
+            LogInfo("Sent request to return all information on all virtual hosts on current RabbitMQ server.");
 
             string url = "api/vhosts";
 
             return Get(url, cancellationToken).Response<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateVirtualHost(string virtualHostName,
+        public Task<ModifyResponse> CreateVirtualHost(string virtualHostName,
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("CreateVirtualHost method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
 
             return Put(url, new StringContent(string.Empty), cancellationToken).Response(cancellationToken);
         }
 
-        public Task<AsyncResponse> DeleteVirtualHost(string virtualHostName,
+        public Task<ModifyResponse> DeleteVirtualHost(string virtualHostName,
                                                            CancellationToken cancellationToken =
                                                                default(CancellationToken))
         {
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
-                if (IsLoggingEnabled)
-                    Logger.Error(x => x("Cannot delete the default virtual host."));
+                LogError("DeleteVirtualHost method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
-            Arg.Validate(virtualHostName, "virtualHostName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("DeleteVirtualHost method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
 
             return Delete(url, cancellationToken).Response(cancellationToken);
         }
@@ -355,8 +359,7 @@ namespace HareDu
         public Task<IEnumerable<Queue>> GetAllQueues(
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server."));
+            LogInfo("Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server.");
 
             string url = "api/queues";
 
@@ -365,56 +368,63 @@ namespace HareDu
 
         public Task<IEnumerable<Binding>> GetAllBindingsOnQueue(string queueName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(queueName, "queueName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("GetAllBindingsOnQueue method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(queueName, "queueName",
+                () => LogError("GetAllBindingsOnQueue method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.", queueName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.", queueName, virtualHostName));
 
             string url = string.Format("api/queues/{0}/{1}/bindings", virtualHostName.SanitizeVirtualHostName(), queueName);
 
             return Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateQueue(string queueName, string virtualHostName, Action<CreateQueueArgs> args, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> CreateQueue(string queueName, string virtualHostName, Action<QueueCreateParams> args, CancellationToken cancellationToken = default(CancellationToken))
         {
             return CreateQueueHelper(null, virtualHostName, queueName, args, cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateQueue(string queueName, string node, string virtualHostName, Action<CreateQueueArgs> args, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> CreateQueue(string queueName, string node, string virtualHostName, Action<QueueCreateParams> args, CancellationToken cancellationToken = default(CancellationToken))
         {
             return CreateQueueHelper(node, virtualHostName, queueName, args, cancellationToken);
         }
 
-        public Task<AsyncResponse> BindQueueToExchange(string queueName, string exchangeName, string virtualHostName, Action<BindQueueArgs> args, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> BindQueueToExchange(string queueName, string exchangeName, string virtualHostName, Action<QueueBindParams> args, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(queueName, "queueName");
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(exchangeName, "exchangeName");
-            Arg.Validate(args, "args");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("BindQueueToExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(queueName, "queueName",
+                () => LogError("BindQueueToExchange method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                () => LogError("BindQueueToExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            var queueBinding = new BindQueueArgsImpl();
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            var queueBinding = new QueueBindParamsImpl();
             args(queueBinding);
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(),
-                                       exchangeName, queueName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.", queueName, exchangeName, virtualHostName));
+            Arg.Validate(queueBinding.RoutingKey, "routingKey",
+                () => LogError("BindQueueToExchange method threw an ArgumentNullException exception because routing key was invalid (i.e. empty, null, or all whitespaces)"));
+
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", virtualHostName.SanitizeVirtualHostName(), exchangeName, queueName);
+
+            LogInfo(string.Format("Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.", queueName, exchangeName, virtualHostName));
 
             return Put(url, queueBinding, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<AsyncResponse> DeleteQueue(string virtualHostName, string queueName,
-                                                     CancellationToken cancellationToken =
-                                                         default(CancellationToken))
+        public Task<ModifyResponse> DeleteQueue(string queueName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(queueName, "queueName");
-            Arg.Validate(virtualHostName, "virtualHostName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("DeleteQueue method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(queueName, "queueName",
+                () => LogError("DeleteQueue method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/queues/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), queueName);
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.", queueName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.", queueName, virtualHostName));
 
             return Delete(url, cancellationToken).Response(cancellationToken);
         }
@@ -425,8 +435,7 @@ namespace HareDu
 
         public Task<IEnumerable<Exchange>> GetAllExchanges(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to return all information pertaining to all exchanges on all virtual hosts on current RabbitMQ server."));
+            LogInfo("Sent request to return all information pertaining to all exchanges on all virtual hosts on current RabbitMQ server.");
 
             string url = "api/exchanges";
 
@@ -435,10 +444,10 @@ namespace HareDu
 
         public Task<IEnumerable<Exchange>> GetAllExchangesInVirtualHost(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("GetAllExchangesInVirtualHost method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to return all information pertaining to all exchanges belonging to virtual host '{0}'.", virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to return all information pertaining to all exchanges belonging to virtual host '{0}'.", virtualHostName));
 
             string url = string.Format("api/exchanges/{0}", virtualHostName.SanitizeVirtualHostName());
 
@@ -447,11 +456,12 @@ namespace HareDu
 
         public Task<Exchange> GetExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(exchangeName, "exchangeName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("GetExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                () => LogError("GetExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
 
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
@@ -460,11 +470,12 @@ namespace HareDu
 
         public Task<IEnumerable<Binding>> GetAllBindingsOnExchange(string exchangeName, string virtualHostName, bool isSource, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(exchangeName, "exchangeName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("GetAllBindingsOnExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                () => LogError("GetAllBindingsOnExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.", exchangeName, virtualHostName));
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
                                        virtualHostName.SanitizeVirtualHostName(), exchangeName,
@@ -473,29 +484,37 @@ namespace HareDu
             return Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<AsyncResponse> CreateExchange(string exchangeName, string virtualHostName, Action<CreateExchangeArgs> args = null, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> CreateExchange(string exchangeName, string virtualHostName, Action<ExchangeCreateParams> args = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(exchangeName, "exchangeName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("CreateExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                () => LogError("CreateExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchangeName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchangeName, virtualHostName));
 
-            var exchange = new CreateExchangeArgsImpl();
-            if (args != null)
-                args(exchange);
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            var exchange = new ExchangeCreateParamsImpl();
+            args(exchange);
+
+            Arg.Validate(exchange.RoutingType, "routingType",
+                () => LogError("CreateExchange method threw an ArgumentNullException exception because routing type was invalid (i.e. empty, null, or all whitespaces)"));
+
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
             return Put(url, exchange, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<AsyncResponse> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> DeleteExchange(string exchangeName, string virtualHostName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName");
-            Arg.Validate(exchangeName, "exchangeName");
+            Arg.Validate(virtualHostName, "virtualHostName",
+                () => LogError("DeleteExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                () => LogError("DeleteExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(x => x("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.", exchangeName, virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.", exchangeName, virtualHostName));
 
             string url = string.Format("api/exchanges/{0}/{1}", virtualHostName.SanitizeVirtualHostName(), exchangeName);
 
@@ -509,9 +528,7 @@ namespace HareDu
         public Task<IEnumerable<Node>> GetAllNodesOnCluster(
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(
-                    x => x("Sent request to return all information pertaining to all nodes on RabbitMQ cluster."));
+            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             string url = "api/nodes";
 
@@ -521,11 +538,10 @@ namespace HareDu
         public Task<Node> GetNodeOnCluster(string nodeName,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(nodeName, "nodeName");
+            Arg.Validate(nodeName, "nodeName",
+                () => LogError("GetNodeOnCluster method threw an ArgumentNullException exception because node name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (IsLoggingEnabled)
-                Logger.Info(
-                    x => x("Sent request to return all information pertaining to all nodes on RabbitMQ cluster."));
+            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             string url = string.Format("api/nodes/{0}", nodeName);
 
@@ -538,9 +554,7 @@ namespace HareDu
 
         public Task<Overview> GetOverview(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (IsLoggingEnabled)
-                Logger.Info(
-                    x => x("Sent request to return general information pertaining to current RabbitMQ server."));
+            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
 
             string url = "api/overview";
 

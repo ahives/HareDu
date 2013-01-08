@@ -19,11 +19,11 @@ namespace HareDu
 
     public static class HareDuFactory
     {
-        public static HareDuClient New(Action<ClientInitArgs> args)
+        public static HareDuClient New(Action<ClientInitParams> args)
         {
             try
             {
-                var hareDuInitArgs = new ClientInitArgsImpl();
+                var hareDuInitArgs = new ClientInitParamsImpl();
                 args(hareDuInitArgs);
                 var client = new HareDuClientImpl(hareDuInitArgs);
 

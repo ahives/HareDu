@@ -17,8 +17,8 @@ namespace HareDu
     using Common.Logging;
     using Contracts;
 
-    public class ClientInitArgsImpl :
-        ClientInitArgs
+    public class ClientInitParamsImpl :
+        ClientInitParams
     {
         public string HostUrl { get; private set; }
 

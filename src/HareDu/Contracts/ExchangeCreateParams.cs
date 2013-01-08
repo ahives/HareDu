@@ -14,9 +14,14 @@
 
 namespace HareDu.Contracts
 {
-    public interface UserArgs
+    using System.Collections.Generic;
+
+    public interface ExchangeCreateParams
     {
-        void WithPassword(string password);
-        void WithTags(string tags);
+        void IsDurable();
+        void AutoDeleteWhenNotInUse();
+        void IsForInternalUse();
+        void UsingArguments(List<string> args);
+        void UsingRoutingType(string routingType);
     }
 }

@@ -14,15 +14,10 @@
 
 namespace HareDu.Contracts
 {
-    using System.Net;
-    using Newtonsoft.Json;
-
-    public class AsyncResponse
+    public interface ClientInitParams
     {
-        [JsonIgnore]
-        public string ServerResponse { get; set; }
-
-        [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
+        void ConnectTo(string hostUrl);
+        void UsingCredentials(string username, string password);
+        void UseLog4Net();
     }
 }
