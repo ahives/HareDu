@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,40 +15,37 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
-    using Model;
     using NUnit.Framework;
 
     [TestFixture]
     public class PermissionsTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.SetUserPermissions(Settings.Default.Username,
-                Settings.Default.VirtualHost, x =>
-                                                  {
-                                                      x.AssignConfigurePermissions(".*");
-                                                      x.AssignReadPermissions(".*");
-                                                      x.AssignWritePermissions(".*");
-                                                  });
+            var request = Client.UserPermission.Set(Settings.Default.Username, x =>
+                                                                                   {
+                                                                                       x.AssignConfigurePermissions(".*");
+                                                                                       x.AssignReadPermissions(".*");
+                                                                                       x.AssignWritePermissions(".*");
+                                                                                   });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var request = Client.DeleteUserPermissions(Settings.Default.Username, Settings.Default.VirtualHost);
+            var request = Client.UserPermission.Delete(Settings.Default.Username);
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var request = Client.GetAlllUserPermissions();
+            var request = Client.UserPermission.GetAll();
 
             foreach (var userPermissions in request.Result)
             {
@@ -62,16 +59,16 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
-        public void Verify_Can_Return_Individual_User_Permissions()
+        [Test, Category("Integration")]
+        public void Verify_Can_Return_User_Permissions()
         {
-            var request = Client.GetUserPermissions(Settings.Default.VirtualHost, Settings.Default.Username).Result;
+            var permissions = Client.UserPermission.Get(Settings.Default.Username).Result;
 
-            Console.WriteLine("Virtual Host: {0}", request.VirtualHostName);
-            Console.WriteLine("Username: {0}", request.Username);
-            Console.WriteLine("Configure Permissions: {0}", request.ConfigurePermissions);
-            Console.WriteLine("Read Permissions: {0}", request.ReadPermissions);
-            Console.WriteLine("Write Permissions: {0}", request.WritePermissions);
+            Console.WriteLine("Virtual Host: {0}", permissions.VirtualHostName);
+            Console.WriteLine("Username: {0}", permissions.Username);
+            Console.WriteLine("Configure Permissions: {0}", permissions.ConfigurePermissions);
+            Console.WriteLine("Read Permissions: {0}", permissions.ReadPermissions);
+            Console.WriteLine("Write Permissions: {0}", permissions.WritePermissions);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
         }

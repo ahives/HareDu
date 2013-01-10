@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace HareDu.Tests
 {
     using System;
@@ -23,7 +24,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
-            var request = Client.GetAllNodesOnCluster();
+            var request = Client.Node.GetAll();
 
             foreach (var node in request.Result)
             {
@@ -87,7 +88,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Node_On_Cluster()
         {
             var node =
-                Client.GetNodeOnCluster(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME"))).Result;
+                Client.Node.Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME"))).Result;
 
             Console.WriteLine("Name: {0}", node.Name);
             Console.WriteLine("Type: {0}", node.Type);
@@ -140,6 +141,5 @@ namespace HareDu.Tests
                 Console.WriteLine("Version: {0}", application.Version);
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,34 +22,33 @@ namespace HareDu.Tests
     public class UserTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Create_User()
         {
-            var request = Client.CreateUser(Settings.Default.Username, x =>
-                                                                           {
-                                                                               x.WithPassword(
-                                                                                   Settings.Default.UserPassword);
-                                                                               x.WithTags(
-                                                                                   Settings.Default.UserPermissionsTags);
-                                                                           });
+            var request = Client.User.Create(Settings.Default.Username, x =>
+                                                                            {
+                                                                                x.WithPassword(
+                                                                                    Settings.Default.UserPassword);
+                                                                                x.WithTags(
+                                                                                    Settings.Default.UserPermissionsTags);
+                                                                            });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Delete_User()
         {
-            var request = Client.DeleteUser(Settings.Default.Username);
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+            var response = Client.User.Delete(Settings.Default.Username).Result;
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_Users()
         {
-            var users = Client.GetAllUsers().Result;
+            var response = Client.User.GetAll();
 
-            foreach (var user in users)
+            foreach (var user in response.Result)
             {
                 Console.WriteLine("Name: {0}", user.Name);
                 Console.WriteLine("Password Hash: {0}", user.PasswordHash);
@@ -59,10 +58,10 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
-        public void Verify_Can_Return_Individual_User()
+        [Test, Category("Integration")]
+        public void Verify_Can_Return_User()
         {
-            var user = Client.GetUser(Settings.Default.Username).Result;
+            var user = Client.User.Get(Settings.Default.Username).Result;
 
             Console.WriteLine("Username: {0}", user.Name);
             Console.WriteLine("Password Hash: {0}", user.PasswordHash);
@@ -71,30 +70,31 @@ namespace HareDu.Tests
             Console.WriteLine();
         }
 
-        [Test]
+        [Test, Category("Integration")]
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
-            var request = Client.CreateUser(Settings.Default.Username, null);
+            var request = Client.User.Create(Settings.Default.Username, null);
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
-        {
-            var request = Client.CreateUser(null, x =>
-                                                      {
-                                                          x.WithPassword(Settings.Default.UserPassword);
-                                                          x.WithTags(
-                                                              Settings.Default.UserPermissionsTags);
-                                                      });
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Test, Category("Integration")]
+        [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
-            var request = Client.CreateUser(Settings.Default.Username, x => x.WithTags(Settings.Default.UserPermissionsTags));
+            var request = Client.User.Create(Settings.Default.Username,
+                                             x => x.WithTags(Settings.Default.UserPermissionsTags));
+        }
+
+        [Test, Category("Integration")]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
+        {
+            var request = Client.User.Create(null, x =>
+                                                       {
+                                                           x.WithPassword(Settings.Default.UserPassword);
+                                                           x.WithTags(
+                                                               Settings.Default.UserPermissionsTags);
+                                                       });
         }
     }
 }

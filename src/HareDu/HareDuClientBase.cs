@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,19 +25,19 @@ namespace HareDu
 
     public abstract class HareDuClientBase
     {
-        protected HareDuClientBase(ClientInitParamsImpl @params)
+        protected HareDuClientBase(ClientInitParamsImpl args)
         {
-            Arg.Validate(@params.HostUrl, "hostUrl");
-            Arg.Validate(@params.Username, "username");
-            Arg.Validate(@params.Password, "password");
+            Arg.Validate(args.HostUrl, "hostUrl");
+            Arg.Validate(args.Username, "username");
+            Arg.Validate(args.Password, "password");
 
-            InitParams = @params;
-            Logger = @params.Logger;
+            InitParams = args;
+            Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
             Client = new HttpClient(new HttpClientHandler
                                         {
-                                            Credentials = new NetworkCredential(@params.Username, @params.Password)
-                                        }) {BaseAddress = new Uri(string.Format("{0}/", @params.HostUrl))};
+                                            Credentials = new NetworkCredential(args.Username, args.Password)
+                                        }) {BaseAddress = new Uri(string.Format("{0}/", args.HostUrl))};
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 

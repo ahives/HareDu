@@ -37,12 +37,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging.Log4Net1211">
-      <HintPath>..\packages\Common.Logging.Log4Net1211.2.1.2\lib\net40\Common.Logging.Log4Net1211.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -63,7 +57,13 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Concerns\ChannelClient.cs" />
+    <Compile Include="Concerns\ChannelClientImpl.cs" />
+    <Compile Include="Concerns\ConnectionClient.cs" />
+    <Compile Include="Concerns\ConnectionClientImpl.cs" />
     <Compile Include="Contracts\ResponseBase.cs" />
+    <Compile Include="Concerns\ExchangeClient.cs" />
+    <Compile Include="Concerns\ExchangeClientImpl.cs" />
     <Compile Include="Model\ConnectionDetails.cs" />
     <Compile Include="Model\Context.cs" />
     <Compile Include="Model\Details.cs" />
@@ -97,6 +97,12 @@
     <Compile Include="Model\Node.cs" />
     <Compile Include="Model\Overview.cs" />
     <Compile Include="Model\QueueTotals.cs" />
+    <Compile Include="Concerns\NodeClient.cs" />
+    <Compile Include="Concerns\NodeClientImpl.cs" />
+    <Compile Include="Concerns\OverviewClient.cs" />
+    <Compile Include="Concerns\OverviewClientImpl.cs" />
+    <Compile Include="Concerns\QueueClient.cs" />
+    <Compile Include="Concerns\QueueClientImpl.cs" />
     <Compile Include="Types\ExchangeRoutingType.cs" />
     <Compile Include="Model\MessageStats.cs" />
     <Compile Include="Extensions\ValueExtensions.cs" />
@@ -112,12 +118,14 @@
     <Compile Include="Contracts\PermissionsCreateParams.cs" />
     <Compile Include="Internal\PermissionsCreateParamsImpl.cs" />
     <Compile Include="Model\VirtualHost.cs" />
+    <Compile Include="Concerns\VirtualHostClient.cs" />
+    <Compile Include="Concerns\VirtualHostClientImpl.cs" />
+    <Compile Include="Concerns\UserClient.cs" />
+    <Compile Include="Concerns\UserClientImpl.cs" />
+    <Compile Include="Concerns\UserPermissionClient.cs" />
+    <Compile Include="Concerns\UserPermissionClientImpl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

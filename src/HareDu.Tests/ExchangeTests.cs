@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,35 +19,49 @@ namespace HareDu.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class ExchangeTests :
-        HareDuTestBase
+    public class ExchangeTests
+        //HareDuTestBase
     {
-        [Test]
+        [SetUp]
+        public void Setup()
+        {
+            Client = HareDuFactory.New(x =>
+                                           {
+                                               x.ConnectTo(Settings.Default.HostUrl);
+                                               x.UsingCredentials(Settings.Default.LoginUsername,
+                                                                  Settings.Default.LoginPassword);
+                                               x.OnVirtualHost(Settings.Default.VirtualHost);
+                                               x.EnableLogging("HarDuLogger");
+                                           });
+        }
+
+        private HareDuClient Client { get; set; }
+
+        [Test, Category("Integration")]
         public void Verify_Can_Create_Exchange()
         {
-            var request = Client.CreateExchange(Settings.Default.Exchange,
-                                                Settings.Default.VirtualHost, x =>
-                                                                                  {
-                                                                                      x.IsDurable();
-                                                                                      x.UsingRoutingType(
-                                                                                          ExchangeRoutingType.Fanout);
-                                                                                  });
+            var request = Client.Exchange.Create(Settings.Default.Exchange, x =>
+                                                                                {
+                                                                                    x.IsDurable();
+                                                                                    x.UsingRoutingType(
+                                                                                        ExchangeRoutingType.Fanout);
+                                                                                });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Delete_Exchanges()
         {
-            var response = Client.DeleteExchange(Settings.Default.Exchange, Settings.Default.VirtualHost);
+            var response = Client.Exchange.Delete(Settings.Default.Exchange);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.Result.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_Bindings_On_Exchange()
         {
-            var response = Client.GetAllBindingsOnExchange(Settings.Default.Exchange, Settings.Default.VirtualHost, true);
+            var response = Client.Exchange.GetAllBindingsOn(Settings.Default.Exchange, true);
 
             foreach (var binding in response.Result)
             {
@@ -62,10 +76,10 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_Exchanges()
         {
-            var response = Client.GetAllExchanges();
+            var response = Client.Exchange.GetAll();
 
             foreach (var exchange in response.Result)
             {
@@ -80,28 +94,28 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
-        public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
-        {
-            var response = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost);
+        //[Test]
+        //public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
+        //{
+        //    var response = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost);
 
-            foreach (var exchange in response.Result)
-            {
-                Console.WriteLine("Name: {0}", exchange.Name);
-                Console.WriteLine("Type: {0}", exchange.Type);
-                Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
-                Console.WriteLine("Durable: {0}", exchange.IsDurable);
-                Console.WriteLine("Internal: {0}", exchange.IsInternal);
-                Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
-        }
+        //    foreach (var exchange in response.Result)
+        //    {
+        //        Console.WriteLine("Name: {0}", exchange.Name);
+        //        Console.WriteLine("Type: {0}", exchange.Type);
+        //        Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
+        //        Console.WriteLine("Durable: {0}", exchange.IsDurable);
+        //        Console.WriteLine("Internal: {0}", exchange.IsInternal);
+        //        Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+        //        Console.WriteLine("****************************************************");
+        //        Console.WriteLine();
+        //    }
+        //}
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_An_Exchange()
         {
-            var exchange = Client.GetExchange(Settings.Default.Exchange, Settings.Default.VirtualHost).Result;
+            var exchange = Client.Exchange.Get(Settings.Default.Exchange).Result;
 
             Console.WriteLine("Name: {0}", exchange.Name);
             Console.WriteLine("Type: {0}", exchange.Type);

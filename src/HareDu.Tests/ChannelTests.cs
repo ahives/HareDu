@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ namespace HareDu.Tests
     public class ChannelTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_Channels()
         {
-            var response = Client.GetAllChannels();
+            var response = Client.Channel.GetAll();
 
             foreach (var channel in response.Result)
             {
@@ -61,10 +61,10 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_Channel()
         {
-            var channel = Client.GetChannel(Settings.Default.Channel).Result;
+            var channel = Client.Channel.Get(Settings.Default.Channel).Result;
 
             Console.WriteLine("Name: {0}", channel.Name);
             Console.WriteLine("Node: {0}", channel.Node);

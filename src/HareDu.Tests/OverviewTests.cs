@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace HareDu.Tests
         [Test]
         public void Verify_Can_Return_Overview()
         {
-            var overview = Client.GetOverview().Result;
+            var overview = Client.Overview.Get().Result;
 
             Console.WriteLine("Management Version: {0}", overview.ManagementVersion);
             Console.WriteLine("Statistics Level: {0}", overview.StatisticsLevel);
@@ -37,11 +37,15 @@ namespace HareDu.Tests
                 Console.WriteLine("Enabled: {0}", exchangeType.Enabled);
             }
 
-            Console.WriteLine("Acknowledged: {0}", overview.MessageStats.Acknowledged);
-            Console.WriteLine("Published: {0}", overview.MessageStats.Published);
-            Console.WriteLine("Delivered: {0}", overview.MessageStats.Delivered);
-            Console.WriteLine("Delivered/Get: {0}", overview.MessageStats.DeliveredOrGet);
-            Console.WriteLine("Acknowledged: {0}", overview.MessageStats.Acknowledged);
+            Console.WriteLine("******************** Message Stats ********************");
+            foreach (var messageStats in overview.MessageStats)
+            {
+                Console.WriteLine("Acknowledged: {0}", messageStats.Acknowledged);
+                Console.WriteLine("Published: {0}", messageStats.Published);
+                Console.WriteLine("Delivered: {0}", messageStats.Delivered);
+                Console.WriteLine("Delivered/Get: {0}", messageStats.DeliveredOrGet);
+                Console.WriteLine("Acknowledged: {0}", messageStats.Acknowledged);
+            }
 
             Console.WriteLine("******************** Message Details ********************");
             Console.WriteLine("Messages: {0}", overview.QueueTotals.Messages);

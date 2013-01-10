@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,11 +20,18 @@ namespace HareDu
     public class ClientInitParamsImpl :
         ClientInitParams
     {
+        public ClientInitParamsImpl()
+        {
+            VirtualHost = "/";
+        }
+
         public string HostUrl { get; private set; }
 
         public string Username { get; private set; }
 
         public string Password { get; private set; }
+
+        public string VirtualHost { get; private set; }
 
         public ILog Logger { get; private set; }
 
@@ -39,12 +46,17 @@ namespace HareDu
             Password = password;
         }
 
-        public void UseLog4Net()
+        public void EnableLogging(string loggerName)
         {
             if (Logger.IsNull())
             {
-                Logger = LogManager.GetLogger("HarDuLogger");
+                Logger = LogManager.GetLogger(loggerName);
             }
+        }
+
+        public void OnVirtualHost(string virtualHostName)
+        {
+            VirtualHost = virtualHostName;
         }
     }
 }

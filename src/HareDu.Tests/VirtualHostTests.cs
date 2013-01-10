@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, Rajesh Gande, et al.
+﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,20 +22,20 @@ namespace HareDu.Tests
     public class VirtualHostTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Delete_Virtual_Host()
         {
-            var request = Client.DeleteVirtualHost(Settings.Default.VirtualHost).Result;
+            var response = Client.VirtualHost.Delete(Settings.Default.VirtualHost).Result;
 
-            Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
-            var vhosts = Client.GetAllVirtualHosts().Result;
+            var response = Client.VirtualHost.GetAll();
 
-            foreach (var vhost in vhosts)
+            foreach (var vhost in response.Result)
             {
                 Console.WriteLine("Name: {0}", vhost.Name);
                 Console.WriteLine("Tracing: {0}", vhost.Tracing);
@@ -44,19 +44,19 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Create_Virtual_Host_Is_Working()
         {
-            var request = Client.CreateVirtualHost(Settings.Default.VirtualHost).Result;
+            var request = Client.VirtualHost.Create(Settings.Default.VirtualHost).Result;
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
 
-        [Test]
+        [Test, Category("Integration")]
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
-            var request = Client.DeleteVirtualHost(string.Empty).Result;
+            var request = Client.VirtualHost.Delete(string.Empty).Result;
 
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
