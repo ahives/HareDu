@@ -27,24 +27,45 @@ namespace HareDu
     {
         protected HareDuClientBase(ClientInitParamsImpl args)
         {
-            Arg.Validate(args.HostUrl, "hostUrl");
-            Arg.Validate(args.Username, "username");
-            Arg.Validate(args.Password, "password");
+            Arg.Validate(args.HostUrl, "hostUrl",
+                         () =>
+                         LogError(
+                             "HareDuClientBase constructor threw an ArgumentNullException exception because host URL was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(args.Username, "username",
+                         () =>
+                         LogError(
+                             "HareDuClientBase constructor threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(args.Password, "password",
+                         () =>
+                         LogError(
+                             "HareDuClientBase constructor threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
 
-            InitParams = args;
+            Init = args;
             Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
-            Client = new HttpClient(new HttpClientHandler
-                                        {
-                                            Credentials = new NetworkCredential(args.Username, args.Password)
-                                        }) {BaseAddress = new Uri(string.Format("{0}/", args.HostUrl))};
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Client = GetClient(Init.HostUrl, Init.Username, Init.Password);
+            //Client = new HttpClient(new HttpClientHandler
+            //                            {
+            //                                Credentials = new NetworkCredential(Init.Username, Init.Password)
+            //                            }) { BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl)) };
+            //Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        protected HttpClient Client { get; private set; }
+        protected HttpClient GetClient(string hostUrl, string username, string password)
+        {
+            var client = new HttpClient(new HttpClientHandler
+                                            {
+                                                Credentials = new NetworkCredential(Init.Username, Init.Password)
+                                            }) {BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl))};
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return client;
+        }
+
+        protected HttpClient Client { get; set; }
         protected ILog Logger { get; private set; }
         protected bool IsLoggingEnabled { get; private set; }
-        protected ClientInitParamsImpl InitParams { get; private set; }
+        protected ClientInitParamsImpl Init { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri

@@ -61,6 +61,8 @@
     <Compile Include="Concerns\ChannelClientImpl.cs" />
     <Compile Include="Concerns\ConnectionClient.cs" />
     <Compile Include="Concerns\ConnectionClientImpl.cs" />
+    <Compile Include="Concerns\UserCredentials.cs" />
+    <Compile Include="Concerns\UserCredentialsImpl.cs" />
     <Compile Include="Contracts\ResponseBase.cs" />
     <Compile Include="Concerns\ExchangeClient.cs" />
     <Compile Include="Concerns\ExchangeClientImpl.cs" />

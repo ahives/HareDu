@@ -14,6 +14,7 @@
 
 namespace HareDu
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
@@ -22,15 +23,33 @@ namespace HareDu
 
     public interface VirtualHostClient
     {
-        Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken =
-                                                  default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> Create(string virtualHostName,
-                                    CancellationToken cancellationToken =
-                                        default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtualHostName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ModifyResponse> Create(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> Delete(string virtualHostName,
-                                    CancellationToken cancellationToken =
-                                        default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtualHostName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ModifyResponse> Delete(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtualHostName"></param>
+        void Change(string virtualHostName, Action<UserCredentials> args);
     }
 }

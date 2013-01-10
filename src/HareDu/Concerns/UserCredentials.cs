@@ -14,26 +14,18 @@
 
 namespace HareDu
 {
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Model;
-
-    public interface ChannelClient
+    public interface UserCredentials
     {
         /// <summary>
-        /// 
+        /// Sets the username for authentication against RabbitMQ server.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name="username"></param>
+        void SetUsername(string username);
 
         /// <summary>
-        /// 
+        /// Sets the password for authentication against RabbitMQ server.
         /// </summary>
-        /// <param name="channelName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name="password"></param>
+        void SetPassword(string password);
     }
 }

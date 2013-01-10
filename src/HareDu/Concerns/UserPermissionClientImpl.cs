@@ -32,7 +32,7 @@ namespace HareDu
 
         public Task<UserPermissions> Get(string userName, CancellationToken cancellationToken = new CancellationToken())
         {
-            Arg.Validate(InitParams.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
                              "UserPermission.Get method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
@@ -41,13 +41,13 @@ namespace HareDu
                          LogError(
                              "UserPermission.Get method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/permissions/{0}/{1}", InitParams.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
 
             LogInfo(
                 string.Format(
                     "Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.",
-                    userName, InitParams.VirtualHost));
+                    userName, Init.VirtualHost));
 
             return base.Get(url, cancellationToken).Response<UserPermissions>(cancellationToken);
         }
@@ -65,7 +65,7 @@ namespace HareDu
         public Task<ModifyResponse> Set(string userName, Action<UserPermissionsCreateParams> args,
                                         CancellationToken cancellationToken = new CancellationToken())
         {
-            Arg.Validate(InitParams.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
                              "UserPermission.Set method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
@@ -93,13 +93,13 @@ namespace HareDu
                          LogError(
                              "UserPermission.Set method threw an ArgumentNullException exception because read permissions was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/permissions/{0}/{1}", InitParams.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
 
             LogInfo(
                 string.Format(
                     "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
-                    userName, InitParams.VirtualHost));
+                    userName, Init.VirtualHost));
 
             return base.Put(url, permissions, cancellationToken).Response(cancellationToken);
         }
@@ -107,7 +107,7 @@ namespace HareDu
         public Task<ModifyResponse> Delete(string userName,
                                            CancellationToken cancellationToken = new CancellationToken())
         {
-            Arg.Validate(InitParams.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
                              "UserPermission.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
@@ -116,7 +116,7 @@ namespace HareDu
                          LogError(
                              "UserPermission.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/permissions/{0}/{1}", InitParams.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
 
             return base.Delete(url, cancellationToken).Response(cancellationToken);

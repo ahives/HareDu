@@ -14,25 +14,20 @@
 
 namespace HareDu
 {
-    using System;
-    using Contracts;
-
-    public static class HareDuFactory
+    internal class UserCredentialsImpl :
+        UserCredentials
     {
-        public static HareDuClient New(Action<ClientInitParams> args)
-        {
-            try
-            {
-                var init = new ClientInitParamsImpl();
-                args(init);
-                var client = new HareDuClientImpl(init);
+        public string Username { get; set; }
+        public string Password { get; set; }
 
-                return client;
-            }
-            catch (Exception e)
-            {
-                throw new HareDuClientInitException("", e);
-            }
+        public void SetUsername(string username)
+        {
+            Username = username;
+        }
+
+        public void SetPassword(string password)
+        {
+            Password = password;
         }
     }
 }

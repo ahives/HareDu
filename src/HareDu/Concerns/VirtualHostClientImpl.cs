@@ -14,6 +14,7 @@
 
 namespace HareDu
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading;
@@ -73,6 +74,16 @@ namespace HareDu
             LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
 
             return base.Delete(url, cancellationToken).Response(cancellationToken);
+        }
+
+        public void Change(string virtualHostName, Action<UserCredentials> args)
+        {
+            Init.OnVirtualHost(virtualHostName);
+
+            var userCreds = new UserCredentialsImpl();
+            args(userCreds);
+
+            Client = GetClient(Init.HostUrl, userCreds.Username, userCreds.Password);
         }
     }
 }

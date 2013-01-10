@@ -21,9 +21,19 @@ namespace HareDu
 
     public interface ConnectionClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Connection> Get(string connectionName,
-                             CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Connection> Get(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

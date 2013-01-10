@@ -23,17 +23,45 @@ namespace HareDu
 
     public interface ExchangeClient
     {
+        /// <summary>
+        /// Returns information of all exchanges on the current virtual host.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Exchange>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchangeName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<Exchange> Get(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<Binding>> GetAllBindingsOn(string exchangeName, bool isSource,
-                                                    CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchangeName"></param>
+        /// <param name="isSource"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Binding>> GetAllBindings(string exchangeName, bool isSource, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> Create(string exchangeName, Action<ExchangeCreateParams> args = null,
-                                    CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchangeName"></param>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ModifyResponse> Create(string exchangeName, Action<ExchangeCreateParams> args = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> Delete(string exchangeName,
-                                    CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchangeName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ModifyResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

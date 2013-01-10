@@ -21,7 +21,7 @@ namespace HareDu.Tests
     public class OverviewTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_Overview()
         {
             var overview = Client.Overview.Get().Result;

@@ -20,7 +20,7 @@ namespace HareDu.Tests
     public class AlivenessTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_RabbitMQ_Is_Alive()
         {
             var request = Client.IsAlive();

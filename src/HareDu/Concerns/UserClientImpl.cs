@@ -88,7 +88,7 @@ namespace HareDu
                          LogError(
                              "User.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            if (userName == InitParams.Username)
+            if (userName == Init.Username)
             {
                 LogError(
                     "User.Delete method threw a CannotDeleteSessionLoginUserException exception because attempted to delete the login user");

@@ -21,7 +21,7 @@ namespace HareDu.Tests
     public class NodeTests :
         HareDuTestBase
     {
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
             var request = Client.Node.GetAll();
@@ -84,7 +84,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Integration")]
         public void Verify_Can_Return_Node_On_Cluster()
         {
             var node =

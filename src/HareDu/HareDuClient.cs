@@ -20,14 +20,49 @@ namespace HareDu
 
     public interface HareDuClient
     {
+        /// <summary>
+        /// Gets the client that 
+        /// </summary>
         ExchangeClient Exchange { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         VirtualHostClient VirtualHost { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         OverviewClient Overview { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         NodeClient Node { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         QueueClient Queue { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         UserClient User { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         UserPermissionClient UserPermission { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         ChannelClient Channel { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         ConnectionClient Connection { get; }
 
         /// <summary>
@@ -41,11 +76,5 @@ namespace HareDu
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHostName"></param>
-        void ChangeVirtualHost(string virtualHostName);
     }
 }

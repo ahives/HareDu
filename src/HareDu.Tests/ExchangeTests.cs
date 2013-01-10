@@ -61,7 +61,7 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Return_All_Bindings_On_Exchange()
         {
-            var response = Client.Exchange.GetAllBindingsOn(Settings.Default.Exchange, true);
+            var response = Client.Exchange.GetAllBindings(Settings.Default.Exchange, true);
 
             foreach (var binding in response.Result)
             {

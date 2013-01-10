@@ -57,17 +57,17 @@ namespace HareDu
         public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken =
                                                        default(CancellationToken))
         {
-            Arg.Validate(InitParams.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
                              "IsAlive method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/aliveness-test/{0}", InitParams.VirtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/aliveness-test/{0}", Init.VirtualHost.SanitizeVirtualHostName());
 
             LogInfo(
                 string.Format(
                     "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
-                    InitParams.VirtualHost));
+                    Init.VirtualHost));
 
             return base.Get(url, cancellationToken)
                 .ContinueWith(t =>
@@ -80,11 +80,6 @@ namespace HareDu
                                       return response;
                                   }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,
                               TaskScheduler.Current);
-        }
-
-        public void ChangeVirtualHost(string virtualHostName)
-        {
-            InitParams.OnVirtualHost(virtualHostName);
         }
     }
 }
