@@ -44,11 +44,6 @@ namespace HareDu
             Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
             Client = GetClient(Init.HostUrl, Init.Username, Init.Password);
-            //Client = new HttpClient(new HttpClientHandler
-            //                            {
-            //                                Credentials = new NetworkCredential(Init.Username, Init.Password)
-            //                            }) { BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl)) };
-            //Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         protected HttpClient GetClient(string hostUrl, string username, string password)
