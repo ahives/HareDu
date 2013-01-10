@@ -115,8 +115,8 @@
     <Compile Include="Contracts\UserCreateParams.cs" />
     <Compile Include="Internal\UserCreateParamsImpl.cs" />
     <Compile Include="Model\User.cs" />
-    <Compile Include="Contracts\PermissionsCreateParams.cs" />
-    <Compile Include="Internal\PermissionsCreateParamsImpl.cs" />
+    <Compile Include="Contracts\UserPermissionsCreateParams.cs" />
+    <Compile Include="Internal\UserPermissionsCreateParamsImpl.cs" />
     <Compile Include="Model\VirtualHost.cs" />
     <Compile Include="Concerns\VirtualHostClient.cs" />
     <Compile Include="Concerns\VirtualHostClientImpl.cs" />

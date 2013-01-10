@@ -14,7 +14,7 @@
 
 namespace HareDu.Contracts
 {
-    public interface PermissionsCreateParams
+    public interface UserPermissionsCreateParams
     {
         void AssignConfigurePermissions(string configurePermissions);
         void AssignWritePermissions(string writePermissions);

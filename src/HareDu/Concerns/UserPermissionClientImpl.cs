@@ -62,7 +62,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<UserPermissions>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Set(string userName, Action<PermissionsCreateParams> args,
+        public Task<ModifyResponse> Set(string userName, Action<UserPermissionsCreateParams> args,
                                         CancellationToken cancellationToken = new CancellationToken())
         {
             Arg.Validate(InitParams.VirtualHost, "virtualHostName",
@@ -77,7 +77,7 @@ namespace HareDu
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var permissions = new PermissionsCreateParamsImpl();
+            var permissions = new UserPermissionsCreateParamsImpl();
             args(permissions);
 
             Arg.Validate(permissions.ConfigurePermissions, "configurePermissions",

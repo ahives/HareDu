@@ -31,7 +31,7 @@ namespace HareDu
             CancellationToken cancellationToken = new CancellationToken());
 
         Task<ModifyResponse> Set(string userName,
-                                 Action<PermissionsCreateParams> args,
+                                 Action<UserPermissionsCreateParams> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ModifyResponse> Delete(string userName,

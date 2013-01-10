@@ -17,8 +17,8 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class PermissionsCreateParamsImpl :
-        PermissionsCreateParams
+    public class UserPermissionsCreateParamsImpl :
+        UserPermissionsCreateParams
     {
         [JsonProperty(PropertyName = "configure", Order = 1)]
         public string ConfigurePermissions { get; set; }
