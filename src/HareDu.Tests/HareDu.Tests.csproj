@@ -70,7 +70,6 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="AlivenessTests.cs" />
     <Compile Include="ChannelTests.cs" />
     <Compile Include="ConnectionTests.cs" />
     <Compile Include="ExchangeTests.cs" />

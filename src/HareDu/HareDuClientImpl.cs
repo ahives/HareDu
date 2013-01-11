@@ -14,11 +14,6 @@
 
 namespace HareDu
 {
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Contracts;
-
     internal class HareDuClientImpl :
         HareDuClientBase,
         HareDuClient
@@ -52,34 +47,6 @@ namespace HareDu
             LogInfo("Cancel all pending requests.");
 
             Client.CancelPendingRequests();
-        }
-
-        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken =
-                                                       default(CancellationToken))
-        {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
-                         () =>
-                         LogError(
-                             "IsAlive method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-
-            string url = string.Format("api/aliveness-test/{0}", Init.VirtualHost.SanitizeVirtualHostName());
-
-            LogInfo(
-                string.Format(
-                    "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
-                    Init.VirtualHost));
-
-            return base.Get(url, cancellationToken)
-                .ContinueWith(t =>
-                                  {
-                                      t.Result.EnsureSuccessStatusCode();
-                                      var response = t.Result.Content.ReadAsAsync<AlivenessTestResponse>().Result;
-                                      response.StatusCode = t.Result.StatusCode;
-                                      response.ServerResponse = t.Result.ReasonPhrase;
-
-                                      return response;
-                                  }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,
-                              TaskScheduler.Current);
         }
     }
 }

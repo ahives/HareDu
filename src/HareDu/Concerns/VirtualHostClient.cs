@@ -36,7 +36,7 @@ namespace HareDu
         /// <param name="virtualHostName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ModifyResponse> Create(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyResponse> New(string virtualHostName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -51,5 +51,12 @@ namespace HareDu
         /// </summary>
         /// <param name="virtualHostName"></param>
         void Change(string virtualHostName, Action<UserCredentials> args);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

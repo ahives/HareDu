@@ -46,7 +46,12 @@ namespace HareDu
             Client = GetClient(Init.HostUrl, Init.Username, Init.Password);
         }
 
-        protected HttpClient GetClient(string hostUrl, string username, string password)
+        protected HttpClient Client { get; set; }
+        protected ILog Logger { get; private set; }
+        protected bool IsLoggingEnabled { get; private set; }
+        protected ClientInitParamsImpl Init { get; private set; }
+
+        protected virtual HttpClient GetClient(string hostUrl, string username, string password)
         {
             var client = new HttpClient(new HttpClientHandler
                                             {
@@ -56,11 +61,6 @@ namespace HareDu
 
             return client;
         }
-
-        protected HttpClient Client { get; set; }
-        protected ILog Logger { get; private set; }
-        protected bool IsLoggingEnabled { get; private set; }
-        protected ClientInitParamsImpl Init { get; private set; }
 
         /// <summary>
         /// this method is to add workaound for isssue using forword shlash ('/') in uri

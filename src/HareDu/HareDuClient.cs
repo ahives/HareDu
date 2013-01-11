@@ -14,10 +14,6 @@
 
 namespace HareDu
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Contracts;
-
     public interface HareDuClient
     {
         /// <summary>
@@ -69,12 +65,5 @@ namespace HareDu
         /// 
         /// </summary>
         void CancelPendingRequests();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

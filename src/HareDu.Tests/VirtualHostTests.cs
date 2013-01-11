@@ -47,9 +47,9 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Create_Virtual_Host_Is_Working()
         {
-            var request = Client.VirtualHost.Create(Settings.Default.VirtualHost).Result;
+            var request = Client.VirtualHost.New(Settings.Default.VirtualHost);
 
-            Assert.AreEqual(HttpStatusCode.NoContent, request.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
         [Test, Category("Integration")]
@@ -59,6 +59,20 @@ namespace HareDu.Tests
             var request = Client.VirtualHost.Delete(string.Empty).Result;
 
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
+        }
+
+        [Test, Category("Integration")]
+        public void Verify_Server_Working()
+        {
+            Client.VirtualHost.Change(Settings.Default.VirtualHost, x =>
+                                                                        {
+                                                                            x.SetUsername(Settings.Default.Username);
+                                                                            x.SetPassword(Settings.Default.UserPassword);
+                                                                        });
+            var response = Client.VirtualHost.IsAlive().Result;
+
+            Assert.AreEqual(null, response.Status);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }
