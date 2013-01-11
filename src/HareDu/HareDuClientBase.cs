@@ -39,6 +39,10 @@ namespace HareDu
                          () =>
                          LogError(
                              "HareDuClientBase constructor threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(args.VirtualHost, "virtualHostName",
+                         () =>
+                         LogError(
+                             "HareDuClientBase constructor threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
             Init = args;
             Logger = args.Logger;
@@ -51,7 +55,7 @@ namespace HareDu
         protected bool IsLoggingEnabled { get; private set; }
         protected ClientInitParamsImpl Init { get; private set; }
 
-        protected virtual HttpClient GetClient(string hostUrl, string username, string password)
+        protected HttpClient GetClient(string hostUrl, string username, string password)
         {
             var client = new HttpClient(new HttpClientHandler
                                             {

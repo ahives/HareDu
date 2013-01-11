@@ -16,11 +16,28 @@ namespace HareDu.Contracts
 {
     using System.Collections.Generic;
 
-    public interface QueueCreateParams
+    public interface NewQueueParams
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeName"></param>
         void OnNode(string nodeName);
+
+        /// <summary>
+        /// 
+        /// </summary>
         void IsDurable();
+
+        /// <summary>
+        /// 
+        /// </summary>
         void AutoDeleteWhenNotInUse();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         void UsingArguments(List<string> args);
     }
 }

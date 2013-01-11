@@ -12,20 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    public interface UserCredentials
+    public interface SetUserPermissionsParams
     {
         /// <summary>
-        /// Sets the username for authentication against RabbitMQ server.
+        /// Sets the configure permissions for the user.
         /// </summary>
-        /// <param name="username"></param>
-        void SetUsername(string username);
+        /// <param name="configurePermissions"></param>
+        void SetConfigurePermissions(string configurePermissions);
 
         /// <summary>
-        /// Sets the password for authentication against RabbitMQ server.
+        /// Sets the write permissions for the user.
         /// </summary>
-        /// <param name="password"></param>
-        void SetPassword(string password);
+        /// <param name="writePermissions"></param>
+        void SetWritePermissions(string writePermissions);
+
+        /// <summary>
+        /// Sets the read permissions for the user.
+        /// </summary>
+        /// <param name="readPermissions"></param>
+        void SetReadPermissions(string readPermissions);
     }
 }

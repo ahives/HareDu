@@ -87,26 +87,25 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Create(string exchangeName, Action<ExchangeCreateParams> args = null,
+        public Task<ModifyResponse> New(string exchangeName, Action<NewExchangeParams> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "Exchange.Create method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Exchange.New method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(exchangeName, "exchangeName",
                          () =>
                          LogError(
-                             "Exchange.Create method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Exchange.New method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
             LogInfo(
-                string.Format("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.",
-                              exchangeName, Init.VirtualHost));
+                string.Format("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchangeName, Init.VirtualHost));
 
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var exchange = new ExchangeCreateParamsImpl();
+            var exchange = new NewExchangeParamsImpl();
             args(exchange);
 
             Arg.Validate(exchange.RoutingType, "routingType",
@@ -114,14 +113,12 @@ namespace HareDu
                          LogError(
                              "Exchange.CreateExchange method threw an ArgumentNullException exception because routing type was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       exchangeName);
+            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
 
             return base.Put(url, exchange, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string exchangeName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ModifyResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>

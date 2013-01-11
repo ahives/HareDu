@@ -12,16 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Internal
 {
-    using System.Collections.Generic;
+    using Contracts;
+    using Newtonsoft.Json;
 
-    public interface ExchangeCreateParams
+    public class NewUserParamsImpl :
+        NewUserParams
     {
-        void IsDurable();
-        void AutoDeleteWhenNotInUse();
-        void IsForInternalUse();
-        void UsingArguments(List<string> args);
-        void UsingRoutingType(string routingType);
+        [JsonProperty(PropertyName = "password", Order = 1)]
+        public string Password { get; set; }
+
+        [JsonProperty(PropertyName = "tags", Order = 2)]
+        public string Tags { get; set; }
+
+        public void WithPassword(string password)
+        {
+            Password = password;
+        }
+
+        public void WithTags(string tags)
+        {
+            Tags = tags;
+        }
     }
 }

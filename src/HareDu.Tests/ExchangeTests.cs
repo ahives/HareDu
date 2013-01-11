@@ -40,7 +40,7 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Create_Exchange()
         {
-            var request = Client.Exchange.Create(Settings.Default.Exchange, x =>
+            var request = Client.Exchange.New(Settings.Default.Exchange, x =>
                                                                                 {
                                                                                     x.IsDurable();
                                                                                     x.UsingRoutingType(

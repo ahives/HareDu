@@ -18,10 +18,10 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class ExchangeCreateParamsImpl :
-        ExchangeCreateParams
+    public class NewExchangeParamsImpl :
+        NewExchangeParams
     {
-        public ExchangeCreateParamsImpl()
+        public NewExchangeParamsImpl()
         {
             Arguments = new List<string>();
             RoutingType = ExchangeRoutingType.Direct;

@@ -14,11 +14,18 @@
 
 namespace HareDu.Contracts
 {
-    using System.Collections.Generic;
-
-    public interface QueueBindParams
+    public interface NewUserParams
     {
-        void UsingRoutingKey(string routingKey);
-        void UsingArguments(List<string> args);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="password"></param>
+        void WithPassword(string password);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tags"></param>
+        void WithTags(string tags);
     }
 }

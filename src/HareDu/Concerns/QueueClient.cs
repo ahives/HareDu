@@ -30,11 +30,11 @@ namespace HareDu
                                                   CancellationToken cancellationToken =
                                                       default(CancellationToken));
 
-        Task<ModifyResponse> Create(string queueName, Action<QueueCreateParams> args,
+        Task<ModifyResponse> New(string queueName, Action<NewQueueParams> args,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ModifyResponse> BindToExchange(string queueName, string exchangeName,
-                                            Action<QueueBindParams> args,
+                                            Action<BindQueueParams> args,
                                             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ModifyResponse> Delete(string queueName,

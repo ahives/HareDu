@@ -28,7 +28,7 @@ namespace HareDu
         Task<User> Get(string userName, CancellationToken cancellationToken =
                                             default(CancellationToken));
 
-        Task<ModifyResponse> Create(string userName, Action<UserCreateParams> args,
+        Task<ModifyResponse> New(string userName, Action<NewUserParams> args,
                                     CancellationToken cancellationToken =
                                         default(CancellationToken));
 

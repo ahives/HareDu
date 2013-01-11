@@ -25,7 +25,7 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Create_User()
         {
-            var request = Client.User.Create(Settings.Default.Username, x =>
+            var request = Client.User.New(Settings.Default.Username, x =>
                                                                             {
                                                                                 x.WithPassword(
                                                                                     Settings.Default.UserPassword);
@@ -74,14 +74,14 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
-            var request = Client.User.Create(Settings.Default.Username, null);
+            var request = Client.User.New(Settings.Default.Username, null);
         }
 
         [Test, Category("Integration")]
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
-            var request = Client.User.Create(Settings.Default.Username,
+            var request = Client.User.New(Settings.Default.Username,
                                              x => x.WithTags(Settings.Default.UserPermissionsTags));
         }
 
@@ -89,7 +89,7 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
-            var request = Client.User.Create(null, x =>
+            var request = Client.User.New(null, x =>
                                                        {
                                                            x.WithPassword(Settings.Default.UserPassword);
                                                            x.WithTags(

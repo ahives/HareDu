@@ -39,7 +39,7 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Create_Queue()
         {
-            var response = Client.Queue.Create(Settings.Default.Queue, x => x.IsDurable()).Result;
+            var response = Client.Queue.New(Settings.Default.Queue, x => x.IsDurable()).Result;
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 

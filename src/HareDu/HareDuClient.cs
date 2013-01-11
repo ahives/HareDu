@@ -49,7 +49,7 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        UserPermissionClient UserPermission { get; }
+        UserPermissionsClient UserPermissions { get; }
 
         /// <summary>
         /// 

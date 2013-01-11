@@ -31,7 +31,7 @@ namespace HareDu
         {
         }
 
-        public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo(
                 "Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server.");
@@ -42,7 +42,7 @@ namespace HareDu
         }
 
         public Task<IEnumerable<Binding>> GetAllBindings(string queueName,
-                                                         CancellationToken cancellationToken = new CancellationToken())
+                                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
@@ -64,22 +64,22 @@ namespace HareDu
             return Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Create(string queueName, Action<QueueCreateParams> args,
-                                           CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> New(string queueName, Action<NewQueueParams> args,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "Queue.Create method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Queue.New method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(queueName, "queueName",
                          () =>
                          LogError(
-                             "Queue.Create method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Queue.New method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
 
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var queue = new QueueCreateParamsImpl();
+            var queue = new NewQueueParamsImpl();
             args(queue);
 
             string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queueName);
@@ -95,8 +95,8 @@ namespace HareDu
             return base.Put(url, queue, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<ModifyResponse> BindToExchange(string queueName, string exchangeName, Action<QueueBindParams> args,
-                                                   CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> BindToExchange(string queueName, string exchangeName, Action<BindQueueParams> args,
+                                                   CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
@@ -114,7 +114,7 @@ namespace HareDu
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var queueBinding = new QueueBindParamsImpl();
+            var queueBinding = new BindQueueParamsImpl();
             args(queueBinding);
 
             Arg.Validate(queueBinding.RoutingKey, "routingKey",
@@ -134,7 +134,7 @@ namespace HareDu
         }
 
         public Task<ModifyResponse> Delete(string queueName,
-                                           CancellationToken cancellationToken = new CancellationToken())
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>

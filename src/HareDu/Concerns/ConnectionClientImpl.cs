@@ -27,7 +27,7 @@ namespace HareDu
         {
         }
 
-        public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return all information pertaining to all connections on current RabbitMQ server.");
 
@@ -36,7 +36,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<Connection>>(cancellationToken);
         }
 
-        public Task<Connection> Get(string connectionName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<Connection> Get(string connectionName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(connectionName, "connectionName",
                          () =>

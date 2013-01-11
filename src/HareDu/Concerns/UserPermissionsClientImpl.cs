@@ -22,24 +22,24 @@ namespace HareDu
     using Internal;
     using Model;
 
-    public class UserPermissionClientImpl :
+    public class UserPermissionsClientImpl :
         HareDuClientBase,
-        UserPermissionClient
+        UserPermissionsClient
     {
-        public UserPermissionClientImpl(ClientInitParamsImpl args) : base(args)
+        public UserPermissionsClientImpl(ClientInitParamsImpl args) : base(args)
         {
         }
 
-        public Task<UserPermissions> Get(string userName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<UserPermissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "UserPermission.Get method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Get method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(userName, "userName",
                          () =>
                          LogError(
-                             "UserPermission.Get method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Get method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
@@ -52,7 +52,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<UserPermissions>(cancellationToken);
         }
 
-        public Task<IEnumerable<UserPermissions>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<UserPermissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo(
                 "Sent request to return all user permission information pertaining to all users on current RabbitMQ server.");
@@ -62,36 +62,36 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<UserPermissions>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Set(string userName, Action<UserPermissionsCreateParams> args,
-                                        CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> Set(string userName, Action<SetUserPermissionsParams> args,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "UserPermission.Set method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Set method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(userName, "userName",
                          () =>
                          LogError(
-                             "UserPermission.Set method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Set method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var permissions = new UserPermissionsCreateParamsImpl();
+            var permissions = new SetUserPermissionsParamsImpl();
             args(permissions);
 
             Arg.Validate(permissions.ConfigurePermissions, "configurePermissions",
                          () =>
                          LogError(
-                             "UserPermission.Set method threw an ArgumentNullException exception because configure permissions was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Set method threw an ArgumentNullException exception because configure permissions was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(permissions.WritePermissions, "writePermissions",
                          () =>
                          LogError(
-                             "UserPermission.Set method threw an ArgumentNullException exception because write permissions was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Set method threw an ArgumentNullException exception because write permissions was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(permissions.ReadPermissions, "readPermissions",
                          () =>
                          LogError(
-                             "UserPermission.Set method threw an ArgumentNullException exception because read permissions was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Set method threw an ArgumentNullException exception because read permissions was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
@@ -104,20 +104,18 @@ namespace HareDu
             return base.Put(url, permissions, cancellationToken).Response(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string userName,
-                                           CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "UserPermission.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(userName, "userName",
                          () =>
                          LogError(
-                             "UserPermission.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+                             "UserPermissions.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       userName);
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
             return base.Delete(url, cancellationToken).Response(cancellationToken);
         }

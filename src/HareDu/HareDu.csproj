@@ -61,8 +61,8 @@
     <Compile Include="Concerns\ChannelClientImpl.cs" />
     <Compile Include="Concerns\ConnectionClient.cs" />
     <Compile Include="Concerns\ConnectionClientImpl.cs" />
-    <Compile Include="Concerns\UserCredentials.cs" />
-    <Compile Include="Concerns\UserCredentialsImpl.cs" />
+    <Compile Include="Contracts\UserCredentials.cs" />
+    <Compile Include="Internal\UserCredentialsImpl.cs" />
     <Compile Include="Contracts\ResponseBase.cs" />
     <Compile Include="Concerns\ExchangeClient.cs" />
     <Compile Include="Concerns\ExchangeClientImpl.cs" />
@@ -80,9 +80,9 @@
     <Compile Include="Contracts\ModifyResponse.cs" />
     <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
     <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />
-    <Compile Include="Contracts\QueueCreateParams.cs" />
-    <Compile Include="Contracts\QueueBindParams.cs" />
-    <Compile Include="Contracts\ExchangeCreateParams.cs" />
+    <Compile Include="Contracts\NewQueueParams.cs" />
+    <Compile Include="Contracts\BindQueueParams.cs" />
+    <Compile Include="Contracts\NewExchangeParams.cs" />
     <Compile Include="Model\ExchangeType.cs" />
     <Compile Include="Extensions\HttpExtensions.cs" />
     <Compile Include="HareDuClientBase.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="HareDuClient.cs" />
     <Compile Include="Contracts\ClientInitParams.cs" />
     <Compile Include="Internal\ClientInitParamsImpl.cs" />
-    <Compile Include="Internal\ExchangeCreateParamsImpl.cs" />
+    <Compile Include="Internal\NewExchangeParamsImpl.cs" />
     <Compile Include="Model\Channel.cs" />
     <Compile Include="HareDuClientImpl.cs" />
     <Compile Include="Model\Connection.cs" />
@@ -112,20 +112,20 @@
     <Compile Include="Model\UserPermissions.cs" />
     <Compile Include="Types\PermissionTag.cs" />
     <Compile Include="Model\Binding.cs" />
-    <Compile Include="Internal\QueueCreateParamsImpl.cs" />
-    <Compile Include="Internal\QueueBindParamsImpl.cs" />
-    <Compile Include="Contracts\UserCreateParams.cs" />
-    <Compile Include="Internal\UserCreateParamsImpl.cs" />
+    <Compile Include="Internal\NewQueueParamsImpl.cs" />
+    <Compile Include="Internal\BindQueueParamsImpl.cs" />
+    <Compile Include="Contracts\NewUserParams.cs" />
+    <Compile Include="Internal\NewUserParamsImpl.cs" />
     <Compile Include="Model\User.cs" />
-    <Compile Include="Contracts\UserPermissionsCreateParams.cs" />
-    <Compile Include="Internal\UserPermissionsCreateParamsImpl.cs" />
+    <Compile Include="Contracts\SetUserPermissionsParams.cs" />
+    <Compile Include="Internal\SetUserPermissionsParamsImpl.cs" />
     <Compile Include="Model\VirtualHost.cs" />
     <Compile Include="Concerns\VirtualHostClient.cs" />
     <Compile Include="Concerns\VirtualHostClientImpl.cs" />
     <Compile Include="Concerns\UserClient.cs" />
     <Compile Include="Concerns\UserClientImpl.cs" />
-    <Compile Include="Concerns\UserPermissionClient.cs" />
-    <Compile Include="Concerns\UserPermissionClientImpl.cs" />
+    <Compile Include="Concerns\UserPermissionsClient.cs" />
+    <Compile Include="Concerns\UserPermissionsClientImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

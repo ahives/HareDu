@@ -18,39 +18,24 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class QueueCreateParamsImpl :
-        QueueCreateParams
+    public class BindQueueParamsImpl :
+        BindQueueParams
     {
-        public QueueCreateParamsImpl()
+        public BindQueueParamsImpl()
         {
             Arguments = new List<string>();
+            RoutingKey = string.Empty;
         }
 
-        [JsonProperty(PropertyName = "durable", Order = 2)]
-        public bool Durable { get; private set; }
+        [JsonProperty(PropertyName = "routing_key", Order = 1)]
+        public string RoutingKey { get; set; }
 
-        [JsonProperty(PropertyName = "auto_delete", Order = 1)]
-        public bool AutoDelete { get; private set; }
-
-        [JsonProperty(PropertyName = "arguments", Order = 3, Required = Required.Default)]
+        [JsonProperty(PropertyName = "arguments", Order = 2, Required = Required.Default)]
         public List<string> Arguments { get; set; }
 
-        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default)]
-        public string Node { get; set; }
-
-        public void OnNode(string nodeName)
+        public void UsingRoutingKey(string routingKey)
         {
-            Node = nodeName;
-        }
-
-        public void IsDurable()
-        {
-            Durable = true;
-        }
-
-        public void AutoDeleteWhenNotInUse()
-        {
-            AutoDelete = true;
+            RoutingKey = routingKey;
         }
 
         public void UsingArguments(List<string> args)

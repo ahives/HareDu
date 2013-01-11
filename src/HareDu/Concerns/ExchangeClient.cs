@@ -54,7 +54,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ModifyResponse> Create(string exchangeName, Action<ExchangeCreateParams> args = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyResponse> New(string exchangeName, Action<NewExchangeParams> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 

@@ -25,11 +25,11 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.UserPermission.Set(Settings.Default.Username, x =>
+            var request = Client.UserPermissions.Set(Settings.Default.Username, x =>
                                                                                    {
-                                                                                       x.AssignConfigurePermissions(".*");
-                                                                                       x.AssignReadPermissions(".*");
-                                                                                       x.AssignWritePermissions(".*");
+                                                                                       x.SetConfigurePermissions(".*");
+                                                                                       x.SetReadPermissions(".*");
+                                                                                       x.SetWritePermissions(".*");
                                                                                    });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
@@ -38,14 +38,14 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var request = Client.UserPermission.Delete(Settings.Default.Username);
+            var request = Client.UserPermissions.Delete(Settings.Default.Username);
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
         [Test, Category("Integration")]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var request = Client.UserPermission.GetAll();
+            var request = Client.UserPermissions.GetAll();
 
             foreach (var userPermissions in request.Result)
             {
@@ -62,7 +62,7 @@ namespace HareDu.Tests
         [Test, Category("Integration")]
         public void Verify_Can_Return_User_Permissions()
         {
-            var permissions = Client.UserPermission.Get(Settings.Default.Username).Result;
+            var permissions = Client.UserPermissions.Get(Settings.Default.Username).Result;
 
             Console.WriteLine("Virtual Host: {0}", permissions.VirtualHostName);
             Console.WriteLine("Username: {0}", permissions.Username);

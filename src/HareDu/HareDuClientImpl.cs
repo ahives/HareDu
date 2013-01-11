@@ -27,7 +27,7 @@ namespace HareDu
             Node = new NodeClientImpl(args);
             Queue = new QueueClientImpl(args);
             User = new UserClientImpl(args);
-            UserPermission = new UserPermissionClientImpl(args);
+            UserPermissions = new UserPermissionsClientImpl(args);
             Channel = new ChannelClientImpl(args);
             Connection = new ConnectionClientImpl(args);
         }
@@ -38,7 +38,7 @@ namespace HareDu
         public NodeClient Node { get; private set; }
         public QueueClient Queue { get; private set; }
         public UserClient User { get; private set; }
-        public UserPermissionClient UserPermission { get; private set; }
+        public UserPermissionsClient UserPermissions { get; private set; }
         public ChannelClient Channel { get; private set; }
         public ConnectionClient Connection { get; private set; }
 

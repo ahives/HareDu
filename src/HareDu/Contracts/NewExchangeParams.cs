@@ -14,10 +14,35 @@
 
 namespace HareDu.Contracts
 {
-    public interface UserPermissionsCreateParams
+    using System.Collections.Generic;
+
+    public interface NewExchangeParams
     {
-        void AssignConfigurePermissions(string configurePermissions);
-        void AssignWritePermissions(string writePermissions);
-        void AssignReadPermissions(string readPermissions);
+        /// <summary>
+        /// 
+        /// </summary>
+        void IsDurable();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void AutoDeleteWhenNotInUse();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void IsForInternalUse();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        void UsingArguments(List<string> args);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="routingType"></param>
+        void UsingRoutingType(string routingType);
     }
 }

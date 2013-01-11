@@ -30,7 +30,7 @@ namespace HareDu
         {
         }
 
-        public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return all information pertaining to all users on current RabbitMQ server.");
 
@@ -39,7 +39,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<User>>(cancellationToken);
         }
 
-        public Task<User> Get(string userName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<User> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
                          () =>
@@ -54,26 +54,26 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<User>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Create(string userName, Action<UserCreateParams> args,
-                                           CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> New(string userName, Action<NewUserParams> args,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
                          () =>
                          LogError(
-                             "User.Create method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+                             "User.New method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
 
             LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
 
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var user = new UserCreateParamsImpl();
+            var user = new NewUserParamsImpl();
             args(user);
 
             Arg.Validate(user.Password, "password",
                          () =>
                          LogError(
-                             "User.Create method threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
+                             "User.New method threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/users/{0}", userName);
 
@@ -81,7 +81,7 @@ namespace HareDu
         }
 
         public Task<ModifyResponse> Delete(string userName,
-                                           CancellationToken cancellationToken = new CancellationToken())
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
                          () =>

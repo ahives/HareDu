@@ -20,6 +20,7 @@ namespace HareDu
     using System.Threading;
     using System.Threading.Tasks;
     using Contracts;
+    using Internal;
     using Model;
 
     internal class VirtualHostClientImpl :
@@ -39,8 +40,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> New(string virtualHostName,
-                                           CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> New(string virtualHostName, CancellationToken cancellationToken = new CancellationToken())
         {
             Arg.Validate(virtualHostName, "virtualHostName",
                          () =>
@@ -54,8 +54,7 @@ namespace HareDu
             return base.Put(url, new StringContent(string.Empty), cancellationToken).Response(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string virtualHostName,
-                                           CancellationToken cancellationToken = new CancellationToken())
+        public Task<ModifyResponse> Delete(string virtualHostName, CancellationToken cancellationToken = new CancellationToken())
         {
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
@@ -86,8 +85,7 @@ namespace HareDu
             Client = GetClient(Init.HostUrl, userCreds.Username, userCreds.Password);
         }
 
-        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken =
-                                                       default(CancellationToken))
+        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>

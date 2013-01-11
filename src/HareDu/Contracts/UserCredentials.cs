@@ -12,28 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu.Contracts
 {
-    using Contracts;
-    using Newtonsoft.Json;
-
-    public class UserCreateParamsImpl :
-        UserCreateParams
+    public interface UserCredentials
     {
-        [JsonProperty(PropertyName = "password", Order = 1)]
-        public string Password { get; set; }
+        /// <summary>
+        /// Sets the username for authentication against RabbitMQ server.
+        /// </summary>
+        /// <param name="username"></param>
+        void SetUsername(string username);
 
-        [JsonProperty(PropertyName = "tags", Order = 2)]
-        public string Tags { get; set; }
-
-        public void WithPassword(string password)
-        {
-            Password = password;
-        }
-
-        public void WithTags(string tags)
-        {
-            Tags = tags;
-        }
+        /// <summary>
+        /// Sets the password for authentication against RabbitMQ server.
+        /// </summary>
+        /// <param name="password"></param>
+        void SetPassword(string password);
     }
 }

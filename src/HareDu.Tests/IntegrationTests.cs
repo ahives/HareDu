@@ -117,9 +117,9 @@ namespace HareDu.Tests
         //    var createUserPremissionsRequest = Client.SetUserPermissions(useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
         //            Settings.Default.VirtualHost, x =>
         //                                              {
-        //                                                  x.AssignConfigurePermissions(".*");
-        //                                                  x.AssignReadPermissions(".*");
-        //                                                  x.AssignWritePermissions(".*");
+        //                                                  x.SetConfigurePermissions(".*");
+        //                                                  x.SetReadPermissions(".*");
+        //                                                  x.SetWritePermissions(".*");
         //                                              });
         //    createUserPremissionsRequest.Wait();
         //}

@@ -21,20 +21,16 @@ namespace HareDu
     using Contracts;
     using Model;
 
-    public interface UserPermissionClient
+    public interface UserPermissionsClient
     {
-        Task<UserPermissions> Get(string userName,
-                                  CancellationToken cancellationToken =
-                                      default(CancellationToken));
+        Task<UserPermissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<UserPermissions>> GetAll(
-            CancellationToken cancellationToken = new CancellationToken());
+        Task<IEnumerable<UserPermissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ModifyResponse> Set(string userName,
-                                 Action<UserPermissionsCreateParams> args,
+                                 Action<SetUserPermissionsParams> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> Delete(string userName,
-                                    CancellationToken cancellationToken = default(CancellationToken));
+        Task<ModifyResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

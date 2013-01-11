@@ -27,7 +27,7 @@ namespace HareDu
         {
         }
 
-        public Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return all information pertaining to all channels on current RabbitMQ server.");
 
@@ -36,7 +36,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<Channel>>(cancellationToken);
         }
 
-        public Task<Channel> Get(string channelName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(channelName, "channelName",
                          () =>

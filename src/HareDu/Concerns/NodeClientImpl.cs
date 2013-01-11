@@ -27,7 +27,7 @@ namespace HareDu
         {
         }
 
-        public Task<IEnumerable<Node>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public Task<IEnumerable<Node>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
@@ -36,7 +36,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).Response<IEnumerable<Node>>(cancellationToken);
         }
 
-        public Task<Node> Get(string nodeName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<Node> Get(string nodeName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(nodeName, "nodeName",
                          () =>

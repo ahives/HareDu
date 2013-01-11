@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Internal
 {
+    using Contracts;
+
     internal class UserCredentialsImpl :
         UserCredentials
     {
