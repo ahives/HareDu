@@ -21,7 +21,7 @@ namespace HareDu.Tests
     public class ConnectionTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Connections()
         {
             var response = Client.Connection.GetAll();
@@ -52,7 +52,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Connection()
         {
             var connection = Client.Connection.Get(Settings.Default.Connection).Result;

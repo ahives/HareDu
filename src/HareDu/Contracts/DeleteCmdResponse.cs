@@ -14,16 +14,8 @@
 
 namespace HareDu.Contracts
 {
-    using System.Net;
-    using Newtonsoft.Json;
-
-    public class ResponseBase :
-        AsyncResponse
+    public class DeleteCmdResponse :
+        ResponseBase
     {
-        [JsonIgnore]
-        public string ServerResponse { get; set; }
-
-        [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
     }
 }

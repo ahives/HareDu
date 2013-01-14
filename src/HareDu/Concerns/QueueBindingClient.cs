@@ -21,54 +21,48 @@ namespace HareDu
     using Contracts;
     using Model;
 
-    public interface VirtualHostClient
+    public interface QueueBindingClient
     {
         /// <summary>
         /// 
         /// </summary>
-        ExchangeClient Exchange { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        QueueClient Queue { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <param name="queueName"></param>
+        /// <param name="exchangeName"></param>
+        /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHostName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<CreateCmdResponse> New(string virtualHostName,
-                                 CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHostName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string virtualHostName,
+        Task<CreateCmdResponse> New(string queueName, string exchangeName, Action<BindQueueParams> args,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
-        VirtualHostClient Change(string virtualHostName, Action<UserCredentials> args);
+        /// <param name="queueName"></param>
+        /// <param name="exchangeName"></param>
+        /// <param name="propertiesKey"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<DeleteCmdResponse> Delete(string queueName, string exchangeName, string propertiesKey,
+                                       CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="queueName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AlivenessTestCmdResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAll(string queueName,
+                                          CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <param name="exchangeName"></param>
+        /// <param name="propertiesKey"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Binding> Get(string queueName, string exchangeName, string propertiesKey,
+                          CancellationToken cancellationToken = default(CancellationToken));
     }
 }

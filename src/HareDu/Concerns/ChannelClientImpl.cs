@@ -33,7 +33,7 @@ namespace HareDu
 
             string url = "api/channels";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Channel>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Channel>>(cancellationToken);
         }
 
         public Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken))
@@ -47,10 +47,9 @@ namespace HareDu
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.",
-                    channelName));
+                    "Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.", channelName));
 
-            return base.Get(url, cancellationToken).Response<Channel>(cancellationToken);
+            return base.Get(url, cancellationToken).As<Channel>(cancellationToken);
         }
     }
 }

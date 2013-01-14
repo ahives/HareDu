@@ -23,21 +23,34 @@ namespace HareDu
 
     public interface QueueClient
     {
-        Task<IEnumerable<Queue>> GetAll(
-            CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        QueueBindingClient Binding { get; }
 
-        Task<IEnumerable<Binding>> GetAllBindings(string queueName,
-                                                  CancellationToken cancellationToken =
-                                                      default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> New(string queueName, Action<NewQueueParams> args,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<CreateCmdResponse> New(string queueName, Action<NewQueueParams> args,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ModifyResponse> BindToExchange(string queueName, string exchangeName,
-                                            Action<BindQueueParams> args,
-                                            CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<ModifyResponse> Delete(string queueName,
-                                    CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<DeleteCmdResponse> Delete(string queueName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

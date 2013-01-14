@@ -21,13 +21,20 @@ namespace HareDu
 
     internal static class HttpExtensions
     {
-        public static Task<ModifyResponse> Response(this Task<HttpResponseMessage> task,
-                                                    CancellationToken cancellationToken)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<T> Response<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
+            where T : AsyncResponse, new()
         {
             return task.ContinueWith(t =>
                                          {
                                              t.Result.EnsureSuccessStatusCode();
-                                             return new ModifyResponse
+                                             return new T
                                                         {
                                                             ServerResponse = t.Result.ReasonPhrase,
                                                             StatusCode = t.Result.StatusCode
@@ -37,7 +44,14 @@ namespace HareDu
                                      TaskScheduler.Current);
         }
 
-        public static Task<T> Response<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<T> As<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
         {
             return task.ContinueWith(t =>
                                          {
@@ -48,6 +62,11 @@ namespace HareDu
                        .Unwrap();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string SanitizeVirtualHostName(this string value)
         {
             if (value == @"/")
@@ -56,6 +75,16 @@ namespace HareDu
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string SanitizePropertiesKey(this string value)
+        {
+            return value.Replace("%5F", "%255F");
         }
     }
 }

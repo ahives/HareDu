@@ -22,56 +22,60 @@ namespace HareDu.Tests
     public class QueueTests :
         HareDuTestBase
     {
-        //[SetUp]
-        //public void Setup()
-        //{
-        //    Client = HareDuFactory.New(x =>
-        //    {
-        //        x.ConnectTo(Settings.Default.HostUrl);
-        //        x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
-        //        x.OnVirtualHost(Settings.Default.VirtualHost);
-        //        x.EnableLogging("HarDuLogger");
-        //    });
-        //}
+        [SetUp]
+        public new void Setup()
+        {
+            Client = HareDuFactory.New(x =>
+                                           {
+                                               x.ConnectTo(Settings.Default.HostUrl);
+                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
+                                               x.OnVirtualHost(Settings.Default.VirtualHost);
+                                               x.EnableLogging("HareDuLogger");
+                                           });
+        }
 
-        //private HareDuClient Client { get; set; }
-
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Queue()
         {
-            var response = Client.Queue.New(Settings.Default.Queue, x => x.IsDurable()).Result;
+            var response = Client.VirtualHost
+                                 .Queue
+                                 .New(Settings.Default.Queue, x => x.IsDurable())
+                                 .Result;
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        //[Test]
-        //public void Verify_Can_Delete_Queue()
-        //{
-        //    var request = Client.DeleteQueue(Settings.Default.VirtualHost, Settings.Default.Queue).GetHttpResponseMessage();
-        //    Assert.AreEqual(true, request.IsSuccessStatusCode);
-        //}
-
-        [Test, Category("Integration")]
-        public void Verify_Can_Get_All_Queue_Bindings()
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Create_Queue_On_Specific_Node()
         {
-            var response = Client.Queue.GetAllBindings(Settings.Default.Queue);
-
-            foreach (var queue in response.Result)
-            {
-                Console.WriteLine("Source: {0}", queue.Source);
-                Console.WriteLine("Destination: {0}", queue.Destination);
-                Console.WriteLine("Destination Type: {0}", queue.DestinationType);
-                Console.WriteLine("Virtual Host: {0}", queue.VirtualHostName);
-                Console.WriteLine("Routing Key: {0}", queue.RoutingKey);
-                Console.WriteLine("Properties Key: {0}", queue.PropertiesKey);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
+            var response = Client.VirtualHost
+                                 .Queue
+                                 .New("MyTestQueue3", x =>
+                                                          {
+                                                              x.IsDurable();
+                                                              x.OnNode(string.Format("rabbit@{0}",
+                                                                                     Environment.GetEnvironmentVariable(
+                                                                                         "COMPUTERNAME")));
+                                                          })
+                                 .Result;
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Delete_Queue()
+        {
+            var response = Client.VirtualHost
+                                .Queue
+                                .Delete(Settings.Default.Queue)
+                                .Result;
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Queues()
         {
-            var response = Client.Queue.GetAll();
+            var response = Client.VirtualHost
+                                 .Queue
+                                 .GetAll();
 
             foreach (var queue in response.Result)
             {

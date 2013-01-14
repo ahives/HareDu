@@ -37,7 +37,7 @@ namespace HareDu
 
             string url = "api/exchanges";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Exchange>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Exchange>>(cancellationToken);
         }
 
         public Task<Exchange> Get(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
@@ -56,38 +56,56 @@ namespace HareDu
                     "Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.",
                     exchangeName, Init.VirtualHost));
 
-            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       exchangeName);
+            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
 
-            return base.Get(url, cancellationToken).Response<Exchange>(cancellationToken);
+            return base.Get(url, cancellationToken).As<Exchange>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAllBindings(string exchangeName, bool isSource,
-                                                           CancellationToken cancellationToken =
-                                                               default(CancellationToken))
+        public Task<IEnumerable<Binding>> GetAllBindingsWithSource(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
                          LogError(
-                             "Exchange.GetAllBindings method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Exchange.GetAllBindingsWithSource method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
             Arg.Validate(exchangeName, "exchangeName",
                          () =>
                          LogError(
-                             "Exchange.GetAllBindings method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Exchange.GetAllBindingsWithSource method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.",
                     exchangeName, Init.VirtualHost));
 
-            string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
-                                       Init.VirtualHost.SanitizeVirtualHostName(), exchangeName,
-                                       isSource ? "source" : "destination");
+            string url = string.Format("api/exchanges/{0}/{1}/bindings/source",
+                                       Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> New(string exchangeName, Action<NewExchangeParams> args,
+        public Task<IEnumerable<Binding>> GetAllBindingsWithDestination(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Arg.Validate(Init.VirtualHost, "virtualHostName",
+                         () =>
+                         LogError(
+                             "Exchange.GetAllBindingsWithDestination method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(exchangeName, "exchangeName",
+                         () =>
+                         LogError(
+                             "Exchange.GetAllBindingsWithDestination method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+
+            LogInfo(
+                string.Format(
+                    "Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.",
+                    exchangeName, Init.VirtualHost));
+
+            string url = string.Format("api/exchanges/{0}/{1}/bindings/destination",
+                                       Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
+
+            return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
+        }
+
+        public Task<CreateCmdResponse> New(string exchangeName, Action<NewExchangeParams> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
@@ -111,14 +129,14 @@ namespace HareDu
             Arg.Validate(exchange.RoutingType, "routingType",
                          () =>
                          LogError(
-                             "Exchange.CreateExchange method threw an ArgumentNullException exception because routing type was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Exchange.New method threw an ArgumentNullException exception because routing type was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
 
-            return base.Put(url, exchange, cancellationToken).Response(cancellationToken);
+            return base.Put(url, exchange, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DeleteCmdResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
@@ -132,10 +150,9 @@ namespace HareDu
             LogInfo(string.Format("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.",
                                   exchangeName, Init.VirtualHost));
 
-            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       exchangeName);
+            string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchangeName);
 
-            return base.Delete(url, cancellationToken).Response(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
     }
 }

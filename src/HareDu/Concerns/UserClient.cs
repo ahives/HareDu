@@ -23,16 +23,45 @@ namespace HareDu
 
     public interface UserClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        UserPermissionsClient Permissions { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<User> Get(string userName, CancellationToken cancellationToken =
                                             default(CancellationToken));
 
-        Task<ModifyResponse> New(string userName, Action<NewUserParams> args,
-                                    CancellationToken cancellationToken =
-                                        default(CancellationToken));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<CreateCmdResponse> New(string userName, Action<NewUserParams> args,
+                                 CancellationToken cancellationToken =
+                                     default(CancellationToken));
 
-        Task<ModifyResponse> Delete(string userName, CancellationToken cancellationToken =
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken =
                                                          default(CancellationToken));
     }
 }

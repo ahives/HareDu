@@ -17,6 +17,7 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Contracts;
     using Model;
 
     internal class ConnectionClientImpl :
@@ -25,7 +26,10 @@ namespace HareDu
     {
         public ConnectionClientImpl(ClientInitParamsImpl args) : base(args)
         {
+            Channel = new ChannelClientImpl(args);
         }
+
+        public ChannelClient Channel { get; private set; }
 
         public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -33,7 +37,7 @@ namespace HareDu
 
             string url = "api/connections";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Connection>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Connection>>(cancellationToken);
         }
 
         public Task<Connection> Get(string connectionName, CancellationToken cancellationToken = default(CancellationToken))
@@ -41,7 +45,7 @@ namespace HareDu
             Arg.Validate(connectionName, "connectionName",
                          () =>
                          LogError(
-                             "GetConnection method threw an ArgumentNullException exception because connection name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Connection.Get method threw an ArgumentNullException exception because connection name was invalid (i.e. empty, null, or all whitespaces)"));
 
             string url = string.Format("api/connections/{0}", connectionName);
 
@@ -50,7 +54,23 @@ namespace HareDu
                     "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
                     connectionName));
 
-            return base.Get(url, cancellationToken).Response<Connection>(cancellationToken);
+            return base.Get(url, cancellationToken).As<Connection>(cancellationToken);
+        }
+
+        public Task<DeleteCmdResponse> Close(string connectionName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Arg.Validate(connectionName, "connectionName",
+                         () =>
+                         LogError(
+                             "Connection.Close method threw an ArgumentNullException exception because connection name was invalid (i.e. empty, null, or all whitespaces)"));
+
+            string url = string.Format("api/connections/{0}", connectionName);
+
+            LogInfo(
+                string.Format(
+                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
+
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
     }
 }

@@ -57,11 +57,17 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Concerns\ClusterClient.cs" />
+    <Compile Include="Concerns\ClusterClientImpl.cs" />
     <Compile Include="Concerns\ChannelClient.cs" />
     <Compile Include="Concerns\ChannelClientImpl.cs" />
     <Compile Include="Concerns\ConnectionClient.cs" />
     <Compile Include="Concerns\ConnectionClientImpl.cs" />
+    <Compile Include="Concerns\QueueBindingClient.cs" />
+    <Compile Include="Concerns\QueueBindingClientImpl.cs" />
+    <Compile Include="Contracts\CreateCmdResponse.cs" />
     <Compile Include="Contracts\UserCredentials.cs" />
+    <Compile Include="Contracts\AsyncResponse.cs" />
     <Compile Include="Internal\UserCredentialsImpl.cs" />
     <Compile Include="Contracts\ResponseBase.cs" />
     <Compile Include="Concerns\ExchangeClient.cs" />
@@ -76,8 +82,8 @@
     <Compile Include="Model\Application.cs" />
     <Compile Include="Arg.cs" />
     <Compile Include="Model\AuthenticationMechanism.cs" />
-    <Compile Include="Contracts\AlivenessTestResponse.cs" />
-    <Compile Include="Contracts\ModifyResponse.cs" />
+    <Compile Include="Contracts\AlivenessTestCmdResponse.cs" />
+    <Compile Include="Contracts\DeleteCmdResponse.cs" />
     <Compile Include="Exceptions\CannotDeleteSessionLoginUserException.cs" />
     <Compile Include="Exceptions\CannotDeleteVirtualHostException.cs" />
     <Compile Include="Contracts\NewQueueParams.cs" />
@@ -110,7 +116,7 @@
     <Compile Include="Extensions\ValueExtensions.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\UserPermissions.cs" />
-    <Compile Include="Types\PermissionTag.cs" />
+    <Compile Include="Types\UserPermissionTag.cs" />
     <Compile Include="Model\Binding.cs" />
     <Compile Include="Internal\NewQueueParamsImpl.cs" />
     <Compile Include="Internal\BindQueueParamsImpl.cs" />

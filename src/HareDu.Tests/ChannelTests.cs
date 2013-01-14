@@ -21,10 +21,10 @@ namespace HareDu.Tests
     public class ChannelTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Channels()
         {
-            var response = Client.Channel.GetAll();
+            var response = Client.Connection.Channel.GetAll();
 
             foreach (var channel in response.Result)
             {
@@ -61,10 +61,10 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Channel()
         {
-            var channel = Client.Channel.Get(Settings.Default.Channel).Result;
+            var channel = Client.Connection.Channel.Get(Settings.Default.Channel).Result;
 
             Console.WriteLine("Name: {0}", channel.Name);
             Console.WriteLine("Node: {0}", channel.Node);

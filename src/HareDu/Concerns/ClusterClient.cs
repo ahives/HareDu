@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu
 {
-    public class ModifyResponse :
-        ResponseBase
+    public interface ClusterClient
     {
+        OverviewClient Overview { get; }
+        NodeClient Node { get; }
     }
 }

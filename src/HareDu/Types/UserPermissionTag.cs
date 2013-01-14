@@ -12,18 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu
 {
-    using System.Net;
-    using Newtonsoft.Json;
-
-    public class ResponseBase :
-        AsyncResponse
+    public class UserPermissionTag
     {
-        [JsonIgnore]
-        public string ServerResponse { get; set; }
-
-        [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
+        public static readonly string Admin = "administrator";
+        public static readonly string Monitoring = "monitoring";
+        public static readonly string None = string.Empty;
     }
 }

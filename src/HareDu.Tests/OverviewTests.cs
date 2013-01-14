@@ -21,10 +21,10 @@ namespace HareDu.Tests
     public class OverviewTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Overview()
         {
-            var overview = Client.Overview.Get().Result;
+            var overview = Client.Cluster.Overview.Get().Result;
 
             Console.WriteLine("Management Version: {0}", overview.ManagementVersion);
             Console.WriteLine("Statistics Level: {0}", overview.StatisticsLevel);

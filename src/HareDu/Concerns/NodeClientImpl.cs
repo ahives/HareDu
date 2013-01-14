@@ -33,7 +33,7 @@ namespace HareDu
 
             string url = "api/nodes";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Node>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Node>>(cancellationToken);
         }
 
         public Task<Node> Get(string nodeName, CancellationToken cancellationToken = default(CancellationToken))
@@ -41,13 +41,13 @@ namespace HareDu
             Arg.Validate(nodeName, "nodeName",
                          () =>
                          LogError(
-                             "GetNodeOnCluster method threw an ArgumentNullException exception because node name was invalid (i.e. empty, null, or all whitespaces)"));
+                             "Cluster.Node.Get method threw an ArgumentNullException exception because node name was invalid (i.e. empty, null, or all whitespaces)"));
 
             LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             string url = string.Format("api/nodes/{0}", nodeName);
 
-            return base.Get(url, cancellationToken).Response<Node>(cancellationToken);
+            return base.Get(url, cancellationToken).As<Node>(cancellationToken);
         }
     }
 }

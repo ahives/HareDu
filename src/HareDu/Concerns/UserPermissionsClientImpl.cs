@@ -49,7 +49,7 @@ namespace HareDu
                     "Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.",
                     userName, Init.VirtualHost));
 
-            return base.Get(url, cancellationToken).Response<UserPermissions>(cancellationToken);
+            return base.Get(url, cancellationToken).As<UserPermissions>(cancellationToken);
         }
 
         public Task<IEnumerable<UserPermissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
@@ -59,10 +59,10 @@ namespace HareDu
 
             string url = "api/permissions";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<UserPermissions>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<UserPermissions>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Set(string userName, Action<SetUserPermissionsParams> args,
+        public Task<CreateCmdResponse> Set(string userName, Action<SetUserPermissionsParams> args,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
@@ -101,10 +101,10 @@ namespace HareDu
                     "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
                     userName, Init.VirtualHost));
 
-            return base.Put(url, permissions, cancellationToken).Response(cancellationToken);
+            return base.Put(url, permissions, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
@@ -117,7 +117,7 @@ namespace HareDu
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
-            return base.Delete(url, cancellationToken).Response(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
     }
 }

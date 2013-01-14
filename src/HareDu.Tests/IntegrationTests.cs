@@ -106,7 +106,7 @@ namespace HareDu.Tests
         //            x =>
         //                {
         //                    x.WithPassword(Settings.Default.UserPassword);
-        //                    x.WithTags(PermissionTag.Admin);
+        //                    x.WithTags(UserPermissionTag.Admin);
         //                });
         //    }
 

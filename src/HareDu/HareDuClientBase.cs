@@ -67,12 +67,10 @@ namespace HareDu
         }
 
         /// <summary>
-        /// this method is to add workaound for isssue using forword shlash ('/') in uri
-        /// default virtualHostName in RabbitMQ is named as '/' but '/' is uri charter so RabbitMQ suggest to uses '%2f' encoded character while passing default host name in URI
-        /// but System.URI class replaces this encoded char with '/' which changes symantics fo URI. 
-        /// This method is to overide the default System.Uri behaviour 
+        /// Overrides default behaviour of System.Uri because RabbitMQ uses a forward slash, "/" , to represent the default virtual host.
+        /// This method is just a workaround.
         /// </summary>
-        protected virtual void LeaveDotsAndSlashesEscaped()
+        private void LeaveDotsAndSlashesEscaped()
         {
             var getSyntaxMethod =
                 typeof (UriParser).GetMethod("GetSyntax", BindingFlags.Static | BindingFlags.NonPublic);
@@ -101,9 +99,7 @@ namespace HareDu
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
 
-                return cancellationToken == default(CancellationToken)
-                           ? Client.GetAsync(url)
-                           : Client.GetAsync(url, cancellationToken);
+                return Client.GetAsync(url, cancellationToken);
             }
             catch (Exception e)
             {
@@ -120,9 +116,7 @@ namespace HareDu
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
 
-                return cancellationToken == default(CancellationToken)
-                           ? Client.DeleteAsync(url)
-                           : Client.DeleteAsync(url, cancellationToken);
+                return Client.DeleteAsync(url, cancellationToken);
             }
             catch (Exception e)
             {
@@ -139,9 +133,7 @@ namespace HareDu
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
 
-                return cancellationToken == default(CancellationToken)
-                           ? Client.PutAsJsonAsync(url, value)
-                           : Client.PutAsJsonAsync(url, value, cancellationToken);
+                return Client.PutAsJsonAsync(url, value, cancellationToken);
             }
             catch (Exception e)
             {
@@ -158,9 +150,7 @@ namespace HareDu
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
 
-                return cancellationToken == default(CancellationToken)
-                           ? Client.PostAsJsonAsync(url, value)
-                           : Client.PostAsJsonAsync(url, value, cancellationToken);
+                return Client.PostAsJsonAsync(url, value, cancellationToken);
             }
             catch (Exception e)
             {

@@ -27,20 +27,27 @@ namespace HareDu
         HareDuClientBase,
         VirtualHostClient
     {
-        public VirtualHostClientImpl(ClientInitParamsImpl args) : base(args)
+        public VirtualHostClientImpl(ClientInitParamsImpl args) :
+            base(args)
         {
+            Exchange = new ExchangeClientImpl(args);
+            Queue = new QueueClientImpl(args);
         }
 
-        public Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = new CancellationToken())
+        public ExchangeClient Exchange { get; private set; }
+        public QueueClient Queue { get; private set; }
+
+        public Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return all information on all virtual hosts on current RabbitMQ server.");
 
             string url = "api/vhosts";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<VirtualHost>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<ModifyResponse> New(string virtualHostName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<CreateCmdResponse> New(string virtualHostName,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(virtualHostName, "virtualHostName",
                          () =>
@@ -51,10 +58,11 @@ namespace HareDu
 
             LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
 
-            return base.Put(url, new StringContent(string.Empty), cancellationToken).Response(cancellationToken);
+            return base.Put(url, new StringContent(string.Empty), cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string virtualHostName, CancellationToken cancellationToken = new CancellationToken())
+        public Task<DeleteCmdResponse> Delete(string virtualHostName,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             if (virtualHostName.SanitizeVirtualHostName() == "2%f")
             {
@@ -72,10 +80,10 @@ namespace HareDu
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
 
-            return base.Delete(url, cancellationToken).Response(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
 
-        public void Change(string virtualHostName, Action<UserCredentials> args)
+        public VirtualHostClient Change(string virtualHostName, Action<UserCredentials> args)
         {
             Init.OnVirtualHost(virtualHostName);
 
@@ -83,9 +91,11 @@ namespace HareDu
             args(userCreds);
 
             Client = GetClient(Init.HostUrl, userCreds.Username, userCreds.Password);
+
+            return this;
         }
 
-        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<AlivenessTestCmdResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
                          () =>
@@ -96,19 +106,19 @@ namespace HareDu
 
             LogInfo(
                 string.Format(
-                    "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
-                    Init.VirtualHost));
+                    "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.", Init.VirtualHost));
 
             return base.Get(url, cancellationToken)
                        .ContinueWith(t =>
                                          {
                                              t.Result.EnsureSuccessStatusCode();
-                                             var response = t.Result.Content.ReadAsAsync<AlivenessTestResponse>().Result;
+                                             var response = t.Result.Content.ReadAsAsync<AlivenessTestCmdResponse>().Result;
                                              response.StatusCode = t.Result.StatusCode;
                                              response.ServerResponse = t.Result.ReasonPhrase;
 
                                              return response;
-                                         }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Current);
+                                         }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,
+                                     TaskScheduler.Current);
         }
     }
 }

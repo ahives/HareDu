@@ -15,15 +15,11 @@
 namespace HareDu.Contracts
 {
     using System.Net;
-    using Newtonsoft.Json;
 
-    public class ResponseBase :
-        AsyncResponse
+    public interface AsyncResponse
     {
-        [JsonIgnore]
-        public string ServerResponse { get; set; }
+        string ServerResponse { get; set; }
 
-        [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
+        HttpStatusCode StatusCode { get; set; }
     }
 }

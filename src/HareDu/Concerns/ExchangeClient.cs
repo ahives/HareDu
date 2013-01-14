@@ -42,10 +42,17 @@ namespace HareDu
         /// 
         /// </summary>
         /// <param name="exchangeName"></param>
-        /// <param name="isSource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindings(string exchangeName, bool isSource, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAllBindingsWithSource(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchangeName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Binding>> GetAllBindingsWithDestination(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -54,7 +61,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ModifyResponse> New(string exchangeName, Action<NewExchangeParams> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<CreateCmdResponse> New(string exchangeName, Action<NewExchangeParams> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -62,6 +69,6 @@ namespace HareDu
         /// <param name="exchangeName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ModifyResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<DeleteCmdResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

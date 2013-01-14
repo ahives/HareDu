@@ -19,11 +19,11 @@ namespace HareDu.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class ExchangeTests
-        //HareDuTestBase
+    public class ExchangeTests :
+        HareDuTestBase
     {
         [SetUp]
-        public void Setup()
+        public new void Setup()
         {
             Client = HareDuFactory.New(x =>
                                            {
@@ -31,37 +31,41 @@ namespace HareDu.Tests
                                                x.UsingCredentials(Settings.Default.LoginUsername,
                                                                   Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
-                                               x.EnableLogging("HarDuLogger");
+                                               x.EnableLogging("HareDuLogger");
                                            });
         }
 
-        private HareDuClient Client { get; set; }
-
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Exchange()
         {
-            var request = Client.Exchange.New(Settings.Default.Exchange, x =>
-                                                                                {
-                                                                                    x.IsDurable();
-                                                                                    x.UsingRoutingType(
-                                                                                        ExchangeRoutingType.Fanout);
-                                                                                });
+            var request = Client.VirtualHost
+                                .Exchange
+                                .New("NewExchange1", x =>
+                                                                    {
+                                                                        x.IsDurable();
+                                                                        x.UsingRoutingType(
+                                                                            ExchangeRoutingType.Fanout);
+                                                                    });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Exchanges()
         {
-            var response = Client.Exchange.Delete(Settings.Default.Exchange);
+            var response = Client.VirtualHost
+                                 .Exchange
+                                 .Delete(Settings.Default.Exchange);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.Result.StatusCode);
         }
 
-        [Test, Category("Integration")]
-        public void Verify_Can_Return_All_Bindings_On_Exchange()
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Return_All_Bindings_On_Destination()
         {
-            var response = Client.Exchange.GetAllBindings(Settings.Default.Exchange, true);
+            var response = Client.VirtualHost
+                                 .Exchange
+                                 .GetAllBindingsWithDestination(Settings.Default.Exchange);
 
             foreach (var binding in response.Result)
             {
@@ -76,10 +80,32 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Return_All_Bindings_On_Source()
+        {
+            var response = Client.VirtualHost
+                                 .Exchange
+                                 .GetAllBindingsWithSource(Settings.Default.Exchange);
+
+            foreach (var binding in response.Result)
+            {
+                Console.WriteLine("Source: {0}", binding.Source);
+                Console.WriteLine("Destination: {0}", binding.Destination);
+                Console.WriteLine("Destination Type: {0}", binding.DestinationType);
+                Console.WriteLine("Virtual Host: {0}", binding.VirtualHostName);
+                Console.WriteLine("Routing Key: {0}", binding.RoutingKey);
+                Console.WriteLine("Properties Key: {0}", binding.PropertiesKey);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Exchanges()
         {
-            var response = Client.Exchange.GetAll();
+            var response = Client.VirtualHost
+                                 .Exchange
+                                 .GetAll();
 
             foreach (var exchange in response.Result)
             {
@@ -94,28 +120,13 @@ namespace HareDu.Tests
             }
         }
 
-        //[Test]
-        //public void Verify_Can_Return_All_Exchanges_In_Virtual_Host()
-        //{
-        //    var response = Client.GetAllExchangesInVirtualHost(Settings.Default.VirtualHost);
-
-        //    foreach (var exchange in response.Result)
-        //    {
-        //        Console.WriteLine("Name: {0}", exchange.Name);
-        //        Console.WriteLine("Type: {0}", exchange.Type);
-        //        Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
-        //        Console.WriteLine("Durable: {0}", exchange.IsDurable);
-        //        Console.WriteLine("Internal: {0}", exchange.IsInternal);
-        //        Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
-        //        Console.WriteLine("****************************************************");
-        //        Console.WriteLine();
-        //    }
-        //}
-
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_An_Exchange()
         {
-            var exchange = Client.Exchange.Get(Settings.Default.Exchange).Result;
+            var exchange = Client.VirtualHost
+                                 .Exchange
+                                 .Get(Settings.Default.Exchange)
+                                 .Result;
 
             Console.WriteLine("Name: {0}", exchange.Name);
             Console.WriteLine("Type: {0}", exchange.Type);

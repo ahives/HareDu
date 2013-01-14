@@ -121,7 +121,7 @@ namespace HareDu.Tests {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("administration")]
+        [global::System.Configuration.DefaultSettingValueAttribute("administrator")]
         public string UserPermissionsTags {
             get {
                 return ((string)(this["UserPermissionsTags"]));

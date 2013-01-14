@@ -22,14 +22,14 @@ namespace HareDu
     public interface ChannelClient
     {
         /// <summary>
-        /// 
+        /// Returns all the information pertaining to the open channels.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 
+        /// Returns the information pertaining to a specific channel.
         /// </summary>
         /// <param name="channelName"></param>
         /// <param name="cancellationToken"></param>

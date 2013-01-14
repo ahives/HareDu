@@ -14,16 +14,12 @@
 
 namespace HareDu.Contracts
 {
-    using System.Net;
     using Newtonsoft.Json;
 
-    public class ResponseBase :
-        AsyncResponse
+    public class AlivenessTestCmdResponse :
+        ResponseBase
     {
-        [JsonIgnore]
-        public string ServerResponse { get; set; }
-
-        [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
+        [JsonProperty("name")]
+        public string Status { get; set; }
     }
 }

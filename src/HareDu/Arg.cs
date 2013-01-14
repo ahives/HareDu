@@ -18,24 +18,21 @@ namespace HareDu
 
     internal class Arg
     {
-        public static void Validate(string value, string paramName)
-        {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException(paramName);
-        }
-
         public static void Validate(string value, string paramName, Action logging)
         {
             if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
             {
-                logging();
-                throw new ArgumentNullException(paramName);
+                if (!logging.IsNull())
+                    logging();
+
+                throw new ArgumentException(string.Format("{0} is null, empty, or consists of all whitespaces", paramName));
             }
         }
 
         public static void Validate<T>(T value, string paramName)
+            where T : class
         {
-            if (value == null)
+            if (value.IsNull())
                 throw new ArgumentNullException(paramName);
         }
     }

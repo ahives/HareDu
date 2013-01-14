@@ -17,29 +17,9 @@ namespace HareDu
     public interface HareDuClient
     {
         /// <summary>
-        /// Gets the client that 
-        /// </summary>
-        ExchangeClient Exchange { get; }
-
-        /// <summary>
         /// 
         /// </summary>
         VirtualHostClient VirtualHost { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        OverviewClient Overview { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        NodeClient Node { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        QueueClient Queue { get; }
 
         /// <summary>
         /// 
@@ -49,17 +29,9 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        UserPermissionsClient UserPermissions { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        ChannelClient Channel { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         ConnectionClient Connection { get; }
+
+        ClusterClient Cluster { get; }
 
         /// <summary>
         /// 

@@ -28,7 +28,10 @@ namespace HareDu
     {
         public UserClientImpl(ClientInitParamsImpl args) : base(args)
         {
+            Permissions = new UserPermissionsClientImpl(args);
         }
+
+        public UserPermissionsClient Permissions { get; private set; }
 
         public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -36,7 +39,7 @@ namespace HareDu
 
             string url = "api/users";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<User>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<User>>(cancellationToken);
         }
 
         public Task<User> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
@@ -51,10 +54,10 @@ namespace HareDu
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Get(url, cancellationToken).Response<User>(cancellationToken);
+            return base.Get(url, cancellationToken).As<User>(cancellationToken);
         }
 
-        public Task<ModifyResponse> New(string userName, Action<NewUserParams> args,
+        public Task<CreateCmdResponse> New(string userName, Action<NewUserParams> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
@@ -77,10 +80,10 @@ namespace HareDu
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Put(url, user, cancellationToken).Response(cancellationToken);
+            return base.Put(url, user, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<ModifyResponse> Delete(string userName,
+        public Task<DeleteCmdResponse> Delete(string userName,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
@@ -102,7 +105,7 @@ namespace HareDu
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Delete(url, cancellationToken).Response(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
     }
 }

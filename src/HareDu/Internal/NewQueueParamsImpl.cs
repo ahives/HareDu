@@ -35,7 +35,7 @@ namespace HareDu.Internal
         [JsonProperty(PropertyName = "arguments", Order = 3, Required = Required.Default)]
         public List<string> Arguments { get; set; }
 
-        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default)]
+        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Node { get; set; }
 
         public void OnNode(string nodeName)

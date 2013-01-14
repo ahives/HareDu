@@ -14,16 +14,22 @@
 
 namespace HareDu.Internal
 {
+    using System.Collections.Generic;
     using Contracts;
     using Newtonsoft.Json;
 
     public class NewUserParamsImpl :
         NewUserParams
     {
-        [JsonProperty(PropertyName = "password", Order = 1)]
+        public NewUserParamsImpl()
+        {
+            Tags = UserPermissionTag.None;
+        }
+
+        [JsonProperty(PropertyName = "password", Order = 1, Required = Required.Always)]
         public string Password { get; set; }
 
-        [JsonProperty(PropertyName = "tags", Order = 2)]
+        [JsonProperty(PropertyName = "tags", Order = 2, Required = Required.Default)]
         public string Tags { get; set; }
 
         public void WithPassword(string password)
@@ -31,9 +37,9 @@ namespace HareDu.Internal
             Password = password;
         }
 
-        public void WithTags(string tags)
+        public void WithTags(List<string> tags)
         {
-            Tags = tags;
+            Tags = tags.Count <= 0 ? UserPermissionTag.None : string.Join(",", tags);
         }
     }
 }

@@ -15,6 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using NUnit.Framework;
 
@@ -22,7 +23,7 @@ namespace HareDu.Tests
     public class UserTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User()
         {
             var request = Client.User.New(Settings.Default.Username, x =>
@@ -30,20 +31,20 @@ namespace HareDu.Tests
                                                                                 x.WithPassword(
                                                                                     Settings.Default.UserPassword);
                                                                                 x.WithTags(
-                                                                                    Settings.Default.UserPermissionsTags);
+                                                                                    new List<string>() { Settings.Default.UserPermissionsTags });
                                                                             });
 
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User()
         {
             var response = Client.User.Delete(Settings.Default.Username).Result;
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Users()
         {
             var response = Client.User.GetAll();
@@ -58,7 +59,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_User()
         {
             var user = Client.User.Get(Settings.Default.Username).Result;
@@ -70,30 +71,30 @@ namespace HareDu.Tests
             Console.WriteLine();
         }
 
-        [Test, Category("Integration")]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
             var request = Client.User.New(Settings.Default.Username, null);
         }
 
-        [Test, Category("Integration")]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
             var request = Client.User.New(Settings.Default.Username,
-                                             x => x.WithTags(Settings.Default.UserPermissionsTags));
+                                             x => x.WithTags(new List<string>() { Settings.Default.UserPermissionsTags }));
         }
 
-        [Test, Category("Integration")]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
             var request = Client.User.New(null, x =>
                                                        {
                                                            x.WithPassword(Settings.Default.UserPassword);
                                                            x.WithTags(
-                                                               Settings.Default.UserPermissionsTags);
+                                                               new List<string>() { Settings.Default.UserPermissionsTags });
                                                        });
         }
     }

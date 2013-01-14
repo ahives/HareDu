@@ -21,10 +21,10 @@ namespace HareDu.Tests
     public class NodeTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
-            var request = Client.Node.GetAll();
+            var request = Client.Cluster.Node.GetAll();
 
             foreach (var node in request.Result)
             {
@@ -84,11 +84,13 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Node_On_Cluster()
         {
-            var node =
-                Client.Node.Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME"))).Result;
+            var node = Client.Cluster
+                             .Node
+                             .Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")))
+                             .Result;
 
             Console.WriteLine("Name: {0}", node.Name);
             Console.WriteLine("Type: {0}", node.Type);

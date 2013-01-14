@@ -22,7 +22,7 @@ namespace HareDu.Tests
     public class VirtualHostTests :
         HareDuTestBase
     {
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Virtual_Host()
         {
             var response = Client.VirtualHost.Delete(Settings.Default.VirtualHost).Result;
@@ -30,7 +30,7 @@ namespace HareDu.Tests
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
             var response = Client.VirtualHost.GetAll();
@@ -44,7 +44,7 @@ namespace HareDu.Tests
             }
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Create_Virtual_Host_Is_Working()
         {
             var request = Client.VirtualHost.New(Settings.Default.VirtualHost);
@@ -52,8 +52,8 @@ namespace HareDu.Tests
             Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
         }
 
-        [Test, Category("Integration")]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
             var request = Client.VirtualHost.Delete(string.Empty).Result;
@@ -61,15 +61,18 @@ namespace HareDu.Tests
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
 
-        [Test, Category("Integration")]
+        [Test, Category("Integration"), Explicit]
         public void Verify_Server_Working()
         {
-            Client.VirtualHost.Change(Settings.Default.VirtualHost, x =>
-                                                                        {
-                                                                            x.SetUsername(Settings.Default.Username);
-                                                                            x.SetPassword(Settings.Default.UserPassword);
-                                                                        });
-            var response = Client.VirtualHost.IsAlive().Result;
+            var response = Client.VirtualHost
+                                 .Change(Settings.Default.VirtualHost, x =>
+                                                                           {
+                                                                               x.SetUsername(Settings.Default.Username);
+                                                                               x.SetPassword(
+                                                                                   Settings.Default.UserPassword);
+                                                                           })
+                                 .IsAlive()
+                                 .Result;
 
             Assert.AreEqual(null, response.Status);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);

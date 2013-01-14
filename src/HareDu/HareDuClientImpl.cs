@@ -21,26 +21,16 @@ namespace HareDu
         public HareDuClientImpl(ClientInitParamsImpl args) :
             base(args)
         {
-            Exchange = new ExchangeClientImpl(args);
             VirtualHost = new VirtualHostClientImpl(args);
-            Overview = new OverviewClientImpl(args);
-            Node = new NodeClientImpl(args);
-            Queue = new QueueClientImpl(args);
             User = new UserClientImpl(args);
-            UserPermissions = new UserPermissionsClientImpl(args);
-            Channel = new ChannelClientImpl(args);
             Connection = new ConnectionClientImpl(args);
+            Cluster = new ClusterClientImpl(args);
         }
 
-        public ExchangeClient Exchange { get; private set; }
         public VirtualHostClient VirtualHost { get; private set; }
-        public OverviewClient Overview { get; private set; }
-        public NodeClient Node { get; private set; }
-        public QueueClient Queue { get; private set; }
         public UserClient User { get; private set; }
-        public UserPermissionsClient UserPermissions { get; private set; }
-        public ChannelClient Channel { get; private set; }
         public ConnectionClient Connection { get; private set; }
+        public ClusterClient Cluster { get; private set; }
 
         public void CancelPendingRequests()
         {

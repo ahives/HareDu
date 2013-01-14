@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu
 {
-    using Newtonsoft.Json;
-
-    public class AlivenessTestResponse :
-        ResponseBase
+    internal class ClusterClientImpl :
+        ClusterClient
     {
-        [JsonProperty("name")]
-        public string Status { get; set; }
+        public ClusterClientImpl(ClientInitParamsImpl args)
+        {
+            Overview = new OverviewClientImpl(args);
+            Node = new NodeClientImpl(args);
+        }
+
+        public OverviewClient Overview { get; private set; }
+        public NodeClient Node { get; private set; }
     }
 }

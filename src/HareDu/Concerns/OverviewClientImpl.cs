@@ -26,13 +26,13 @@ namespace HareDu
         {
         }
 
-        public Task<Overview> Get(CancellationToken cancellationToken = new CancellationToken())
+        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
         {
             LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
 
             string url = "api/overview";
 
-            return base.Get(url, cancellationToken).Response<Overview>(cancellationToken);
+            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
         }
     }
 }

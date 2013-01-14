@@ -29,7 +29,10 @@ namespace HareDu
         public QueueClientImpl(ClientInitParamsImpl args)
             : base(args)
         {
+            Binding = new QueueBindingClientImpl(args);
         }
+
+        public QueueBindingClient Binding { get; private set; }
 
         public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -38,33 +41,10 @@ namespace HareDu
 
             string url = "api/queues";
 
-            return base.Get(url, cancellationToken).Response<IEnumerable<Queue>>(cancellationToken);
+            return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAllBindings(string queueName,
-                                                         CancellationToken cancellationToken = default(CancellationToken))
-        {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
-                         () =>
-                         LogError(
-                             "Queue.GetAllBindings method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queueName, "queueName",
-                         () =>
-                         LogError(
-                             "Queue.GetAllBindings method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
-
-            LogInfo(
-                string.Format(
-                    "Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.",
-                    queueName, Init.VirtualHost));
-
-            string url = string.Format("api/queues/{0}/{1}/bindings", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       queueName);
-
-            return Get(url, cancellationToken).Response<IEnumerable<Binding>>(cancellationToken);
-        }
-
-        public Task<ModifyResponse> New(string queueName, Action<NewQueueParams> args,
+        public Task<CreateCmdResponse> New(string queueName, Action<NewQueueParams> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
@@ -92,48 +72,10 @@ namespace HareDu
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.",
                             queueName, Init.VirtualHost, queue.Node));
 
-            return base.Put(url, queue, cancellationToken).Response(cancellationToken);
+            return base.Put(url, queue, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<ModifyResponse> BindToExchange(string queueName, string exchangeName, Action<BindQueueParams> args,
-                                                   CancellationToken cancellationToken = default(CancellationToken))
-        {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
-                         () =>
-                         LogError(
-                             "Queue.BindToExchange method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queueName, "queueName",
-                         () =>
-                         LogError(
-                             "Queue.BindToExchange method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(exchangeName, "exchangeName",
-                         () =>
-                         LogError(
-                             "Queue.BindToExchange method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
-
-            if (args == null)
-                throw new ArgumentNullException("args");
-
-            var queueBinding = new BindQueueParamsImpl();
-            args(queueBinding);
-
-            Arg.Validate(queueBinding.RoutingKey, "routingKey",
-                         () =>
-                         LogError(
-                             "Queue.BindToExchange method threw an ArgumentNullException exception because routing key was invalid (i.e. empty, null, or all whitespaces)"));
-
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       exchangeName, queueName);
-
-            LogInfo(
-                string.Format(
-                    "Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.",
-                    queueName, exchangeName, Init.VirtualHost));
-
-            return base.Put(url, queueBinding, cancellationToken).Response(cancellationToken);
-        }
-
-        public Task<ModifyResponse> Delete(string queueName,
+        public Task<DeleteCmdResponse> Delete(string queueName,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(Init.VirtualHost, "virtualHostName",
@@ -150,7 +92,7 @@ namespace HareDu
             LogInfo(string.Format("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.",
                                   queueName, Init.VirtualHost));
 
-            return base.Delete(url, cancellationToken).Response(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
     }
 }

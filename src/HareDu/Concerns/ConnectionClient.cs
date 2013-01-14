@@ -17,10 +17,16 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Contracts;
     using Model;
 
     public interface ConnectionClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        ChannelClient Channel { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -35,5 +41,13 @@ namespace HareDu
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Connection> Get(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<DeleteCmdResponse> Close(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
