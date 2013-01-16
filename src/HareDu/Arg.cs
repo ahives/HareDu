@@ -20,7 +20,7 @@ namespace HareDu
     {
         public static void Validate(string value, string paramName, Action logging)
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 if (!logging.IsNull())
                     logging();
