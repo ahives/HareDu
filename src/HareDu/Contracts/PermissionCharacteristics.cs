@@ -14,30 +14,24 @@
 
 namespace HareDu.Contracts
 {
-    using System.Collections.Generic;
-
-    public interface NewQueueParams
+    public interface PermissionCharacteristics
     {
         /// <summary>
-        /// 
+        /// Sets the configure permissions for the user.
         /// </summary>
-        /// <param name="nodeName"></param>
-        void OnNode(string nodeName);
+        /// <param name="configurePermissions"></param>
+        void Configure(string configurePermissions);
 
         /// <summary>
-        /// 
+        /// Sets the write permissions for the user.
         /// </summary>
-        void IsDurable();
+        /// <param name="writePermissions"></param>
+        void Write(string writePermissions);
 
         /// <summary>
-        /// 
+        /// Sets the read permissions for the user.
         /// </summary>
-        void AutoDeleteWhenNotInUse();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
-        void UsingArguments(List<string> args);
+        /// <param name="readPermissions"></param>
+        void Read(string readPermissions);
     }
 }

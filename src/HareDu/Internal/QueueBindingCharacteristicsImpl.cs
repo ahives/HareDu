@@ -14,34 +14,35 @@
 
 namespace HareDu.Internal
 {
+    using System;
+    using System.Collections.Generic;
     using Contracts;
     using Newtonsoft.Json;
 
-    public class SetUserPermissionsParamsImpl :
-        SetUserPermissionsParams
+    public class QueueBindingCharacteristicsImpl :
+        QueueBindingCharacteristics
     {
-        [JsonProperty(PropertyName = "configure", Order = 1)]
-        public string ConfigurePermissions { get; set; }
-
-        [JsonProperty(PropertyName = "write", Order = 2)]
-        public string WritePermissions { get; set; }
-
-        [JsonProperty(PropertyName = "read", Order = 3)]
-        public string ReadPermissions { get; set; }
-
-        public void SetConfigurePermissions(string configurePermissions)
+        public QueueBindingCharacteristicsImpl()
         {
-            ConfigurePermissions = configurePermissions;
+            RoutingKey = string.Empty;
         }
 
-        public void SetWritePermissions(string writePermissions)
+        [JsonProperty(PropertyName = "routing_key", Order = 1)]
+        public string RoutingKey { get; set; }
+
+        [JsonProperty(PropertyName = "arguments", Order = 2, Required = Required.Default)]
+        public IEnumerable<string> Arguments { get; set; }
+
+        public void UsingRoutingKey(string routingKey)
         {
-            WritePermissions = writePermissions;
+            RoutingKey = routingKey;
         }
 
-        public void SetReadPermissions(string readPermissions)
+        public void WithArguments(Action<Arguments> arg)
         {
-            ReadPermissions = readPermissions;
+            var action = new ArgumentsImpl();
+            arg(action);
+            Arguments = action.ArgumentMap.ToList();
         }
     }
 }

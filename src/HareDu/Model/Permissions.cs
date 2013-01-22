@@ -12,27 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Model
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Model;
+    using Newtonsoft.Json;
 
-    internal class OverviewClientImpl :
-        HareDuClientBase,
-        OverviewClient
+    public class Permissions
     {
-        public OverviewClientImpl(ClientCharacteristicsImpl args) : base(args)
-        {
-        }
+        [JsonProperty("user")]
+        public string User { get; set; }
 
-        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
+        [JsonProperty("vhost")]
+        public string VirtualHost { get; set; }
 
-            string url = "api/overview";
+        [JsonProperty("configure")]
+        public string Configure { get; set; }
 
-            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
-        }
+        [JsonProperty("write")]
+        public string Write { get; set; }
+
+        [JsonProperty("read")]
+        public string Read { get; set; }
     }
 }

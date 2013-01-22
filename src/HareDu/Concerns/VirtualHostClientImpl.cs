@@ -27,7 +27,7 @@ namespace HareDu
         HareDuClientBase,
         VirtualHostClient
     {
-        public VirtualHostClientImpl(ClientInitParamsImpl args) :
+        public VirtualHostClientImpl(ClientCharacteristicsImpl args) :
             base(args)
         {
             Exchange = new ExchangeClientImpl(args);
@@ -46,46 +46,44 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string virtualHostName,
-                                        CancellationToken cancellationToken = default(CancellationToken))
+        public Task<CreateCmdResponse> New(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(virtualHostName, "virtualHostName",
+            Arg.Validate(virtualHost, "virtualHost",
                          () =>
                          LogError(
                              "VirtualHost.New method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
+            string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHost));
 
             return base.Put(url, new StringContent(string.Empty), cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string virtualHostName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DeleteCmdResponse> Delete(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (virtualHostName.SanitizeVirtualHostName() == "2%f")
+            if (virtualHost.SanitizeVirtualHostName() == "2%f")
             {
                 LogError(
                     "VirtualHost.Delete method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
-            Arg.Validate(virtualHostName, "virtualHostName",
+            Arg.Validate(virtualHost, "virtualHost",
                          () =>
                          LogError(
                              "VirtualHost.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/vhosts/{0}", virtualHostName.SanitizeVirtualHostName());
+            string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHostName));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHost));
 
             return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
 
-        public VirtualHostClient Change(string virtualHostName, Action<UserCredentials> args)
+        public VirtualHostClient Change(string virtualHost, Action<UserCredentials> args)
         {
-            Init.OnVirtualHost(virtualHostName);
+            Init.OnVirtualHost(virtualHost);
 
             var userCreds = new UserCredentialsImpl();
             args(userCreds);
@@ -97,7 +95,7 @@ namespace HareDu
 
         public Task<AlivenessTestCmdResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHost",
                          () =>
                          LogError(
                              "VirtualHost.IsAlive method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));

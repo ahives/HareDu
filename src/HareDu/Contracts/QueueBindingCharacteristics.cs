@@ -12,12 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    public class ExchangeRoutingType
+    using System;
+
+    public interface QueueBindingCharacteristics
     {
-        public static readonly string Direct = "direct";
-        public static readonly string Topic = "topic";
-        public static readonly string Fanout = "fanout";
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="routingKey"></param>
+        void UsingRoutingKey(string routingKey);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        void WithArguments(Action<Arguments> arg);
     }
 }

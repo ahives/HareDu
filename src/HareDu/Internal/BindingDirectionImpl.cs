@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Model
+namespace HareDu.Internal
 {
-    using Newtonsoft.Json;
+    using Contracts;
 
-    public class UserPermissions
+    internal class BindingDirectionImpl :
+        BindingDirection
     {
-        [JsonProperty("user")]
-        public string Username { get; set; }
+        public string BindingDirection { get; private set; }
 
-        [JsonProperty("vhost")]
-        public string VirtualHostName { get; set; }
+        public void Destination()
+        {
+            BindingDirection = "destination";
+        }
 
-        [JsonProperty("configure")]
-        public string ConfigurePermissions { get; set; }
-
-        [JsonProperty("write")]
-        public string WritePermissions { get; set; }
-
-        [JsonProperty("read")]
-        public string ReadPermissions { get; set; }
+        public void Source()
+        {
+            BindingDirection = "source";
+        }
     }
 }

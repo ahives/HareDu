@@ -14,12 +14,20 @@
 
 namespace HareDu
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class ValueExtensions
     {
         public static bool IsNull<T>(this T value)
             where T : class
         {
             return (value == null);
+        }
+
+        public static IEnumerable<string> ToList(this Dictionary<string, object> map)
+        {
+            return map.Select(mapping => string.Format("{0}:{1}", mapping.Key, mapping.Value)).ToList();
         }
     }
 }

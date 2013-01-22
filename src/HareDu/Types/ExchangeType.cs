@@ -14,25 +14,13 @@
 
 namespace HareDu
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Model;
-
-    internal class OverviewClientImpl :
-        HareDuClientBase,
-        OverviewClient
+    public class ExchangeType
     {
-        public OverviewClientImpl(ClientCharacteristicsImpl args) : base(args)
-        {
-        }
-
-        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
-
-            string url = "api/overview";
-
-            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
-        }
+        public static readonly string Direct = "direct";
+        public static readonly string Topic = "topic";
+        public static readonly string Fanout = "fanout";
+        public static readonly string Headers = "headers";
+        public static readonly string Federated = "federated";
+        public static readonly string Match = "match";
     }
 }

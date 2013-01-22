@@ -27,8 +27,7 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.UsingCredentials(Settings.Default.LoginUsername,
-                                                                  Settings.Default.LoginPassword);
+                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
@@ -40,9 +39,8 @@ namespace HareDu.Tests
             var response = Client.VirtualHost
                                  .Queue
                                  .Binding
-                                 .New(Settings.Default.Queue, Settings.Default.Exchange,
-                                      x => x.UsingRoutingKey(ExchangeRoutingType.Fanout))
-                                 .Result;
+                                 .New(Settings.Default.Queue, Settings.Default.Exchange, x => x.UsingRoutingKey(Settings.Default.RoutingKey))
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
         }
 
@@ -53,7 +51,7 @@ namespace HareDu.Tests
                                  .Queue
                                  .Binding
                                  .Delete(Settings.Default.Queue, Settings.Default.Exchange, "fanout")
-                                 .Result;
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 

@@ -93,7 +93,7 @@ namespace HareDu.Tests
         //        Settings.Default.VirtualHost, x =>
         //                                          {
         //                                              x.IsDurable();
-        //                                              x.UsingRoutingType(ExchangeRoutingType.Fanout);
+        //                                              x.UsingRoutingType(ExchangeType.Fanout);
         //                                          }).GetAsyncTask().Wait();
         //}
 
@@ -106,7 +106,7 @@ namespace HareDu.Tests
         //            x =>
         //                {
         //                    x.WithPassword(Settings.Default.UserPassword);
-        //                    x.WithTags(UserPermissionTag.Admin);
+        //                    x.WithTags(UserPermissionTag.Administrator);
         //                });
         //    }
 
@@ -117,9 +117,9 @@ namespace HareDu.Tests
         //    var createUserPremissionsRequest = Client.SetUserPermissions(useDefaultUser ? Settings.Default.LoginUsername : Settings.Default.Username,
         //            Settings.Default.VirtualHost, x =>
         //                                              {
-        //                                                  x.SetConfigurePermissions(".*");
-        //                                                  x.SetReadPermissions(".*");
-        //                                                  x.SetWritePermissions(".*");
+        //                                                  x.Configure(".*");
+        //                                                  x.Read(".*");
+        //                                                  x.Write(".*");
         //                                              });
         //    createUserPremissionsRequest.Wait();
         //}

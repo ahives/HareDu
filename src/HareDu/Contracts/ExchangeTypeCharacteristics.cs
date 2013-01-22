@@ -12,27 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Model;
-
-    internal class OverviewClientImpl :
-        HareDuClientBase,
-        OverviewClient
+    public interface ExchangeTypeCharacteristics
     {
-        public OverviewClientImpl(ClientCharacteristicsImpl args) : base(args)
-        {
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        void Fanout();
 
-        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
+        /// <summary>
+        /// 
+        /// </summary>
+        void Direct();
 
-            string url = "api/overview";
+        /// <summary>
+        /// 
+        /// </summary>
+        void Topic();
 
-            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        void Headers();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Match();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Federated();
     }
 }

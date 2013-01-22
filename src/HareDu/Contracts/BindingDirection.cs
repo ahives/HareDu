@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,24 +14,16 @@
 
 namespace HareDu.Contracts
 {
-    public interface SetUserPermissionsParams
+    public interface BindingDirection
     {
         /// <summary>
-        /// Sets the configure permissions for the user.
+        /// 
         /// </summary>
-        /// <param name="configurePermissions"></param>
-        void SetConfigurePermissions(string configurePermissions);
+        void Destination();
 
         /// <summary>
-        /// Sets the write permissions for the user.
+        /// 
         /// </summary>
-        /// <param name="writePermissions"></param>
-        void SetWritePermissions(string writePermissions);
-
-        /// <summary>
-        /// Sets the read permissions for the user.
-        /// </summary>
-        /// <param name="readPermissions"></param>
-        void SetReadPermissions(string readPermissions);
+        void Source();
     }
 }

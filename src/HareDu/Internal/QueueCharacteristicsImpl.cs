@@ -14,18 +14,14 @@
 
 namespace HareDu.Internal
 {
+    using System;
     using System.Collections.Generic;
     using Contracts;
     using Newtonsoft.Json;
 
-    public class NewQueueParamsImpl :
-        NewQueueParams
+    public class QueueCharacteristicsImpl :
+        QueueCharacteristics
     {
-        public NewQueueParamsImpl()
-        {
-            Arguments = new List<string>();
-        }
-
         [JsonProperty(PropertyName = "durable", Order = 2)]
         public bool Durable { get; private set; }
 
@@ -33,7 +29,7 @@ namespace HareDu.Internal
         public bool AutoDelete { get; private set; }
 
         [JsonProperty(PropertyName = "arguments", Order = 3, Required = Required.Default)]
-        public List<string> Arguments { get; set; }
+        public IEnumerable<string> Arguments { get; set; }
 
         [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Node { get; set; }
@@ -53,9 +49,11 @@ namespace HareDu.Internal
             AutoDelete = true;
         }
 
-        public void UsingArguments(List<string> args)
+        public void WithArguments(Action<Arguments> arg)
         {
-            Arguments = args;
+            var action = new ArgumentsImpl();
+            arg(action);
+            Arguments = action.ArgumentMap.ToList();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace HareDu
         HareDuClientBase,
         ChannelClient
     {
-        public ChannelClientImpl(ClientInitParamsImpl args) : base(args)
+        public ChannelClientImpl(ClientCharacteristicsImpl args) : base(args)
         {
         }
 

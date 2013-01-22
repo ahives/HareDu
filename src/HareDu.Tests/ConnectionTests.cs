@@ -24,7 +24,8 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Connections()
         {
-            var response = Client.Connection.GetAll();
+            var response = Client.Connection
+                                 .GetAll();
 
             foreach (var connection in response.Result)
             {
@@ -37,11 +38,11 @@ namespace HareDu.Tests
                 Console.WriteLine("Peer Certificate Issuer: {0}", connection.PeerCertificateIssuer);
                 Console.WriteLine("Address: {0}", connection.Address);
                 Console.WriteLine("Authentication Mechanism Used: {0}", connection.AuthenticationMechanismUsed);
-                Console.WriteLine("Channels: {0}", connection.Channels);
+                Console.WriteLine("ChannelsOpen: {0}", connection.ChannelsOpen);
                 Console.WriteLine("Timeout: {0}", connection.Timeout);
                 Console.WriteLine("Type: {0}", connection.Type);
                 Console.WriteLine("User: {0}", connection.User);
-                Console.WriteLine("Virtual Host: {0}", connection.VirtualHostName);
+                Console.WriteLine("Virtual Host: {0}", connection.VirtualHost);
                 Console.WriteLine("State: {0}", connection.State);
                 Console.WriteLine("SSL Cipher: {0}", connection.SslCipher);
                 Console.WriteLine("SSL Hash: {0}", connection.SslHash);
@@ -55,7 +56,9 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Connection()
         {
-            var connection = Client.Connection.Get(Settings.Default.Connection).Result;
+            var connection = Client.Connection
+                                   .Get(Settings.Default.Connection)
+                                   .Result;
 
             Console.WriteLine("Name: {0}", connection.Name);
             Console.WriteLine("Node: {0}", connection.Node);
@@ -66,11 +69,11 @@ namespace HareDu.Tests
             Console.WriteLine("Peer Certificate Issuer: {0}", connection.PeerCertificateIssuer);
             Console.WriteLine("Address: {0}", connection.Address);
             Console.WriteLine("Authentication Mechanism Used: {0}", connection.AuthenticationMechanismUsed);
-            Console.WriteLine("Channels: {0}", connection.Channels);
+            Console.WriteLine("ChannelsOpen: {0}", connection.ChannelsOpen);
             Console.WriteLine("Timeout: {0}", connection.Timeout);
             Console.WriteLine("Type: {0}", connection.Type);
             Console.WriteLine("User: {0}", connection.User);
-            Console.WriteLine("Virtual Host: {0}", connection.VirtualHostName);
+            Console.WriteLine("Virtual Host: {0}", connection.VirtualHost);
             Console.WriteLine("State: {0}", connection.State);
             Console.WriteLine("SSL Cipher: {0}", connection.SslCipher);
             Console.WriteLine("SSL Hash: {0}", connection.SslHash);

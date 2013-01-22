@@ -24,7 +24,7 @@ namespace HareDu
         HareDuClientBase,
         ConnectionClient
     {
-        public ConnectionClientImpl(ClientInitParamsImpl args) : base(args)
+        public ConnectionClientImpl(ClientCharacteristicsImpl args) : base(args)
         {
             Channel = new ChannelClientImpl(args);
         }

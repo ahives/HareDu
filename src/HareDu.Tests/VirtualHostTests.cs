@@ -25,8 +25,7 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Virtual_Host()
         {
-            var response = Client.VirtualHost.Delete(Settings.Default.VirtualHost).Result;
-
+            var response = Client.VirtualHost.Delete(Settings.Default.VirtualHost).Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -47,17 +46,15 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Create_Virtual_Host_Is_Working()
         {
-            var request = Client.VirtualHost.New(Settings.Default.VirtualHost);
-
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+            var response = Client.VirtualHost.New(Settings.Default.VirtualHost).Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
-            var request = Client.VirtualHost.Delete(string.Empty).Result;
-
+            var request = Client.VirtualHost.Delete(string.Empty).Response();
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
 
@@ -68,12 +65,10 @@ namespace HareDu.Tests
                                  .Change(Settings.Default.VirtualHost, x =>
                                                                            {
                                                                                x.SetUsername(Settings.Default.Username);
-                                                                               x.SetPassword(
-                                                                                   Settings.Default.UserPassword);
+                                                                               x.SetPassword(Settings.Default.UserPassword);
                                                                            })
                                  .IsAlive()
-                                 .Result;
-
+                                 .Response();
             Assert.AreEqual(null, response.Status);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }

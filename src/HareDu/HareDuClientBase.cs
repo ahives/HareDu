@@ -25,7 +25,7 @@ namespace HareDu
 
     public abstract class HareDuClientBase
     {
-        protected HareDuClientBase(ClientInitParamsImpl args)
+        protected HareDuClientBase(ClientCharacteristicsImpl args)
         {
             Arg.Validate(args.HostUrl, "hostUrl",
                          () =>
@@ -39,7 +39,7 @@ namespace HareDu
                          () =>
                          LogError(
                              "HareDuClientBase constructor threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(args.VirtualHost, "virtualHostName",
+            Arg.Validate(args.VirtualHost, "virtualHost",
                          () =>
                          LogError(
                              "HareDuClientBase constructor threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
@@ -47,21 +47,24 @@ namespace HareDu
             Init = args;
             Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
-            Client = GetClient(Init.HostUrl, Init.Username, Init.Password);
+            Client = GetClient(Init.HostUrl, Init.Username, Init.Password, Init.Timeout);
         }
 
         protected HttpClient Client { get; set; }
         protected ILog Logger { get; private set; }
         protected bool IsLoggingEnabled { get; private set; }
-        protected ClientInitParamsImpl Init { get; private set; }
+        protected ClientCharacteristicsImpl Init { get; private set; }
 
-        protected HttpClient GetClient(string hostUrl, string username, string password)
+        protected HttpClient GetClient(string hostUrl, string username, string password, TimeSpan timeout = default(TimeSpan))
         {
             var client = new HttpClient(new HttpClientHandler
                                             {
                                                 Credentials = new NetworkCredential(Init.Username, Init.Password)
                                             }) {BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl))};
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (timeout != TimeSpan.Zero)
+                client.Timeout = timeout;
 
             return client;
         }

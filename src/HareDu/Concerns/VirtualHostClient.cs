@@ -43,26 +43,26 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string virtualHostName,
+        Task<CreateCmdResponse> New(string virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string virtualHostName,
+        Task<DeleteCmdResponse> Delete(string virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHostName"></param>
-        VirtualHostClient Change(string virtualHostName, Action<UserCredentials> args);
+        /// <param name="virtualHost"></param>
+        VirtualHostClient Change(string virtualHost, Action<UserCredentials> args);
 
         /// <summary>
         /// 

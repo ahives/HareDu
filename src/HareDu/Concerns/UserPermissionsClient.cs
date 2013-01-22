@@ -23,12 +23,12 @@ namespace HareDu
 
     public interface UserPermissionsClient
     {
-        Task<UserPermissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<UserPermissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         Task<CreateCmdResponse> Set(string userName,
-                                 Action<SetUserPermissionsParams> args,
+                                 Action<PermissionCharacteristics> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken));

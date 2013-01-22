@@ -16,31 +16,20 @@ namespace HareDu.Internal
 {
     using System.Collections.Generic;
     using Contracts;
-    using Newtonsoft.Json;
 
-    public class BindQueueParamsImpl :
-        BindQueueParams
+    internal class ArgumentsImpl :
+        Arguments
     {
-        public BindQueueParamsImpl()
+        public ArgumentsImpl()
         {
-            Arguments = new List<string>();
-            RoutingKey = string.Empty;
+            ArgumentMap = new Dictionary<string, object>();
         }
 
-        [JsonProperty(PropertyName = "routing_key", Order = 1)]
-        public string RoutingKey { get; set; }
+        public Dictionary<string, object> ArgumentMap { get; private set; }
 
-        [JsonProperty(PropertyName = "arguments", Order = 2, Required = Required.Default)]
-        public List<string> Arguments { get; set; }
-
-        public void UsingRoutingKey(string routingKey)
+        public void Add<T>(string arg, T value)
         {
-            RoutingKey = routingKey;
-        }
-
-        public void UsingArguments(List<string> args)
-        {
-            Arguments = args;
+            ArgumentMap.Add(arg, value);
         }
     }
 }

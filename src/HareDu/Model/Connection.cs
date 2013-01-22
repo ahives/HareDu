@@ -22,7 +22,7 @@ namespace HareDu.Model
         public string Name { get; set; }
 
         [JsonProperty("vhost")]
-        public string VirtualHostName { get; set; }
+        public string VirtualHost { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }
@@ -34,7 +34,7 @@ namespace HareDu.Model
         public string State { get; set; }
 
         [JsonProperty("channels")]
-        public int Channels { get; set; }
+        public int ChannelsOpen { get; set; }
 
         [JsonProperty("node")]
         public string Node { get; set; }

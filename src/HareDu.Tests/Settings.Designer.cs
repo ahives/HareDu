@@ -154,5 +154,17 @@ namespace HareDu.Tests {
                 this["Connection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("test_routing_key")]
+        public string RoutingKey {
+            get {
+                return ((string)(this["RoutingKey"]));
+            }
+            set {
+                this["RoutingKey"] = value;
+            }
+        }
     }
 }

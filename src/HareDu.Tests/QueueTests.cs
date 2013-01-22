@@ -28,7 +28,8 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
+                                               x.UsingCredentials(Settings.Default.LoginUsername,
+                                                                  Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
@@ -40,7 +41,7 @@ namespace HareDu.Tests
             var response = Client.VirtualHost
                                  .Queue
                                  .New(Settings.Default.Queue, x => x.IsDurable())
-                                 .Result;
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -49,14 +50,33 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Queue
-                                 .New("MyTestQueue3", x =>
-                                                          {
-                                                              x.IsDurable();
-                                                              x.OnNode(string.Format("rabbit@{0}",
-                                                                                     Environment.GetEnvironmentVariable(
-                                                                                         "COMPUTERNAME")));
-                                                          })
-                                 .Result;
+                                 .New(string.Format("{0}4", Settings.Default.Queue),
+                                      x =>
+                                          {
+                                              x.IsDurable();
+                                              x.OnNode(
+                                                  string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")));
+                                          })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Create_Queue_With_Arguments()
+        {
+            var response = Client.VirtualHost
+                                 .Queue
+                                 .New(string.Format("{0}4", Settings.Default.Queue),
+                                      x =>
+                                          {
+                                              x.IsDurable();
+                                              x.WithArguments(y =>
+                                                                  {
+                                                                      y.Add("", 0);
+                                                                      y.Add("", 0);
+                                                                  });
+                                          })
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -64,9 +84,9 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Queue()
         {
             var response = Client.VirtualHost
-                                .Queue
-                                .Delete(Settings.Default.Queue)
-                                .Result;
+                                 .Queue
+                                 .Delete(Settings.Default.Queue)
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -86,12 +106,22 @@ namespace HareDu.Tests
                 Console.WriteLine("Messages Ready: {0}", queue.MessagesReady);
                 Console.WriteLine("Messages Unacknowledged: {0}", queue.MessagesUnacknowledged);
                 Console.WriteLine("Node: {0}", queue.Node);
-                Console.WriteLine("Durable: {0}", queue.IsDurable);
+                Console.WriteLine("IsDurable: {0}", queue.IsDurable);
                 Console.WriteLine("Consumers: {0}", queue.Consumers);
                 Console.WriteLine("Idle Since: {0}", queue.IdleSince);
                 Console.WriteLine("****************************************************");
                 Console.WriteLine();
             }
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Purge_Queue()
+        {
+            var response = Client.VirtualHost
+                                 .Queue
+                                 .Purge(Settings.Default.Queue)
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
     }
 }

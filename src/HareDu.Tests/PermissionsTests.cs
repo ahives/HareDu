@@ -25,35 +25,52 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var request = Client.User.Permissions.Set(Settings.Default.Username, x =>
-                                                                                     {
-                                                                                         x.SetConfigurePermissions(".*");
-                                                                                         x.SetReadPermissions(".*");
-                                                                                         x.SetWritePermissions(".*");
-                                                                                     });
+            var response = Client.User
+                                 .Permissions
+                                 .Set(Settings.Default.Username, x =>
+                                                                     {
+                                                                         x.Configure(".*");
+                                                                         x.Read(".*");
+                                                                         x.Write(".*");
+                                                                     })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
 
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Verify_Throws_Exception_When_Permissions_Null()
+        {
+            var response = Client.User
+                                 .Permissions
+                                 .Set(Settings.Default.Username, null)
+                                 .Response();
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var request = Client.User.Permissions.Delete(Settings.Default.Username);
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+            var response = Client.User
+                                 .Permissions
+                                 .Delete(Settings.Default.Username)
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var request = Client.User.Permissions.GetAll();
+            var response = Client.User
+                                 .Permissions
+                                 .GetAll();
 
-            foreach (var userPermissions in request.Result)
+            foreach (var permission in response.Result)
             {
-                Console.WriteLine("Virtual Host: {0}", userPermissions.VirtualHostName);
-                Console.WriteLine("Username: {0}", userPermissions.Username);
-                Console.WriteLine("Configure Permissions: {0}", userPermissions.ConfigurePermissions);
-                Console.WriteLine("Read Permissions: {0}", userPermissions.ReadPermissions);
-                Console.WriteLine("Write Permissions: {0}", userPermissions.WritePermissions);
+                Console.WriteLine("Virtual Host: {0}", permission.VirtualHost);
+                Console.WriteLine("User: {0}", permission.User);
+                Console.WriteLine("Configure Permissions: {0}", permission.Configure);
+                Console.WriteLine("Read Permissions: {0}", permission.Read);
+                Console.WriteLine("Write Permissions: {0}", permission.Write);
                 Console.WriteLine("****************************************************");
                 Console.WriteLine();
             }
@@ -62,13 +79,16 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_User_Permissions()
         {
-            var permissions = Client.User.Permissions.Get(Settings.Default.Username).Result;
+            var permissions = Client.User
+                                    .Permissions
+                                    .Get(Settings.Default.Username)
+                                    .Result;
 
-            Console.WriteLine("Virtual Host: {0}", permissions.VirtualHostName);
-            Console.WriteLine("Username: {0}", permissions.Username);
-            Console.WriteLine("Configure Permissions: {0}", permissions.ConfigurePermissions);
-            Console.WriteLine("Read Permissions: {0}", permissions.ReadPermissions);
-            Console.WriteLine("Write Permissions: {0}", permissions.WritePermissions);
+            Console.WriteLine("Virtual Host: {0}", permissions.VirtualHost);
+            Console.WriteLine("User: {0}", permissions.User);
+            Console.WriteLine("Configure Permissions: {0}", permissions.Configure);
+            Console.WriteLine("Read Permissions: {0}", permissions.Read);
+            Console.WriteLine("Write Permissions: {0}", permissions.Write);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
         }

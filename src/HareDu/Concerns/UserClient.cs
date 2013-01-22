@@ -51,7 +51,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string userName, Action<NewUserParams> args,
+        Task<CreateCmdResponse> New(string userName, Action<UserCharacteristics> args,
                                  CancellationToken cancellationToken =
                                      default(CancellationToken));
 

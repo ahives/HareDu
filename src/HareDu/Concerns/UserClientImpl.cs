@@ -26,7 +26,7 @@ namespace HareDu
         HareDuClientBase,
         UserClient
     {
-        public UserClientImpl(ClientInitParamsImpl args) : base(args)
+        public UserClientImpl(ClientCharacteristicsImpl args) : base(args)
         {
             Permissions = new UserPermissionsClientImpl(args);
         }
@@ -57,7 +57,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<User>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string userName, Action<NewUserParams> args,
+        public Task<CreateCmdResponse> New(string userName, Action<UserCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Arg.Validate(userName, "userName",
@@ -70,7 +70,7 @@ namespace HareDu
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var user = new NewUserParamsImpl();
+            var user = new UserCharacteristicsImpl();
             args(user);
 
             Arg.Validate(user.Password, "password",

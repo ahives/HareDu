@@ -24,9 +24,9 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
-            var request = Client.Cluster.Node.GetAll();
+            var response = Client.Cluster.Node.GetAll();
 
-            foreach (var node in request.Result)
+            foreach (var node in response.Result)
             {
                 Console.WriteLine("Name: {0}", node.Name);
                 Console.WriteLine("Type: {0}", node.Type);

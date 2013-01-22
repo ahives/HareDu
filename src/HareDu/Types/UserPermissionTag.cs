@@ -16,8 +16,9 @@ namespace HareDu
 {
     public class UserPermissionTag
     {
-        public static readonly string Admin = "administrator";
+        public static readonly string Administrator = "administrator";
         public static readonly string Monitoring = "monitoring";
+        public static readonly string Management = "management";
         public static readonly string None = string.Empty;
     }
 }

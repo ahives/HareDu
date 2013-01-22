@@ -26,7 +26,7 @@ namespace HareDu
         HareDuClientBase,
         QueueClient
     {
-        public QueueClientImpl(ClientInitParamsImpl args)
+        public QueueClientImpl(ClientCharacteristicsImpl args)
             : base(args)
         {
             Binding = new QueueBindingClientImpl(args);
@@ -44,14 +44,14 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string queueName, Action<NewQueueParams> args,
+        public Task<CreateCmdResponse> New(string queue, Action<QueueCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHost",
                          () =>
                          LogError(
                              "Queue.New method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queueName, "queueName",
+            Arg.Validate(queue, "queue",
                          () =>
                          LogError(
                              "Queue.New method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
@@ -59,38 +59,54 @@ namespace HareDu
             if (args == null)
                 throw new ArgumentNullException("args");
 
-            var queue = new NewQueueParamsImpl();
-            args(queue);
+            var action = new QueueCharacteristicsImpl();
+            args(action);
 
-            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queueName);
+            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 
-            LogInfo(string.IsNullOrEmpty(queue.Node)
+            LogInfo(string.IsNullOrEmpty(action.Node)
                         ? string.Format(
-                            "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queueName,
-                            Init.VirtualHost)
+                            "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queue, Init.VirtualHost)
                         : string.Format(
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.",
-                            queueName, Init.VirtualHost, queue.Node));
+                            queue, Init.VirtualHost, action.Node));
 
-            return base.Put(url, queue, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, action, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string queueName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DeleteCmdResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHostName",
+            Arg.Validate(Init.VirtualHost, "virtualHost",
                          () =>
                          LogError(
                              "Queue.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queueName, "queueName",
+            Arg.Validate(queue, "queue",
                          () =>
                          LogError(
                              "Queue.Delete method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
 
-            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queueName);
+            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.",
-                                  queueName, Init.VirtualHost));
+                                  queue, Init.VirtualHost));
+
+            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+        }
+
+        public Task<DeleteCmdResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Arg.Validate(Init.VirtualHost, "virtualHost",
+             () =>
+             LogError(
+                 "Queue.Purge method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            Arg.Validate(queue, "queue",
+                         () =>
+                         LogError(
+                             "Queue.Purge method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
+
+            string url = string.Format("api/queues/{0}/{1}/contents", Init.VirtualHost.SanitizeVirtualHostName(), queue);
+
+            LogInfo(string.Format("Sent request to RabbitMQ server to purge the contents of queue '{0}'.", queue));
 
             return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }

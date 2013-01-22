@@ -14,17 +14,17 @@
 
 namespace HareDu.Internal
 {
+    using System;
     using System.Collections.Generic;
     using Contracts;
     using Newtonsoft.Json;
 
-    public class NewExchangeParamsImpl :
-        NewExchangeParams
+    public class ExchangeCharacteristicsImpl :
+        ExchangeCharacteristics
     {
-        public NewExchangeParamsImpl()
+        public ExchangeCharacteristicsImpl()
         {
-            Arguments = new List<string>();
-            RoutingType = ExchangeRoutingType.Direct;
+            RoutingType = ExchangeType.Direct;
         }
 
         [JsonProperty(PropertyName = "type", Order = 1)]
@@ -40,7 +40,7 @@ namespace HareDu.Internal
         public bool Internal { get; set; }
 
         [JsonProperty(PropertyName = "arguments", Order = 5, Required = Required.Default)]
-        public List<string> Arguments { get; set; }
+        public IEnumerable<string> Arguments { get; set; }
 
         public void IsDurable()
         {
@@ -57,14 +57,18 @@ namespace HareDu.Internal
             Internal = true;
         }
 
-        public void UsingArguments(List<string> args)
+        public void WithArguments(Action<Arguments> arg)
         {
-            Arguments = args;
+            var action = new ArgumentsImpl();
+            arg(action);
+            Arguments = action.ArgumentMap.ToList();
         }
 
-        public void UsingRoutingType(string routingType)
+        public void UsingRoutingType(Action<ExchangeTypeCharacteristics> routingType)
         {
-            RoutingType = routingType;
+            var routingTypeParam = new ExchangeTypeCharacteristicsImpl();
+            routingType(routingTypeParam);
+            RoutingType = routingTypeParam.RoutingType;
         }
     }
 }

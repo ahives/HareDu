@@ -14,32 +14,41 @@
 
 namespace HareDu.Internal
 {
-    using System.Collections.Generic;
     using Contracts;
-    using Newtonsoft.Json;
 
-    public class NewUserParamsImpl :
-        NewUserParams
+    internal class ExchangeTypeCharacteristicsImpl :
+        ExchangeTypeCharacteristics
     {
-        public NewUserParamsImpl()
+        public string RoutingType { get; set; }
+
+        public void Fanout()
         {
-            Tags = UserPermissionTag.None;
+            RoutingType = ExchangeType.Fanout;
         }
 
-        [JsonProperty(PropertyName = "password", Order = 1, Required = Required.Always)]
-        public string Password { get; set; }
-
-        [JsonProperty(PropertyName = "tags", Order = 2, Required = Required.Default)]
-        public string Tags { get; set; }
-
-        public void WithPassword(string password)
+        public void Direct()
         {
-            Password = password;
+            RoutingType = ExchangeType.Direct;
         }
 
-        public void WithTags(List<string> tags)
+        public void Topic()
         {
-            Tags = tags.Count <= 0 ? UserPermissionTag.None : string.Join(",", tags);
+            RoutingType = ExchangeType.Topic;
+        }
+
+        public void Headers()
+        {
+            RoutingType = ExchangeType.Headers;
+        }
+
+        public void Match()
+        {
+            RoutingType = ExchangeType.Match;
+        }
+
+        public void Federated()
+        {
+            RoutingType = ExchangeType.Federated;
         }
     }
 }

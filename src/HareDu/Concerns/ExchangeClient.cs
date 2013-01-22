@@ -33,42 +33,35 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchangeName"></param>
+        /// <param name="exchange"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Exchange> Get(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Exchange> Get(string exchange, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchangeName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindingsWithSource(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exchangeName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindingsWithDestination(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exchangeName"></param>
+        /// <param name="exchange"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string exchangeName, Action<NewExchangeParams> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<CreateCmdResponse> New(string exchange, Action<ExchangeCharacteristics> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchangeName"></param>
+        /// <param name="exchange"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string exchangeName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<DeleteCmdResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchange"></param>
+        /// <param name="boundTo"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Binding>> GetAllBindings(string exchange, Action<BindingDirection> boundTo, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

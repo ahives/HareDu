@@ -26,43 +26,43 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
-        /// <param name="exchangeName"></param>
+        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string queueName, string exchangeName, Action<BindQueueParams> args,
+        Task<CreateCmdResponse> New(string queue, string exchange, Action<QueueBindingCharacteristics> args,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
-        /// <param name="exchangeName"></param>
+        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string queueName, string exchangeName, string propertiesKey,
+        Task<DeleteCmdResponse> Delete(string queue, string exchange, string propertiesKey,
                                        CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
+        /// <param name="queue"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAll(string queueName,
+        Task<IEnumerable<Binding>> GetAll(string queue,
                                           CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
-        /// <param name="exchangeName"></param>
+        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Binding> Get(string queueName, string exchangeName, string propertiesKey,
+        Task<Binding> Get(string queue, string exchange, string propertiesKey,
                           CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HareDu.Tests" GeneratedClassName="Settings1">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HareDu.Tests" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="HostUrl" Type="System.String" Scope="User">
@@ -34,6 +34,9 @@
     </Setting>
     <Setting Name="Connection" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1:13507 -&gt; 127.0.0.1:5672</Value>
+    </Setting>
+    <Setting Name="RoutingKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">test_routing_key</Value>
     </Setting>
   </Settings>
 </SettingsFile>

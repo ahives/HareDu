@@ -31,26 +31,33 @@ namespace HareDu
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="cancellationToken"></param>
+        /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns></returns>
         Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
+        /// <param name="queue"></param>
         /// <param name="args"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<CreateCmdResponse> New(string queueName, Action<NewQueueParams> args,
-                                    CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name="cancellationToken">Task cancellation token.</param>
+        /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
+        Task<CreateCmdResponse> New(string queue, Action<QueueCharacteristics> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queueName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string queueName, CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name="queue"></param>
+        /// <param name="cancellationToken">Task cancellation token.</param>
+        /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
+        Task<DeleteCmdResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Deletes all the messages in the specified queue.
+        /// </summary>
+        /// <param name="queue">Name of the queue to purge</param>
+        /// <param name="cancellationToken">Task cancellation token.</param>
+        /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
+        Task<DeleteCmdResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -14,13 +14,14 @@
 
 namespace HareDu
 {
+    using System;
     using Common.Logging;
     using Contracts;
 
-    public class ClientInitParamsImpl :
-        ClientInitParams
+    public class ClientCharacteristicsImpl :
+        ClientCharacteristics
     {
-        public ClientInitParamsImpl()
+        public ClientCharacteristicsImpl()
         {
             VirtualHost = "/";
         }
@@ -34,6 +35,8 @@ namespace HareDu
         public string VirtualHost { get; private set; }
 
         public ILog Logger { get; private set; }
+
+        public TimeSpan Timeout { get; private set; }
 
         public void ConnectTo(string hostUrl)
         {
@@ -54,9 +57,14 @@ namespace HareDu
             }
         }
 
-        public void OnVirtualHost(string virtualHostName)
+        public void OnVirtualHost(string virtualHost)
         {
-            VirtualHost = virtualHostName;
+            VirtualHost = virtualHost;
+        }
+
+        public void TimeoutAfter(TimeSpan timeout)
+        {
+            Timeout = timeout;
         }
     }
 }

@@ -12,18 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    internal class ClusterClientImpl :
-        ClusterClient
-    {
-        public ClusterClientImpl(ClientCharacteristicsImpl args)
-        {
-            Overview = new OverviewClientImpl(args);
-            Node = new NodeClientImpl(args);
-        }
+    using System;
 
-        public OverviewClient Overview { get; private set; }
-        public NodeClient Node { get; private set; }
+    public interface QueueCharacteristics
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeName"></param>
+        void OnNode(string nodeName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void IsDurable();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void AutoDeleteWhenNotInUse();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        void WithArguments(Action<Arguments> arg);
     }
 }

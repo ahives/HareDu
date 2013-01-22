@@ -14,11 +14,20 @@
 
 namespace HareDu.Contracts
 {
-    public interface ClientInitParams
+    using System;
+
+    public interface UserCharacteristics
     {
-        void ConnectTo(string hostUrl);
-        void UsingCredentials(string username, string password);
-        void EnableLogging(string loggerName);
-        void OnVirtualHost(string virtualHostName);
+        /// <summary>
+        /// Defines the password the user will have upon creation.
+        /// </summary>
+        /// <param name="password"></param>
+        void WithPassword(string password);
+
+        /// <summary>
+        /// Defines the level of permissions that the user will have upon creation.
+        /// </summary>
+        /// <param name="tags">Generates a comma-separated list of tags (e.g. administrator, monitoring, management) representing the user access level.</param>
+        void WithTags(Action<UserAccessCharacteristics> tags);
     }
 }

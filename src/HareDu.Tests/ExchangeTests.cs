@@ -28,8 +28,7 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.UsingCredentials(Settings.Default.LoginUsername,
-                                                                  Settings.Default.LoginPassword);
+                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
@@ -38,16 +37,15 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Exchange()
         {
-            var request = Client.VirtualHost
-                                .Exchange
-                                .New("NewExchange1", x =>
-                                                                    {
-                                                                        x.IsDurable();
-                                                                        x.UsingRoutingType(
-                                                                            ExchangeRoutingType.Fanout);
-                                                                    });
-
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+            var response = Client.VirtualHost
+                                 .Exchange
+                                 .New("NewExchange2", x =>
+                                                          {
+                                                              x.IsDurable();
+                                                              x.UsingRoutingType(y => y.Fanout());
+                                                          })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
@@ -55,9 +53,9 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Exchange
-                                 .Delete(Settings.Default.Exchange);
-
-            Assert.AreEqual(HttpStatusCode.NoContent, response.Result.StatusCode);
+                                 .Delete(Settings.Default.Exchange)
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
@@ -65,7 +63,7 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Exchange
-                                 .GetAllBindingsWithDestination(Settings.Default.Exchange);
+                                 .GetAllBindings(Settings.Default.Exchange, x => x.Destination());
 
             foreach (var binding in response.Result)
             {
@@ -85,7 +83,7 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Exchange
-                                 .GetAllBindingsWithSource(Settings.Default.Exchange);
+                                 .GetAllBindings(Settings.Default.Exchange, x => x.Source());
 
             foreach (var binding in response.Result)
             {

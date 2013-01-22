@@ -26,21 +26,37 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User()
         {
-            var request = Client.User.New(Settings.Default.Username, x =>
-                                                                            {
-                                                                                x.WithPassword(
-                                                                                    Settings.Default.UserPassword);
-                                                                                x.WithTags(
-                                                                                    new List<string>() { Settings.Default.UserPermissionsTags });
-                                                                            });
+            var response = Client.User
+                                 .New(string.Format("{0}1", Settings.Default.Username), x =>
+                                                                                            {
+                                                                                                x.WithPassword(Settings.Default.UserPassword);
+                                                                                                x.WithTags(y => y.Administrator());
+                                                                                            })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
 
-            Assert.AreEqual(HttpStatusCode.NoContent, request.Result.StatusCode);
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Create_User_With_Multiple_Tags()
+        {
+            var response = Client.User
+                                 .New(string.Format("{0}2", Settings.Default.Username), x =>
+                                                                                            {
+                                                                                                x.WithPassword(Settings.Default.UserPassword);
+                                                                                                x.WithTags(y =>
+                                                                                                               {
+                                                                                                                   y.Monitoring();
+                                                                                                                   y.Management();
+                                                                                                               });
+                                                                                            })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User()
         {
-            var response = Client.User.Delete(Settings.Default.Username).Result;
+            var response = Client.User.Delete(Settings.Default.Username).Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -75,27 +91,29 @@ namespace HareDu.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
-            var request = Client.User.New(Settings.Default.Username, null);
+            var response = Client.User.New(Settings.Default.Username, null).Response();
         }
 
         [Test, Category("Integration"), Explicit]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
-            var request = Client.User.New(Settings.Default.Username,
-                                             x => x.WithTags(new List<string>() { Settings.Default.UserPermissionsTags }));
+            var response = Client.User
+                                 .New(Settings.Default.Username, x => x.WithTags(y => y.Administrator()))
+                                 .Response();
         }
 
         [Test, Category("Integration"), Explicit]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
-            var request = Client.User.New(null, x =>
-                                                       {
-                                                           x.WithPassword(Settings.Default.UserPassword);
-                                                           x.WithTags(
-                                                               new List<string>() { Settings.Default.UserPermissionsTags });
-                                                       });
+            var response = Client.User
+                                 .New(null, x =>
+                                                {
+                                                    x.WithPassword(Settings.Default.UserPassword);
+                                                    x.WithTags(y => y.Administrator());
+                                                })
+                                 .Response();
         }
     }
 }

@@ -14,9 +14,9 @@
 
 namespace HareDu.Contracts
 {
-    using System.Collections.Generic;
+    using System;
 
-    public interface NewExchangeParams
+    public interface ExchangeCharacteristics
     {
         /// <summary>
         /// 
@@ -36,13 +36,13 @@ namespace HareDu.Contracts
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="args"></param>
-        void UsingArguments(List<string> args);
+        /// <param name="arg"></param>
+        void WithArguments(Action<Arguments> arg);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="routingType"></param>
-        void UsingRoutingType(string routingType);
+        void UsingRoutingType(Action<ExchangeTypeCharacteristics> routingType);
     }
 }

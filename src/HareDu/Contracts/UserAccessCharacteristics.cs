@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Contracts
 {
-    internal class ClusterClientImpl :
-        ClusterClient
+    public interface UserAccessCharacteristics
     {
-        public ClusterClientImpl(ClientCharacteristicsImpl args)
-        {
-            Overview = new OverviewClientImpl(args);
-            Node = new NodeClientImpl(args);
-        }
-
-        public OverviewClient Overview { get; private set; }
-        public NodeClient Node { get; private set; }
+        void None();
+        void Administrator();
+        void Monitoring();
+        void Management();
     }
 }
