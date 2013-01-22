@@ -1,4 +1,4 @@
-COPYRIGHT = "Copyright 2012-2013 Chris Patterson, Albert Hives."
+COPYRIGHT = "Copyright 2012-2013 Chris Patterson, Albert L. Hives."
 
 require File.dirname(__FILE__) + "/build_support/BuildUtils.rb"
 require File.dirname(__FILE__) + "/build_support/util.rb"
@@ -132,7 +132,7 @@ end
 nuspec :create_nuspec do |nuspec|
   nuspec.id = 'HareDu'
   nuspec.version = NUGET_VERSION
-  nuspec.authors = 'Albert Hives, Chris Patterson, Rajesh Gande'
+  nuspec.authors = 'Albert L. Hives, Chris Patterson, et al.'
   nuspec.summary = 'A client API for monitoring and configuring RabbitMQ via REST'
   nuspec.description = 'A client API for monitoring and configuring RabbitMQ via REST'
   nuspec.title = 'HareDu'
