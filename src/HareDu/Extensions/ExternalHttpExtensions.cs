@@ -15,6 +15,7 @@
 namespace HareDu
 {
     using System.Threading.Tasks;
+    using Async;
     using Contracts;
 
     public static class ExternalHttpExtensions

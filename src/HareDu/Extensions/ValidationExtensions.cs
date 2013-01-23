@@ -11,14 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace HareDu
 {
     using System;
 
-    internal class Arg
+    internal static class ValidationExtensions
     {
-        public static void Validate(string value, string paramName, Action logging)
+        public static void Validate(this string value, string paramName, Action logging)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -29,9 +28,12 @@ namespace HareDu
             }
         }
 
-        public static void Validate<T>(T value, string paramName)
+        public static void Validate<T>(this T value, string paramName, Action logging)
             where T : class
         {
+            if (!logging.IsNull())
+                logging();
+
             if (value.IsNull())
                 throw new ArgumentNullException(paramName);
         }

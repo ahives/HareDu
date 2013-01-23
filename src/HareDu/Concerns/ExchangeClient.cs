@@ -18,6 +18,7 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Async;
     using Contracts;
     using Model;
 
@@ -59,9 +60,9 @@ namespace HareDu
         /// 
         /// </summary>
         /// <param name="exchange"></param>
-        /// <param name="boundTo"></param>
+        /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindings(string exchange, Action<BindingDirection> boundTo, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAllBindings(string exchange, Action<BindingDirection> args, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

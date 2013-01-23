@@ -38,10 +38,7 @@ namespace HareDu
 
         public Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(channelName, "channelName",
-                         () =>
-                         LogError(
-                             "GetChannel method threw an ArgumentNullException exception because channel name was invalid (i.e. empty, null, or all whitespaces)"));
+            channelName.Validate("channelName", () => LogError(GetArgumentNullExceptionMsg, "Channel.Get"));
 
             string url = string.Format("api/channels/{0}", channelName);
 

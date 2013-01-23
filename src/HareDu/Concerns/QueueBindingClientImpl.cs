@@ -18,6 +18,7 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Async;
     using Contracts;
     using Internal;
     using Model;
@@ -33,29 +34,15 @@ namespace HareDu
         public Task<CreateCmdResponse> New(string queue, string exchange, Action<QueueBindingCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Queue.Binding.New method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queue, "queue",
-                         () =>
-                         LogError(
-                             "Queue.Binding.New method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(exchange, "exchange",
-                         () =>
-                         LogError(
-                             "Queue.Binding.New method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
+            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
+            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
+            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
 
-            if (args == null)
-                throw new ArgumentNullException("args");
+            var argsImpl = new QueueBindingCharacteristicsImpl();
+            args(argsImpl);
 
-            var queueBinding = new QueueBindingCharacteristicsImpl();
-            args(queueBinding);
-
-            Arg.Validate(queueBinding.RoutingKey, "routingKey",
-                         () =>
-                         LogError(
-                             "Queue.Binding.New method threw an ArgumentNullException exception because routing key was invalid (i.e. empty, null, or all whitespaces)"));
+            argsImpl.RoutingKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", Init.VirtualHost.SanitizeVirtualHostName(), exchange, queue);
 
@@ -64,28 +51,16 @@ namespace HareDu
                     "Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.",
                     queue, exchange, Init.VirtualHost));
 
-            return base.Post(url, queueBinding, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Post(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
         public Task<DeleteCmdResponse> Delete(string queue, string exchange, string propertiesKey,
                                               CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Binding.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queue, "queue",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Binding.Delete method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(exchange, "exchange",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Binding.Delete method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(propertiesKey, "propertiesKey",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Binding.Delete method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
+            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
+            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
+            propertiesKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());
@@ -98,17 +73,10 @@ namespace HareDu
             return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAll(string queue,
-                                                 CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<Binding>> GetAll(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Queue.Binding.GetAll method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queue, "queue",
-                         () =>
-                         LogError(
-                             "Queue.Binding.GetAll method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.GetAll"));
+            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.GetAll"));
 
             LogInfo(
                 string.Format(
@@ -123,22 +91,10 @@ namespace HareDu
         public Task<Binding> Get(string queue, string exchange, string propertiesKey,
                                  CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(queue, "queue",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Delete method threw an ArgumentNullException exception because queue name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(exchange, "exchange",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Delete method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(propertiesKey, "propertiesKey",
-                         () =>
-                         LogError(
-                             "Queue.Binding.Delete method threw an ArgumentNullException exception because exchange name was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
+            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
+            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
+            propertiesKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());

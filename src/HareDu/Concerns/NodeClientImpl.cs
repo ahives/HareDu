@@ -38,10 +38,7 @@ namespace HareDu
 
         public Task<Node> Get(string nodeName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(nodeName, "nodeName",
-                         () =>
-                         LogError(
-                             "Cluster.Node.Get method threw an ArgumentNullException exception because node name was invalid (i.e. empty, null, or all whitespaces)"));
+            nodeName.Validate("nodeName", () => LogError(GetArgumentNullExceptionMsg, "Cluster.Node.Get"));
 
             LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 

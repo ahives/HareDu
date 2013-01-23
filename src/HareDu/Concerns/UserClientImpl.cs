@@ -18,6 +18,7 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Async;
     using Contracts;
     using Internal;
     using Model;
@@ -26,7 +27,8 @@ namespace HareDu
         HareDuClientBase,
         UserClient
     {
-        public UserClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public UserClientImpl(ClientCharacteristicsImpl args) :
+            base(args)
         {
             Permissions = new UserPermissionsClientImpl(args);
         }
@@ -44,10 +46,7 @@ namespace HareDu
 
         public Task<User> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "User.Get method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Get"));
 
             LogInfo(string.Format(
                 "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
@@ -60,45 +59,32 @@ namespace HareDu
         public Task<CreateCmdResponse> New(string userName, Action<UserCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "User.New method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
 
             LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
 
-            if (args == null)
-                throw new ArgumentNullException("args");
+            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
 
-            var user = new UserCharacteristicsImpl();
-            args(user);
+            var argsImpl = new UserCharacteristicsImpl();
+            args(argsImpl);
 
-            Arg.Validate(user.Password, "password",
-                         () =>
-                         LogError(
-                             "User.New method threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
+            argsImpl.Password.Validate("password", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Put(url, user, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string userName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "User.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Delete"));
 
             if (userName == Init.Username)
             {
-                LogError(
-                    "User.Delete method threw a CannotDeleteSessionLoginUserException exception because attempted to delete the login user");
+                LogError(GetArgumentNullExceptionMsg, "User.Delete");
                 throw new CannotDeleteSessionLoginUserException(
                     string.Format(
-                        "Cannot delete user '{0}' because it is being used to send requests login to the current client session.",
-                        userName));
+                        "Cannot delete user '{0}' because it is being used to send requests login to the current client session.", userName));
             }
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userName));

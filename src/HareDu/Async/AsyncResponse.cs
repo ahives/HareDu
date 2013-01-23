@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Async
 {
-    public class DeleteCmdResponse :
-        ResponseBase
+    using System.Net;
+
+    public interface AsyncResponse
     {
+        string ServerResponse { get; set; }
+
+        HttpStatusCode StatusCode { get; set; }
     }
 }

@@ -25,49 +25,28 @@ namespace HareDu
 
     public abstract class HareDuClientBase
     {
+        protected Func<string, string> GetArgumentNullExceptionMsg =
+            (msg) => string.Format("{0} method threw an ArgumentNullException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
+        protected Func<string, string> GetArgumentExceptionMsg =
+            (msg) => string.Format("{0} method threw an ArgumentException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
+
         protected HareDuClientBase(ClientCharacteristicsImpl args)
         {
-            Arg.Validate(args.HostUrl, "hostUrl",
-                         () =>
-                         LogError(
-                             "HareDuClientBase constructor threw an ArgumentNullException exception because host URL was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(args.Username, "username",
-                         () =>
-                         LogError(
-                             "HareDuClientBase constructor threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(args.Password, "password",
-                         () =>
-                         LogError(
-                             "HareDuClientBase constructor threw an ArgumentNullException exception because password was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(args.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "HareDuClientBase constructor threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
+            args.HostUrl.Validate("args.HostUrl", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
+            args.Username.Validate("args.Username", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
+            args.Password.Validate("args.Password", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
+            args.VirtualHost.Validate("args.HostVirtualHostUrl", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
 
             Init = args;
             Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
-            Client = GetClient(Init.HostUrl, Init.Username, Init.Password, Init.Timeout);
+            Client = GetClient();
         }
 
         protected HttpClient Client { get; set; }
         protected ILog Logger { get; private set; }
         protected bool IsLoggingEnabled { get; private set; }
         protected ClientCharacteristicsImpl Init { get; private set; }
-
-        protected HttpClient GetClient(string hostUrl, string username, string password, TimeSpan timeout = default(TimeSpan))
-        {
-            var client = new HttpClient(new HttpClientHandler
-                                            {
-                                                Credentials = new NetworkCredential(Init.Username, Init.Password)
-                                            }) {BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl))};
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            if (timeout != TimeSpan.Zero)
-                client.Timeout = timeout;
-
-            return client;
-        }
 
         /// <summary>
         /// Overrides default behaviour of System.Uri because RabbitMQ uses a forward slash, "/" , to represent the default virtual host.
@@ -92,6 +71,20 @@ namespace HareDu
             }
 
             setUpdatableFlagsMethod.Invoke(uriParser, new object[] {0});
+        }
+
+        protected HttpClient GetClient()
+        {
+            var client = new HttpClient(new HttpClientHandler
+                                            {
+                                                Credentials = new NetworkCredential(Init.Username, Init.Password)
+                                            }) {BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl))};
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (Init.Timeout != TimeSpan.Zero)
+                client.Timeout = Init.Timeout;
+
+            return client;
         }
 
         protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken =
@@ -172,6 +165,12 @@ namespace HareDu
         {
             if (IsLoggingEnabled)
                 Logger.Error(message);
+        }
+
+        protected virtual void LogError(Func<string, string> getErrorMsg, string msgSource)
+        {
+            if (IsLoggingEnabled)
+                Logger.Error(getErrorMsg(msgSource));
         }
 
         protected virtual void LogInfo(string message)

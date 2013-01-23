@@ -18,6 +18,7 @@ namespace HareDu
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Async;
     using Contracts;
     using Internal;
     using Model;
@@ -32,14 +33,8 @@ namespace HareDu
 
         public Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Permissions.Get method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "Permissions.Get method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Get"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Get"));
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
@@ -65,55 +60,30 @@ namespace HareDu
         public Task<CreateCmdResponse> Set(string userName, Action<PermissionCharacteristics> args,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Permissions.Set method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "Permissions.Set method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
+            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.New"));
 
-            if (args == null)
-                throw new ArgumentNullException("args");
+            var argsImpl = new PermissionCharacteristicsImpl();
+            args(argsImpl);
 
-            var permissions = new PermissionCharacteristicsImpl();
-            args(permissions);
+            argsImpl.ConfigurePermissions.Validate("args.ConfigurePermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
+            argsImpl.WritePermissions.Validate("args.WritePermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
+            argsImpl.ReadPermissions.Validate("args.ReadPermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
 
-            Arg.Validate(permissions.ConfigurePermissions, "configurePermissions",
-                         () =>
-                         LogError(
-                             "Permissions.Set method threw an ArgumentNullException exception because configure permissions was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(permissions.WritePermissions, "writePermissions",
-                         () =>
-                         LogError(
-                             "Permissions.Set method threw an ArgumentNullException exception because write permissions was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(permissions.ReadPermissions, "readPermissions",
-                         () =>
-                         LogError(
-                             "Permissions.Set method threw an ArgumentNullException exception because read permissions was invalid (i.e. empty, null, or all whitespaces)"));
-
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       userName);
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
-                    userName, Init.VirtualHost));
+                    "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.", userName, Init.VirtualHost));
 
-            return base.Put(url, permissions, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
         }
 
         public Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Arg.Validate(Init.VirtualHost, "virtualHost",
-                         () =>
-                         LogError(
-                             "Permissions.Delete method threw an ArgumentNullException exception because virtual host name was invalid (i.e. empty, null, or all whitespaces)"));
-            Arg.Validate(userName, "userName",
-                         () =>
-                         LogError(
-                             "Permissions.Delete method threw an ArgumentNullException exception because username was invalid (i.e. empty, null, or all whitespaces)"));
+            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
+            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 

@@ -64,8 +64,8 @@ namespace HareDu.Tests
             var response = Client.VirtualHost
                                  .Change(Settings.Default.VirtualHost, x =>
                                                                            {
-                                                                               x.SetUsername(Settings.Default.Username);
-                                                                               x.SetPassword(Settings.Default.UserPassword);
+                                                                               x.SetUsername(Settings.Default.LoginUsername);
+                                                                               x.SetPassword(Settings.Default.LoginPassword);
                                                                            })
                                  .IsAlive()
                                  .Response();

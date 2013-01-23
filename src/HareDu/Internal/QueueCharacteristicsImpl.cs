@@ -22,6 +22,11 @@ namespace HareDu.Internal
     public class QueueCharacteristicsImpl :
         QueueCharacteristics
     {
+        public QueueCharacteristicsImpl()
+        {
+            Arguments = new List<string>();
+        }
+
         [JsonProperty(PropertyName = "durable", Order = 2)]
         public bool Durable { get; private set; }
 
