@@ -27,11 +27,11 @@ namespace HareDu
         HareDuClientBase,
         QueueBindingClient
     {
-        public QueueBindingClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public QueueBindingClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
         }
 
-        public Task<CreateCmdResponse> New(string queue, string exchange, Action<QueueBindingCharacteristics> args,
+        public Task<ServerResponse> New(string queue, string exchange, Action<QueueBindingBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
@@ -39,7 +39,7 @@ namespace HareDu
             exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
             args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
 
-            var argsImpl = new QueueBindingCharacteristicsImpl();
+            var argsImpl = new QueueBindingBehaviorImpl();
             args(argsImpl);
 
             argsImpl.RoutingKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
@@ -51,10 +51,10 @@ namespace HareDu
                     "Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.",
                     queue, exchange, Init.VirtualHost));
 
-            return base.Post(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Post(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string queue, string exchange, string propertiesKey,
+        public Task<ServerResponse> Delete(string queue, string exchange, string propertiesKey,
                                               CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
@@ -70,7 +70,7 @@ namespace HareDu
                     "Sent request to RabbitMQ server to delete queue binding between queue '{0}' and exchange '{1}' in virtual host '{2}'.",
                     queue, exchange, Init.VirtualHost));
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
         public Task<IEnumerable<Binding>> GetAll(string queue, CancellationToken cancellationToken = default(CancellationToken))

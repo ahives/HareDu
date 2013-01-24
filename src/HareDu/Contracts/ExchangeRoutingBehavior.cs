@@ -14,7 +14,7 @@
 
 namespace HareDu.Contracts
 {
-    public interface ExchangeTypeCharacteristics
+    public interface ExchangeRoutingBehavior
     {
         /// <summary>
         /// 

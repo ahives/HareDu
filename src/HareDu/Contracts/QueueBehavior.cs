@@ -15,8 +15,9 @@
 namespace HareDu.Contracts
 {
     using System;
+    using System.Collections.Generic;
 
-    public interface QueueCharacteristics
+    public interface QueueBehavior
     {
         /// <summary>
         /// 
@@ -39,5 +40,11 @@ namespace HareDu.Contracts
         /// </summary>
         /// <param name="arg"></param>
         void WithArguments(Action<Arguments> arg);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        void WithArguments(Dictionary<string, object> args);
     }
 }

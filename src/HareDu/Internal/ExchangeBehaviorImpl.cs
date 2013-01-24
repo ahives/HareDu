@@ -19,12 +19,13 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class ExchangeCharacteristicsImpl :
-        ExchangeCharacteristics
+    public class ExchangeBehaviorImpl :
+        ExchangeBehavior
     {
-        public ExchangeCharacteristicsImpl()
+        public ExchangeBehaviorImpl()
         {
             RoutingType = ExchangeType.Direct;
+            Arguments = new List<string>();
         }
 
         [JsonProperty(PropertyName = "type", Order = 1)]
@@ -59,14 +60,25 @@ namespace HareDu.Internal
 
         public void WithArguments(Action<Arguments> arg)
         {
+            if (arg == null)
+                return;
+
             var action = new ArgumentsImpl();
             arg(action);
             Arguments = action.ArgumentMap.ToList();
         }
 
-        public void UsingRoutingType(Action<ExchangeTypeCharacteristics> routingType)
+        public void WithArguments(Dictionary<string, object> args)
         {
-            var routingTypeParam = new ExchangeTypeCharacteristicsImpl();
+            if (args == null)
+                return;
+
+            Arguments = args.ToList();
+        }
+
+        public void UsingRoutingType(Action<ExchangeRoutingBehavior> routingType)
+        {
+            var routingTypeParam = new ExchangeRoutingBehaviorImpl();
             routingType(routingTypeParam);
             RoutingType = routingTypeParam.RoutingType;
         }

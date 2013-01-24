@@ -18,7 +18,7 @@ namespace HareDu.Async
 
     public interface AsyncResponse
     {
-        string ServerResponse { get; set; }
+        string ServerResponseReason { get; set; }
 
         HttpStatusCode StatusCode { get; set; }
     }

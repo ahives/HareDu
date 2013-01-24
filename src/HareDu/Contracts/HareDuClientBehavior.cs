@@ -14,11 +14,31 @@
 
 namespace HareDu.Contracts
 {
-    public interface ClientCharacteristics
+    public interface HareDuClientBehavior
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hostUrl"></param>
         void ConnectTo(string hostUrl);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         void UsingCredentials(string username, string password);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loggerName"></param>
         void EnableLogging(string loggerName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtualHost"></param>
         void OnVirtualHost(string virtualHost);
     }
 }

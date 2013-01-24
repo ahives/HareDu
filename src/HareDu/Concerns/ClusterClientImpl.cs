@@ -17,7 +17,7 @@ namespace HareDu
     internal class ClusterClientImpl :
         ClusterClient
     {
-        public ClusterClientImpl(ClientCharacteristicsImpl args)
+        public ClusterClientImpl(HareDuClientBehaviorImpl args)
         {
             Overview = new OverviewClientImpl(args);
             Node = new NodeClientImpl(args);

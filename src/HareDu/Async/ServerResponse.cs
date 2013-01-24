@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Async
 {
-    using System;
+    using System.Net;
+    using Newtonsoft.Json;
 
-    public interface QueueBindingCharacteristics
+    public class ServerResponse :
+        AsyncResponse
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="routingKey"></param>
-        void UsingRoutingKey(string routingKey);
+        [JsonIgnore]
+        public string ServerResponseReason { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="arg"></param>
-        void WithArguments(Action<Arguments> arg);
+        [JsonIgnore]
+        public HttpStatusCode StatusCode { get; set; }
     }
 }

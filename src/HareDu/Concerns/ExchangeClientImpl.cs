@@ -27,7 +27,7 @@ namespace HareDu
         HareDuClientBase,
         ExchangeClient
     {
-        public ExchangeClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public ExchangeClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
         }
 
@@ -77,7 +77,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string exchange, Action<ExchangeCharacteristics> args,
+        public Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
@@ -88,7 +88,7 @@ namespace HareDu
 
             args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
 
-            var argsImpl = new ExchangeCharacteristicsImpl();
+            var argsImpl = new ExchangeBehaviorImpl();
             args(argsImpl);
 
             exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
@@ -96,10 +96,10 @@ namespace HareDu
 
             string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchange);
 
-            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Delete"));
             exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Delete"));
@@ -109,7 +109,7 @@ namespace HareDu
 
             string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchange);
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

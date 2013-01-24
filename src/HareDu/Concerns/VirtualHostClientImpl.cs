@@ -28,7 +28,7 @@ namespace HareDu
         HareDuClientBase,
         VirtualHostClient
     {
-        public VirtualHostClientImpl(ClientCharacteristicsImpl args) :
+        public VirtualHostClientImpl(HareDuClientBehaviorImpl args) :
             base(args)
         {
             Exchange = new ExchangeClientImpl(args);
@@ -47,7 +47,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> New(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("virtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.New"));
 
@@ -55,10 +55,10 @@ namespace HareDu
 
             LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHost));
 
-            return base.Put(url, new StringContent(string.Empty), cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, new StringContent(string.Empty), cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (virtualHost.SanitizeVirtualHostName() == "2%f")
             {
@@ -72,7 +72,7 @@ namespace HareDu
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHost));
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
         public VirtualHostClient Change(string virtualHost, Action<UserCredentials> args)
@@ -96,7 +96,7 @@ namespace HareDu
             return this;
         }
 
-        public Task<AlivenessTestCmdResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.IsAlive"));
 
@@ -110,9 +110,9 @@ namespace HareDu
                        .ContinueWith(t =>
                                          {
                                              t.Result.EnsureSuccessStatusCode();
-                                             var response = t.Result.Content.ReadAsAsync<AlivenessTestCmdResponse>().Result;
+                                             var response = t.Result.Content.ReadAsAsync<AlivenessTestResponse>().Result;
                                              response.StatusCode = t.Result.StatusCode;
-                                             response.ServerResponse = t.Result.ReasonPhrase;
+                                             response.ServerResponseReason = t.Result.ReasonPhrase;
 
                                              return response;
                                          }, cancellationToken, TaskContinuationOptions.OnlyOnRanToCompletion,

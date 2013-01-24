@@ -27,7 +27,7 @@ namespace HareDu
         HareDuClientBase,
         UserClient
     {
-        public UserClientImpl(ClientCharacteristicsImpl args) :
+        public UserClientImpl(HareDuClientBehaviorImpl args) :
             base(args)
         {
             Permissions = new UserPermissionsClientImpl(args);
@@ -56,7 +56,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<User>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string userName, Action<UserCharacteristics> args,
+        public Task<ServerResponse> New(string userName, Action<UserCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
@@ -72,10 +72,10 @@ namespace HareDu
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Delete"));
 
@@ -91,7 +91,7 @@ namespace HareDu
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

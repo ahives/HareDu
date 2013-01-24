@@ -43,7 +43,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<CreateCmdResponse> New(string queue, Action<QueueCharacteristics> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string queue, Action<QueueBehavior> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -51,7 +51,7 @@ namespace HareDu
         /// <param name="queue"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<DeleteCmdResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Deletes all the messages in the specified queue.
@@ -59,6 +59,6 @@ namespace HareDu
         /// <param name="queue">Name of the queue to purge</param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<DeleteCmdResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

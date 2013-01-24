@@ -16,6 +16,42 @@ namespace HareDu.Contracts
 {
     public interface Arguments
     {
-        void Add<T>(string arg, T value);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arg"></param>
+        /// <param name="value"></param>
+        void Set<T>(string arg, T value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        void SetPerQueueExpiration(int milliseconds);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        void SetQueueExpiration(int milliseconds);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchange"></param>
+        void SetDeadLetterExchange(string exchange);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="routingKey"></param>
+        void SetDeadLetterExchangeRoutingKey(string routingKey);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchange"></param>
+        void SetAlternateExchange(string exchange);
     }
 }

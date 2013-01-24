@@ -24,7 +24,7 @@ namespace HareDu
         HareDuClientBase,
         ConnectionClient
     {
-        public ConnectionClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public ConnectionClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
             Channel = new ChannelClientImpl(args);
         }
@@ -55,7 +55,7 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<Connection>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Close(string connectionName,
+        public Task<ServerResponse> Close(string connectionName,
                                              CancellationToken cancellationToken = default(CancellationToken))
         {
             connectionName.Validate("connectionName", () => LogError(GetArgumentNullExceptionMsg, "Connection.Close"));
@@ -67,7 +67,7 @@ namespace HareDu
                     "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
                     connectionName));
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

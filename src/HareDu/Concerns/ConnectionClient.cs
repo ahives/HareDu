@@ -18,7 +18,6 @@ namespace HareDu
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
-    using Contracts;
     using Model;
 
     public interface ConnectionClient
@@ -49,6 +48,6 @@ namespace HareDu
         /// <param name="connectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Close(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Close(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -18,7 +18,6 @@ namespace HareDu
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
-    using Contracts;
 
     internal static class InternalHttpExtensions
     {
@@ -30,7 +29,7 @@ namespace HareDu
                                              t.Result.EnsureSuccessStatusCode();
                                              return new T
                                                         {
-                                                            ServerResponse = t.Result.ReasonPhrase,
+                                                            ServerResponseReason = t.Result.ReasonPhrase,
                                                             StatusCode = t.Result.StatusCode
                                                         };
                                          },

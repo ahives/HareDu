@@ -28,10 +28,10 @@ namespace HareDu
 
         Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<CreateCmdResponse> Set(string userName,
-                                 Action<PermissionCharacteristics> args,
+        Task<ServerResponse> Set(string userName,
+                                 Action<UserPermissionsBehavior> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -23,7 +23,7 @@ namespace HareDu
         HareDuClientBase,
         NodeClient
     {
-        public NodeClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public NodeClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
         }
 

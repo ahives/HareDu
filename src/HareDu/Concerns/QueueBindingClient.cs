@@ -32,7 +32,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string queue, string exchange, Action<QueueBindingCharacteristics> args,
+        Task<ServerResponse> New(string queue, string exchange, Action<QueueBindingBehavior> args,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace HareDu
         /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string queue, string exchange, string propertiesKey,
+        Task<ServerResponse> Delete(string queue, string exchange, string propertiesKey,
                                        CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

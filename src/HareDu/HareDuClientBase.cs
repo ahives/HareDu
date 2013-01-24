@@ -30,7 +30,7 @@ namespace HareDu
         protected Func<string, string> GetArgumentExceptionMsg =
             (msg) => string.Format("{0} method threw an ArgumentException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
 
-        protected HareDuClientBase(ClientCharacteristicsImpl args)
+        protected HareDuClientBase(HareDuClientBehaviorImpl args)
         {
             args.HostUrl.Validate("args.HostUrl", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
             args.Username.Validate("args.Username", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
@@ -46,7 +46,7 @@ namespace HareDu
         protected HttpClient Client { get; set; }
         protected ILog Logger { get; private set; }
         protected bool IsLoggingEnabled { get; private set; }
-        protected ClientCharacteristicsImpl Init { get; private set; }
+        protected HareDuClientBehaviorImpl Init { get; private set; }
 
         /// <summary>
         /// Overrides default behaviour of System.Uri because RabbitMQ uses a forward slash, "/" , to represent the default virtual host.

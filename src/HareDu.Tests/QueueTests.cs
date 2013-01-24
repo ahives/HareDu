@@ -72,8 +72,13 @@ namespace HareDu.Tests
                                               x.IsDurable();
                                               x.WithArguments(y =>
                                                                   {
-                                                                      y.Add("", 0);
-                                                                      y.Add("", 0);
+                                                                      y.SetPerQueueExpiration(0);
+                                                                      y.SetQueueExpiration(0);
+                                                                      y.SetDeadLetterExchange("");
+                                                                      y.SetDeadLetterExchangeRoutingKey("");
+                                                                      y.SetAlternateExchange("");
+                                                                      y.Set("", 0);
+                                                                      y.Set("", 0);
                                                                   });
                                           })
                                  .Response();

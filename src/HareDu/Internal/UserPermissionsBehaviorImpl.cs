@@ -17,10 +17,10 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class PermissionCharacteristicsImpl :
-        PermissionCharacteristics
+    public class UserPermissionsBehaviorImpl :
+        UserPermissionsBehavior
     {
-        public PermissionCharacteristicsImpl()
+        public UserPermissionsBehaviorImpl()
         {
             ConfigurePermissions = ".*";
             WritePermissions = ".*";

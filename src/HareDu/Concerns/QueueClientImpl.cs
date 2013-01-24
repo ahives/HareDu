@@ -27,7 +27,7 @@ namespace HareDu
         HareDuClientBase,
         QueueClient
     {
-        public QueueClientImpl(ClientCharacteristicsImpl args)
+        public QueueClientImpl(HareDuClientBehaviorImpl args)
             : base(args)
         {
             Binding = new QueueBindingClientImpl(args);
@@ -45,14 +45,14 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> New(string queue, Action<QueueCharacteristics> args,
+        public Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
             queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
             args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
 
-            var argsImpl = new QueueCharacteristicsImpl();
+            var argsImpl = new QueueBehaviorImpl();
             args(argsImpl);
 
             string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
@@ -64,10 +64,10 @@ namespace HareDu
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.",
                             queue, Init.VirtualHost, argsImpl.Node));
 
-            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Delete"));
             queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Delete"));
@@ -77,10 +77,10 @@ namespace HareDu
             LogInfo(string.Format("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.",
                                   queue, Init.VirtualHost));
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Purge"));
             queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Purge"));
@@ -89,7 +89,7 @@ namespace HareDu
 
             LogInfo(string.Format("Sent request to RabbitMQ server to purge the contents of queue '{0}'.", queue));
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace HareDu
         HareDuClientBase,
         UserPermissionsClient
     {
-        public UserPermissionsClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public UserPermissionsClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
         }
 
@@ -57,14 +57,14 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<Permissions>>(cancellationToken);
         }
 
-        public Task<CreateCmdResponse> Set(string userName, Action<PermissionCharacteristics> args,
+        public Task<ServerResponse> Set(string userName, Action<UserPermissionsBehavior> args,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
             userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
             args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.New"));
 
-            var argsImpl = new PermissionCharacteristicsImpl();
+            var argsImpl = new UserPermissionsBehaviorImpl();
             args(argsImpl);
 
             argsImpl.ConfigurePermissions.Validate("args.ConfigurePermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
@@ -77,17 +77,17 @@ namespace HareDu
                 string.Format(
                     "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.", userName, Init.VirtualHost));
 
-            return base.Put(url, argsImpl, cancellationToken).Response<CreateCmdResponse>(cancellationToken);
+            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
             userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
-            return base.Delete(url, cancellationToken).Response<DeleteCmdResponse>(cancellationToken);
+            return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

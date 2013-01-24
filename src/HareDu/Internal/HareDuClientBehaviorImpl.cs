@@ -18,10 +18,10 @@ namespace HareDu
     using Common.Logging;
     using Contracts;
 
-    public class ClientCharacteristicsImpl :
-        ClientCharacteristics
+    public class HareDuClientBehaviorImpl :
+        HareDuClientBehavior
     {
-        public ClientCharacteristicsImpl()
+        public HareDuClientBehaviorImpl()
         {
             VirtualHost = "/";
         }

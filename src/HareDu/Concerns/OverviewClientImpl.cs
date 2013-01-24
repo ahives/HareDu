@@ -22,7 +22,7 @@ namespace HareDu
         HareDuClientBase,
         OverviewClient
     {
-        public OverviewClientImpl(ClientCharacteristicsImpl args) : base(args)
+        public OverviewClientImpl(HareDuClientBehaviorImpl args) : base(args)
         {
         }
 

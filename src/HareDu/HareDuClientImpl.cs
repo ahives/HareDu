@@ -18,7 +18,7 @@ namespace HareDu
         HareDuClientBase,
         HareDuClient
     {
-        public HareDuClientImpl(ClientCharacteristicsImpl args) :
+        public HareDuClientImpl(HareDuClientBehaviorImpl args) :
             base(args)
         {
             VirtualHost = new VirtualHostClientImpl(args);

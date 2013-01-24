@@ -14,24 +14,27 @@
 
 namespace HareDu.Contracts
 {
-    public interface PermissionCharacteristics
+    using System;
+    using System.Collections.Generic;
+
+    public interface QueueBindingBehavior
     {
         /// <summary>
-        /// Sets the configure permissions for the user.
+        /// 
         /// </summary>
-        /// <param name="configurePermissions"></param>
-        void Configure(string configurePermissions);
+        /// <param name="routingKey"></param>
+        void UsingRoutingKey(string routingKey);
 
         /// <summary>
-        /// Sets the write permissions for the user.
+        /// 
         /// </summary>
-        /// <param name="writePermissions"></param>
-        void Write(string writePermissions);
+        /// <param name="arg"></param>
+        void WithArguments(Action<Arguments> arg);
 
         /// <summary>
-        /// Sets the read permissions for the user.
+        /// 
         /// </summary>
-        /// <param name="readPermissions"></param>
-        void Read(string readPermissions);
+        /// <param name="args"></param>
+        void WithArguments(Dictionary<string, object> args);
     }
 }

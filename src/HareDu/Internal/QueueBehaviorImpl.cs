@@ -19,10 +19,10 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class QueueCharacteristicsImpl :
-        QueueCharacteristics
+    public class QueueBehaviorImpl :
+        QueueBehavior
     {
-        public QueueCharacteristicsImpl()
+        public QueueBehaviorImpl()
         {
             Arguments = new List<string>();
         }
@@ -56,9 +56,20 @@ namespace HareDu.Internal
 
         public void WithArguments(Action<Arguments> arg)
         {
+            if (arg == null)
+                return;
+
             var action = new ArgumentsImpl();
             arg(action);
             Arguments = action.ArgumentMap.ToList();
+        }
+
+        public void WithArguments(Dictionary<string, object> args)
+        {
+            if (args == null)
+                return;
+
+            Arguments = args.ToList();
         }
     }
 }

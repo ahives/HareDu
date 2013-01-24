@@ -27,9 +27,34 @@ namespace HareDu.Internal
 
         public Dictionary<string, object> ArgumentMap { get; private set; }
 
-        public void Add<T>(string arg, T value)
+        public void Set<T>(string arg, T value)
         {
             ArgumentMap.Add(arg, value);
+        }
+
+        public void SetPerQueueExpiration(int milliseconds)
+        {
+            ArgumentMap.Add("x-message-ttl", milliseconds);
+        }
+
+        public void SetQueueExpiration(int milliseconds)
+        {
+            ArgumentMap.Add("x-expires", milliseconds);
+        }
+
+        public void SetDeadLetterExchange(string exchange)
+        {
+            ArgumentMap.Add("x-dead-letter-exchange", exchange);
+        }
+
+        public void SetDeadLetterExchangeRoutingKey(string routingKey)
+        {
+            ArgumentMap.Add("x-dead-letter-routing-key", routingKey);
+        }
+
+        public void SetAlternateExchange(string exchange)
+        {
+            ArgumentMap.Add("alternate-exchange", exchange);
         }
     }
 }

@@ -16,8 +16,8 @@ namespace HareDu.Internal
 {
     using Contracts;
 
-    internal class ExchangeTypeCharacteristicsImpl :
-        ExchangeTypeCharacteristics
+    internal class ExchangeRoutingBehaviorImpl :
+        ExchangeRoutingBehavior
     {
         public string RoutingType { get; set; }
 

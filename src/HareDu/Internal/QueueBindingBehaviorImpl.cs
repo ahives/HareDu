@@ -19,12 +19,13 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class QueueBindingCharacteristicsImpl :
-        QueueBindingCharacteristics
+    public class QueueBindingBehaviorImpl :
+        QueueBindingBehavior
     {
-        public QueueBindingCharacteristicsImpl()
+        public QueueBindingBehaviorImpl()
         {
             RoutingKey = string.Empty;
+            Arguments = new List<string>();
         }
 
         [JsonProperty(PropertyName = "routing_key", Order = 1)]
@@ -40,9 +41,20 @@ namespace HareDu.Internal
 
         public void WithArguments(Action<Arguments> arg)
         {
+            if (arg == null)
+                return;
+
             var action = new ArgumentsImpl();
             arg(action);
             Arguments = action.ArgumentMap.ToList();
+        }
+
+        public void WithArguments(Dictionary<string, object> args)
+        {
+            if (args == null)
+                return;
+
+            Arguments = args.ToList();
         }
     }
 }

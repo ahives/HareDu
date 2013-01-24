@@ -52,7 +52,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string userName, Action<UserCharacteristics> args,
+        Task<ServerResponse> New(string userName, Action<UserCharacteristics> args,
                                  CancellationToken cancellationToken =
                                      default(CancellationToken));
 
@@ -62,7 +62,7 @@ namespace HareDu
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string userName, CancellationToken cancellationToken =
+        Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken =
                                                          default(CancellationToken));
     }
 }

@@ -14,8 +14,12 @@
 
 namespace HareDu.Async
 {
-    public class CreateCmdResponse :
-        ResponseBase
+    using Newtonsoft.Json;
+
+    public class AlivenessTestResponse :
+        ServerResponse
     {
+        [JsonProperty("name")]
+        public string Status { get; set; }
     }
 }

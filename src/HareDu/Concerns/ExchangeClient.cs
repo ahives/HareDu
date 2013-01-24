@@ -46,7 +46,7 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<CreateCmdResponse> New(string exchange, Action<ExchangeCharacteristics> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> args, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -54,7 +54,7 @@ namespace HareDu
         /// <param name="exchange"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<DeleteCmdResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
