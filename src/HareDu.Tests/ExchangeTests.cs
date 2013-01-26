@@ -28,7 +28,8 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
+                                               x.UsingCredentials(Settings.Default.LoginUsername,
+                                                                  Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
@@ -61,11 +62,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Bindings_On_Destination()
         {
-            var response = Client.VirtualHost
-                                 .Exchange
-                                 .GetAllBindings(Settings.Default.Exchange, x => x.Destination());
+            var data = Client.VirtualHost
+                             .Exchange
+                             .GetAllBindings(Settings.Default.Exchange, x => x.Destination())
+                             .Data();
 
-            foreach (var binding in response.Result)
+            foreach (var binding in data)
             {
                 Console.WriteLine("Source: {0}", binding.Source);
                 Console.WriteLine("Destination: {0}", binding.Destination);
@@ -81,11 +83,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Bindings_On_Source()
         {
-            var response = Client.VirtualHost
-                                 .Exchange
-                                 .GetAllBindings(Settings.Default.Exchange, x => x.Source());
+            var data = Client.VirtualHost
+                             .Exchange
+                             .GetAllBindings(Settings.Default.Exchange, x => x.Source())
+                             .Data();
 
-            foreach (var binding in response.Result)
+            foreach (var binding in data)
             {
                 Console.WriteLine("Source: {0}", binding.Source);
                 Console.WriteLine("Destination: {0}", binding.Destination);
@@ -101,11 +104,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Exchanges()
         {
-            var response = Client.VirtualHost
-                                 .Exchange
-                                 .GetAll();
+            var data = Client.VirtualHost
+                             .Exchange
+                             .GetAll()
+                             .Data();
 
-            foreach (var exchange in response.Result)
+            foreach (var exchange in data)
             {
                 Console.WriteLine("Name: {0}", exchange.Name);
                 Console.WriteLine("Type: {0}", exchange.Type);
@@ -121,17 +125,17 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_An_Exchange()
         {
-            var exchange = Client.VirtualHost
-                                 .Exchange
-                                 .Get(Settings.Default.Exchange)
-                                 .Result;
+            var data = Client.VirtualHost
+                             .Exchange
+                             .Get(Settings.Default.Exchange)
+                             .Data();
 
-            Console.WriteLine("Name: {0}", exchange.Name);
-            Console.WriteLine("Type: {0}", exchange.Type);
-            Console.WriteLine("Virtual Host: {0}", exchange.VirtualHostName);
-            Console.WriteLine("Durable: {0}", exchange.IsDurable);
-            Console.WriteLine("Internal: {0}", exchange.IsInternal);
-            Console.WriteLine("Auto delete: {0}", exchange.IsSetToAutoDelete);
+            Console.WriteLine("Name: {0}", data.Name);
+            Console.WriteLine("Type: {0}", data.Type);
+            Console.WriteLine("Virtual Host: {0}", data.VirtualHostName);
+            Console.WriteLine("Durable: {0}", data.IsDurable);
+            Console.WriteLine("Internal: {0}", data.IsInternal);
+            Console.WriteLine("Auto delete: {0}", data.IsSetToAutoDelete);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
         }

@@ -27,22 +27,25 @@ namespace HareDu
         HareDuClientBase,
         QueueBindingClient
     {
-        public QueueBindingClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public QueueBindingClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
         {
         }
 
         public Task<ServerResponse> New(string queue, string exchange, Action<QueueBindingBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Binding.New", "Queue.Binding.Init.VirtualHost", LogError);
+            queue.Validate("Queue.Binding.New", "queue", LogError);
+            exchange.Validate("Queue.Binding.New", "exchange", LogError);
+            args.Validate("Queue.Binding.New", "args", LogError);
 
             var argsImpl = new QueueBindingBehaviorImpl();
             args(argsImpl);
 
-            argsImpl.RoutingKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.New"));
+            argsImpl.RoutingKey.Validate("Queue.Binding.New", "routingKey", LogError);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", Init.VirtualHost.SanitizeVirtualHostName(), exchange, queue);
 
@@ -57,10 +60,12 @@ namespace HareDu
         public Task<ServerResponse> Delete(string queue, string exchange, string propertiesKey,
                                               CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
-            propertiesKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Delete"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Binding.Init.Delete", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.Binding.Delete", "queue", LogError);
+            exchange.Validate("Queue.Binding.Delete", "exchange", LogError);
+            propertiesKey.Validate("Queue.Binding.Delete", "routingKey", LogError);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());
@@ -75,8 +80,10 @@ namespace HareDu
 
         public Task<IEnumerable<Binding>> GetAll(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.GetAll"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.GetAll"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Binding.GetAll", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.Binding.GetAll", "queue", LogError);
 
             LogInfo(
                 string.Format(
@@ -91,10 +98,12 @@ namespace HareDu
         public Task<Binding> Get(string queue, string exchange, string propertiesKey,
                                  CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Queue.Binding.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
-            propertiesKey.Validate("routingKey", () => LogError(GetArgumentNullExceptionMsg, "Queue.Binding.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Binding.Get", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.Binding.Get", "queue", LogError);
+            exchange.Validate("Queue.Binding.Get", "exchange", LogError);
+            propertiesKey.Validate("Queue.Binding.Get", "routingKey", LogError);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());

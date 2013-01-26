@@ -14,22 +14,21 @@
 
 namespace HareDu
 {
-    using System.Threading.Tasks;
-    using Async;
-    using Contracts;
-
-    public static class ExternalHttpExtensions
+    public static class RabbitMqSantizationExtensions
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        public static T Response<T>(this Task<T> task)
-            where T : AsyncResponse
+        internal static string SanitizeVirtualHostName(this string value)
         {
-            return task.Result;
+            if (value == @"/")
+            {
+                return value.Replace("/", "%2f");
+            }
+
+            return value;
+        }
+
+        internal static string SanitizePropertiesKey(this string value)
+        {
+            return value.Replace("%5F", "%255F");
         }
     }
 }

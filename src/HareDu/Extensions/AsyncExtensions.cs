@@ -14,13 +14,31 @@
 
 namespace HareDu
 {
+    using System;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
 
-    internal static class InternalHttpExtensions
+    public static class AsyncExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public static T Response<T>(this Task<T> task)
+            where T : AsyncResponse
+        {
+            return task.Result;
+        }
+
+        public static T Data<T>(this Task<T> task)
+        {
+            return task.Result;
+        }
+
         public static Task<T> Response<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
             where T : AsyncResponse, new()
         {
@@ -48,19 +66,15 @@ namespace HareDu
                        .Unwrap();
         }
 
-        public static string SanitizeVirtualHostName(this string value)
+        internal static void RequestCanceled(this CancellationToken cancellationToken, Action<string> logging)
         {
-            if (value == @"/")
+            if (cancellationToken.IsCancellationRequested)
             {
-                return value.Replace("/", "%2f");
+                if (!logging.IsNull())
+                    logging("Cancellation of this task was requested by the caller, therefore, request for resources has been canceled.");
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
-
-            return value;
-        }
-
-        public static string SanitizePropertiesKey(this string value)
-        {
-            return value.Replace("%5F", "%255F");
         }
     }
 }

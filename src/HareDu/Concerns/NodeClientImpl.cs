@@ -23,12 +23,15 @@ namespace HareDu
         HareDuClientBase,
         NodeClient
     {
-        public NodeClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public NodeClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
         {
         }
 
         public Task<IEnumerable<Node>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             string url = "api/nodes";
@@ -38,7 +41,9 @@ namespace HareDu
 
         public Task<Node> Get(string nodeName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            nodeName.Validate("nodeName", () => LogError(GetArgumentNullExceptionMsg, "Cluster.Node.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            nodeName.Validate("Cluster.Node.Get", "nodeName", LogError);
 
             LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 

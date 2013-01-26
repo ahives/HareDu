@@ -25,17 +25,12 @@ namespace HareDu
 
     public abstract class HareDuClientBase
     {
-        protected Func<string, string> GetArgumentNullExceptionMsg =
-            (msg) => string.Format("{0} method threw an ArgumentNullException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
-        protected Func<string, string> GetArgumentExceptionMsg =
-            (msg) => string.Format("{0} method threw an ArgumentException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
-
         protected HareDuClientBase(HareDuClientBehaviorImpl args)
         {
-            args.HostUrl.Validate("args.HostUrl", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
-            args.Username.Validate("args.Username", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
-            args.Password.Validate("args.Password", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
-            args.VirtualHost.Validate("args.HostVirtualHostUrl", () => LogError(GetArgumentNullExceptionMsg, "HareDuClientBase"));
+            args.HostUrl.Validate("HareDuClientBase", "args.HostUrl", LogError);
+            args.Username.Validate("HareDuClientBase", "args.Username", LogError);
+            args.Password.Validate("HareDuClientBase", "args.Password", LogError);
+            args.VirtualHost.Validate("HareDuClientBase", "args.VirtualHost", LogError);
 
             Init = args;
             Logger = args.Logger;
@@ -94,7 +89,7 @@ namespace HareDu
             {
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
-
+                
                 return Client.GetAsync(url, cancellationToken);
             }
             catch (Exception e)
@@ -165,12 +160,6 @@ namespace HareDu
         {
             if (IsLoggingEnabled)
                 Logger.Error(message);
-        }
-
-        protected virtual void LogError(Func<string, string> getErrorMsg, string msgSource)
-        {
-            if (IsLoggingEnabled)
-                Logger.Error(getErrorMsg(msgSource));
         }
 
         protected virtual void LogInfo(string message)

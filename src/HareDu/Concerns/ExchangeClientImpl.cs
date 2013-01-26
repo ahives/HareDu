@@ -27,12 +27,15 @@ namespace HareDu
         HareDuClientBase,
         ExchangeClient
     {
-        public ExchangeClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public ExchangeClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
         {
         }
 
         public Task<IEnumerable<Exchange>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo(
                 "Sent request to return all information pertaining to all exchanges on all virtual hosts on current RabbitMQ server.");
 
@@ -43,8 +46,10 @@ namespace HareDu
 
         public Task<Exchange> Get(string exchange, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Get"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.Exchange.Get", "VirtualHost.Exchange.Init.VirtualHost", LogError);
+            exchange.Validate("VirtualHost.Exchange.Get", "exchange", LogError);
 
             LogInfo(
                 string.Format(
@@ -58,18 +63,20 @@ namespace HareDu
 
         public Task<IEnumerable<Binding>> GetAllBindings(string exchange, Action<BindingDirection> args, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.GetAllBindings"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.GetAllBindings"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.Exchange.GetAllBindings", "VirtualHost.Exchange.Init.VirtualHost", LogError);
+            exchange.Validate("VirtualHost.Exchange.GetAllBindings", "exchange", LogError);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.",
                     exchange, Init.VirtualHost));
 
+            args.Validate("VirtualHost.Exchange.GetAllBindings", "args", LogError);
+            
             var argsImpl = new BindingDirectionImpl();
             args(argsImpl);
-
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Exchange.GetAllBindings"));
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
                                        Init.VirtualHost.SanitizeVirtualHostName(), exchange, argsImpl.BindingDirection);
@@ -80,19 +87,20 @@ namespace HareDu
         public Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.Exchange.New", "VirtualHost.Exchange.Init.VirtualHost", LogError);
+            exchange.Validate("VirtualHost.Exchange.New", "exchange", LogError);
 
             LogInfo(
                 string.Format("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.", exchange, Init.VirtualHost));
 
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
+            args.Validate("VirtualHost.Exchange.New", "args", LogError);
 
             var argsImpl = new ExchangeBehaviorImpl();
             args(argsImpl);
 
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
-            argsImpl.RoutingType.Validate("routingType", () => LogError(GetArgumentNullExceptionMsg, "Exchange.New"));
+            argsImpl.RoutingType.Validate("VirtualHost.Exchange.New", "RoutingType", LogError);
 
             string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchange);
 
@@ -101,8 +109,10 @@ namespace HareDu
 
         public Task<ServerResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Delete"));
-            exchange.Validate("exchange", () => LogError(GetArgumentNullExceptionMsg, "Exchange.Delete"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.Exchange.Delete", "VirtualHost.Exchange.Init.VirtualHost", LogError);
+            exchange.Validate("VirtualHost.Exchange.Delete", "exchange", LogError);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.",
                                   exchange, Init.VirtualHost));

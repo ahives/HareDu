@@ -24,7 +24,8 @@ namespace HareDu
         HareDuClientBase,
         ConnectionClient
     {
-        public ConnectionClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public ConnectionClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
         {
             Channel = new ChannelClientImpl(args);
         }
@@ -33,6 +34,8 @@ namespace HareDu
 
         public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return all information pertaining to all connections on current RabbitMQ server.");
 
             string url = "api/connections";
@@ -43,14 +46,15 @@ namespace HareDu
         public Task<Connection> Get(string connectionName,
                                     CancellationToken cancellationToken = default(CancellationToken))
         {
-            connectionName.Validate("connectionName", () => LogError(GetArgumentNullExceptionMsg, "Connection.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            connectionName.Validate("Connection.Get", "connectionName", LogError);
 
             string url = string.Format("api/connections/{0}", connectionName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
-                    connectionName));
+                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
 
             return base.Get(url, cancellationToken).As<Connection>(cancellationToken);
         }
@@ -58,14 +62,15 @@ namespace HareDu
         public Task<ServerResponse> Close(string connectionName,
                                              CancellationToken cancellationToken = default(CancellationToken))
         {
-            connectionName.Validate("connectionName", () => LogError(GetArgumentNullExceptionMsg, "Connection.Close"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            connectionName.Validate("Connection.Close", "connectionName", LogError);
 
             string url = string.Format("api/connections/{0}", connectionName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
-                    connectionName));
+                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

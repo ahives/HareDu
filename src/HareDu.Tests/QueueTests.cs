@@ -23,7 +23,7 @@ namespace HareDu.Tests
         HareDuTestBase
     {
         [SetUp]
-        public new void Setup()
+        public override void Setup()
         {
             Client = HareDuFactory.New(x =>
                                            {
@@ -40,7 +40,7 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Queue
-                                 .New(Settings.Default.Queue, x => x.IsDurable())
+                                 .New(string.Format("{0}5", Settings.Default.Queue), x => x.IsDurable())
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -72,13 +72,13 @@ namespace HareDu.Tests
                                               x.IsDurable();
                                               x.WithArguments(y =>
                                                                   {
-                                                                      y.SetPerQueueExpiration(0);
-                                                                      y.SetQueueExpiration(0);
-                                                                      y.SetDeadLetterExchange("");
-                                                                      y.SetDeadLetterExchangeRoutingKey("");
-                                                                      y.SetAlternateExchange("");
-                                                                      y.Set("", 0);
-                                                                      y.Set("", 0);
+                                                                      y.SetPerQueueExpiration(1000);
+                                                                      y.SetQueueExpiration(1000);
+                                                                      //y.SetDeadLetterExchange("");
+                                                                      //y.SetDeadLetterExchangeRoutingKey("");
+                                                                      //y.SetAlternateExchange("");
+                                                                      //y.Set("", 0);
+                                                                      //y.Set("", 0);
                                                                   });
                                           })
                                  .Response();
@@ -90,7 +90,7 @@ namespace HareDu.Tests
         {
             var response = Client.VirtualHost
                                  .Queue
-                                 .Delete(Settings.Default.Queue)
+                                 .Delete(string.Format("{0}5", Settings.Default.Queue))
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -98,11 +98,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Queues()
         {
-            var response = Client.VirtualHost
-                                 .Queue
-                                 .GetAll();
+            var data = Client.VirtualHost
+                             .Queue
+                             .GetAll()
+                             .Data();
 
-            foreach (var queue in response.Result)
+            foreach (var queue in data)
             {
                 Console.WriteLine("Name: {0}", queue.Name);
                 Console.WriteLine("Virtual Host: {0}", queue.VirtualHostName);

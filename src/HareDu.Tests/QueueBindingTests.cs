@@ -27,7 +27,8 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.UsingCredentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword);
+                                               x.UsingCredentials(Settings.Default.LoginUsername,
+                                                                  Settings.Default.LoginPassword);
                                                x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
@@ -39,7 +40,8 @@ namespace HareDu.Tests
             var response = Client.VirtualHost
                                  .Queue
                                  .Binding
-                                 .New(Settings.Default.Queue, Settings.Default.Exchange, x => x.UsingRoutingKey(Settings.Default.RoutingKey))
+                                 .New(Settings.Default.Queue, Settings.Default.Exchange,
+                                      x => x.UsingRoutingKey(Settings.Default.RoutingKey))
                                  .Response();
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
         }
@@ -58,12 +60,13 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Queue_Bindings()
         {
-            var response = Client.VirtualHost
-                                 .Queue
-                                 .Binding
-                                 .GetAll(Settings.Default.Queue);
+            var data = Client.VirtualHost
+                             .Queue
+                             .Binding
+                             .GetAll(Settings.Default.Queue)
+                             .Data();
 
-            foreach (var queue in response.Result)
+            foreach (var queue in data)
             {
                 Console.WriteLine("Source: {0}", queue.Source);
                 Console.WriteLine("Destination: {0}", queue.Destination);
@@ -79,18 +82,18 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_Queue_Binding()
         {
-            var binding = Client.VirtualHost
-                                .Queue
-                                .Binding
-                                .Get(Settings.Default.Queue, Settings.Default.Exchange, "fanout")
-                                .Result;
+            var data = Client.VirtualHost
+                             .Queue
+                             .Binding
+                             .Get(Settings.Default.Queue, Settings.Default.Exchange, "fanout")
+                             .Data();
 
-            Console.WriteLine("Source: {0}", binding.Source);
-            Console.WriteLine("Destination: {0}", binding.Destination);
-            Console.WriteLine("Destination Type: {0}", binding.DestinationType);
-            Console.WriteLine("Virtual Host: {0}", binding.VirtualHostName);
-            Console.WriteLine("Routing Key: {0}", binding.RoutingKey);
-            Console.WriteLine("Properties Key: {0}", binding.PropertiesKey);
+            Console.WriteLine("Source: {0}", data.Source);
+            Console.WriteLine("Destination: {0}", data.Destination);
+            Console.WriteLine("Destination Type: {0}", data.DestinationType);
+            Console.WriteLine("Virtual Host: {0}", data.VirtualHostName);
+            Console.WriteLine("Routing Key: {0}", data.RoutingKey);
+            Console.WriteLine("Properties Key: {0}", data.PropertiesKey);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
         }

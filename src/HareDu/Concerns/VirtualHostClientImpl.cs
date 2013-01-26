@@ -40,6 +40,8 @@ namespace HareDu
 
         public Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return all information on all virtual hosts on current RabbitMQ server.");
 
             string url = "api/vhosts";
@@ -49,7 +51,9 @@ namespace HareDu
 
         public Task<ServerResponse> New(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("virtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.New", "Init.VirtualHost", LogError);
 
             string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
@@ -60,13 +64,15 @@ namespace HareDu
 
         public Task<ServerResponse> Delete(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             if (virtualHost.SanitizeVirtualHostName() == "2%f")
             {
                 LogError("VirtualHost.Delete method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
-            virtualHost.Validate("virtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.Delete"));
+            virtualHost.Validate("VirtualHost.New", "virtualHost", LogError);
 
             string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
@@ -77,19 +83,19 @@ namespace HareDu
 
         public VirtualHostClient Change(string virtualHost, Action<UserCredentials> args)
         {
-            virtualHost.Validate("virtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.Change"));
+            virtualHost.Validate("VirtualHost.Change", "virtualHost", LogError);
 
             Init.OnVirtualHost(virtualHost);
 
-            args.Validate("args", () => LogError(GetArgumentExceptionMsg, "VirtualHost.Change"));
+            args.Validate("VirtualHost.Change", "args", LogError);
 
             var argsImpl = new UserCredentialsImpl();
             args(argsImpl);
 
             Init.UsingCredentials(argsImpl.Username, argsImpl.Password);
 
-            argsImpl.Username.Validate("VirtualHost.Init.Username", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.Change"));
-            argsImpl.Password.Validate("VirtualHost.Init.Password", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.Change"));
+            argsImpl.Username.Validate("VirtualHost.Change", "VirtualHost.Init.Username", LogError);
+            argsImpl.Password.Validate("VirtualHost.Change", "VirtualHost.Init.Password", LogError);
 
             Client = GetClient();
 
@@ -98,7 +104,9 @@ namespace HareDu
 
         public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "VirtualHost.IsAlive"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", "Init.VirtualHost", LogError);
 
             string url = string.Format("api/aliveness-test/{0}", Init.VirtualHost.SanitizeVirtualHostName());
 

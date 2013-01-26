@@ -27,14 +27,17 @@ namespace HareDu
         HareDuClientBase,
         UserPermissionsClient
     {
-        public UserPermissionsClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public UserPermissionsClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
         {
         }
 
         public Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Get"));
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("User.Permissions.Get", "Init.VirtualHost", LogError);
+            userName.Validate("User.Permissions.Get", "userName", LogError);
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        userName);
@@ -49,6 +52,8 @@ namespace HareDu
 
         public Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo(
                 "Sent request to return all user permission information pertaining to all users on current RabbitMQ server.");
 
@@ -60,16 +65,18 @@ namespace HareDu
         public Task<ServerResponse> Set(string userName, Action<UserPermissionsBehavior> args,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Set"));
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("User.Permissions.Set", "Init.VirtualHost", LogError);
+            userName.Validate("User.Permissions.Set", "userName", LogError);
+            args.Validate("User.Permissions.Set", "args", LogError);
 
             var argsImpl = new UserPermissionsBehaviorImpl();
             args(argsImpl);
 
-            argsImpl.ConfigurePermissions.Validate("args.ConfigurePermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
-            argsImpl.WritePermissions.Validate("args.WritePermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
-            argsImpl.ReadPermissions.Validate("args.ReadPermissions", () => LogError(GetArgumentNullExceptionMsg, "Permissions.Set"));
+            argsImpl.ConfigurePermissions.Validate("User.Permissions.Set", "args.ConfigurePermissions", LogError);
+            argsImpl.WritePermissions.Validate("User.Permissions.Set", "args.WritePermissions", LogError);
+            argsImpl.ReadPermissions.Validate("User.Permissions.Set", "args.ReadPermissions", LogError);
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
@@ -82,8 +89,10 @@ namespace HareDu
 
         public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("User.Permissions.Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Permissions.Delete"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("User.Permissions.Delete", "User.Permissions.Init.VirtualHost", LogError);
+            userName.Validate("User.Permissions.Delete", "userName", LogError);
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 

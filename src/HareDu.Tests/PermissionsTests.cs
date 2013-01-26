@@ -38,16 +38,6 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Verify_Throws_Exception_When_Permissions_Null()
-        {
-            var response = Client.User
-                                 .Permissions
-                                 .Set(Settings.Default.Username, null)
-                                 .Response();
-        }
-
-        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User_Permissions()
         {
             var response = Client.User
@@ -60,11 +50,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var response = Client.User
-                                 .Permissions
-                                 .GetAll();
+            var data = Client.User
+                             .Permissions
+                             .GetAll()
+                             .Data();
 
-            foreach (var permission in response.Result)
+            foreach (var permission in data)
             {
                 Console.WriteLine("Virtual Host: {0}", permission.VirtualHost);
                 Console.WriteLine("User: {0}", permission.User);
@@ -79,18 +70,28 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_User_Permissions()
         {
-            var permissions = Client.User
-                                    .Permissions
-                                    .Get(Settings.Default.Username)
-                                    .Result;
+            var data = Client.User
+                             .Permissions
+                             .Get(Settings.Default.Username)
+                             .Data();
 
-            Console.WriteLine("Virtual Host: {0}", permissions.VirtualHost);
-            Console.WriteLine("User: {0}", permissions.User);
-            Console.WriteLine("Configure Permissions: {0}", permissions.Configure);
-            Console.WriteLine("Read Permissions: {0}", permissions.Read);
-            Console.WriteLine("Write Permissions: {0}", permissions.Write);
+            Console.WriteLine("Virtual Host: {0}", data.VirtualHost);
+            Console.WriteLine("User: {0}", data.User);
+            Console.WriteLine("Configure Permissions: {0}", data.Configure);
+            Console.WriteLine("Read Permissions: {0}", data.Read);
+            Console.WriteLine("Write Permissions: {0}", data.Write);
             Console.WriteLine("****************************************************");
             Console.WriteLine();
+        }
+
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Throws_Exception_When_Permissions_Null()
+        {
+            var response = Client.User
+                                 .Permissions
+                                 .Set(Settings.Default.Username, null)
+                                 .Response();
         }
     }
 }

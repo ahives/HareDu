@@ -70,7 +70,7 @@
     <Compile Include="Contracts\Arguments.cs" />
     <Compile Include="Contracts\UserAccessCharacteristics.cs" />
     <Compile Include="Contracts\UserCredentials.cs" />
-    <Compile Include="Extensions\ExternalHttpExtensions.cs" />
+    <Compile Include="Extensions\AsyncExtensions.cs" />
     <Compile Include="Extensions\ValidationExtensions.cs" />
     <Compile Include="Internal\BindingDirectionImpl.cs" />
     <Compile Include="Internal\ExchangeRoutingBehaviorImpl.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Contracts\QueueBindingBehavior.cs" />
     <Compile Include="Contracts\ExchangeBehavior.cs" />
     <Compile Include="Model\ExchangeType.cs" />
-    <Compile Include="Extensions\InternalHttpExtensions.cs" />
+    <Compile Include="Extensions\RabbitMqSantizationExtensions.cs" />
     <Compile Include="HareDuClientBase.cs" />
     <Compile Include="Exceptions\HareDuClientInitException.cs" />
     <Compile Include="HareDuFactory.cs" />

@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
+    using System.Threading;
     using NUnit.Framework;
 
     [TestFixture]
@@ -25,16 +26,24 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Virtual_Host()
         {
-            var response = Client.VirtualHost.Delete(Settings.Default.VirtualHost).Response();
+            var response = Client.VirtualHost
+                                 .Delete(Settings.Default.VirtualHost)
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
-            var response = Client.VirtualHost.GetAll();
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
 
-            foreach (var vhost in response.Result)
+            tokenSource.Cancel();
+            var data = Client.VirtualHost
+                             .GetAll(token)
+                             .Data();
+
+            foreach (var vhost in data)
             {
                 Console.WriteLine("Name: {0}", vhost.Name);
                 Console.WriteLine("Tracing: {0}", vhost.Tracing);
@@ -46,16 +55,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Create_Virtual_Host_Is_Working()
         {
-            var response = Client.VirtualHost.New(Settings.Default.VirtualHost).Response();
+            var response = Client.VirtualHost
+                                 .New(Settings.Default.VirtualHost)
+                                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
-        }
-
-        [Test, Category("Integration"), Explicit]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Verify_Throw_Exception_When_Virtual_Host_Missing()
-        {
-            var request = Client.VirtualHost.Delete(string.Empty).Response();
-            Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
@@ -64,13 +67,25 @@ namespace HareDu.Tests
             var response = Client.VirtualHost
                                  .Change(Settings.Default.VirtualHost, x =>
                                                                            {
-                                                                               x.SetUsername(Settings.Default.LoginUsername);
-                                                                               x.SetPassword(Settings.Default.LoginPassword);
+                                                                               x.SetUsername(
+                                                                                   Settings.Default.LoginUsername);
+                                                                               x.SetPassword(
+                                                                                   Settings.Default.LoginPassword);
                                                                            })
                                  .IsAlive()
                                  .Response();
             Assert.AreEqual(null, response.Status);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void Verify_Throw_Exception_When_Virtual_Host_Missing()
+        {
+            var request = Client.VirtualHost
+                                .Delete(string.Empty)
+                                .Response();
+            Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
         }
     }
 }

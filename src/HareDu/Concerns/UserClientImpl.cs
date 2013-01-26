@@ -37,6 +37,8 @@ namespace HareDu
 
         public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return all information pertaining to all users on current RabbitMQ server.");
 
             string url = "api/users";
@@ -46,7 +48,9 @@ namespace HareDu
 
         public Task<User> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            userName.Validate("User.Get", "userName", LogError);
 
             LogInfo(string.Format(
                 "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
@@ -59,16 +63,18 @@ namespace HareDu
         public Task<ServerResponse> New(string userName, Action<UserCharacteristics> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            userName.Validate("User.New", "userName", LogError);
 
             LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
 
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
+            args.Validate("User.New", "args", LogError);
 
             var argsImpl = new UserCharacteristicsImpl();
             args(argsImpl);
 
-            argsImpl.Password.Validate("password", () => LogError(GetArgumentNullExceptionMsg, "User.New"));
+            argsImpl.Password.Validate("User.New", "Password", LogError);
 
             string url = string.Format("api/users/{0}", userName);
 
@@ -77,14 +83,17 @@ namespace HareDu
 
         public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            userName.Validate("userName", () => LogError(GetArgumentNullExceptionMsg, "User.Delete"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            userName.Validate("User.Delete", "userName", LogError);
 
             if (userName == Init.Username)
             {
-                LogError(GetArgumentNullExceptionMsg, "User.Delete");
-                throw new CannotDeleteSessionLoginUserException(
-                    string.Format(
-                        "Cannot delete user '{0}' because it is being used to send requests login to the current client session.", userName));
+                string errorMsg = string.Format(
+                    "Cannot delete user '{0}' because it is being used to send requests with the credentials of the logged in to the current client session.",
+                    userName);
+                LogError(string.Format("{0} method threw a CannotDeleteSessionLoginUserException exception. {1}", "User.Delete", errorMsg));
+                throw new CannotDeleteSessionLoginUserException(errorMsg);
             }
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userName));

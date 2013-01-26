@@ -20,7 +20,7 @@ namespace HareDu.Tests
     public class HareDuTestBase
     {
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             Client = HareDuFactory.New(x =>
                                            {

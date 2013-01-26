@@ -48,9 +48,11 @@ namespace HareDu
         public Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
-            args.Validate("args", () => LogError(GetArgumentNullExceptionMsg, "Queue.New"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.New", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.New", "queue", LogError);
+            args.Validate("Queue.New", "args", LogError);
 
             var argsImpl = new QueueBehaviorImpl();
             args(argsImpl);
@@ -69,8 +71,10 @@ namespace HareDu
 
         public Task<ServerResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Delete"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Delete"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Delete", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.Delete", "queue", LogError);
 
             string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 
@@ -82,8 +86,10 @@ namespace HareDu
 
         public Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Init.VirtualHost.Validate("Init.VirtualHost", () => LogError(GetArgumentNullExceptionMsg, "Queue.Purge"));
-            queue.Validate("queue", () => LogError(GetArgumentNullExceptionMsg, "Queue.Purge"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            Init.VirtualHost.Validate("Queue.Purge", "Init.VirtualHost", LogError);
+            queue.Validate("Queue.Purge", "queue", LogError);
 
             string url = string.Format("api/queues/{0}/{1}/contents", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 

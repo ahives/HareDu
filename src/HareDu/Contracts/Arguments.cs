@@ -19,10 +19,30 @@ namespace HareDu.Contracts
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="arg"></param>
         /// <param name="value"></param>
-        void Set<T>(string arg, T value);
+        void Set(string arg, int value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="value"></param>
+        void Set(string arg, long value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="value"></param>
+        void Set(string arg, string value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="value"></param>
+        void Set(string arg, bool value);
 
         /// <summary>
         /// 

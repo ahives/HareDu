@@ -24,13 +24,16 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Overview()
         {
-            var overview = Client.Cluster.Overview.Get().Result;
+            var data = Client.Cluster
+                             .Overview
+                             .Get()
+                             .Data();
 
-            Console.WriteLine("Management Version: {0}", overview.ManagementVersion);
-            Console.WriteLine("Statistics Level: {0}", overview.StatisticsLevel);
+            Console.WriteLine("Management Version: {0}", data.ManagementVersion);
+            Console.WriteLine("Statistics Level: {0}", data.StatisticsLevel);
 
             Console.WriteLine("******************** Exchange Types ********************");
-            foreach (var exchangeType in overview.ExchangeTypes)
+            foreach (var exchangeType in data.ExchangeTypes)
             {
                 Console.WriteLine("Name: {0}", exchangeType.Name);
                 Console.WriteLine("Description: {0}", exchangeType.Description);
@@ -38,7 +41,7 @@ namespace HareDu.Tests
             }
 
             Console.WriteLine("******************** Message Stats ********************");
-            foreach (var messageStats in overview.MessageStats)
+            foreach (var messageStats in data.MessageStats)
             {
                 Console.WriteLine("Acknowledged: {0}", messageStats.Acknowledged);
                 Console.WriteLine("Published: {0}", messageStats.Published);
@@ -48,29 +51,29 @@ namespace HareDu.Tests
             }
 
             Console.WriteLine("******************** Message Details ********************");
-            Console.WriteLine("Messages: {0}", overview.QueueTotals.Messages);
-            Console.WriteLine("Messages Ready: {0}", overview.QueueTotals.MessagesReady);
-            Console.WriteLine("Messages Unacknowledged: {0}", overview.QueueTotals.MessagesUnacknowledged);
+            Console.WriteLine("Messages: {0}", data.QueueTotals.Messages);
+            Console.WriteLine("Messages Ready: {0}", data.QueueTotals.MessagesReady);
+            Console.WriteLine("Messages Unacknowledged: {0}", data.QueueTotals.MessagesUnacknowledged);
 
             Console.WriteLine("******************** Messages Details ********************");
-            Console.WriteLine("Rate: {0}", overview.QueueTotals.MessagesDetails.Rate);
-            Console.WriteLine("Interval: {0}", overview.QueueTotals.MessagesDetails.Interval);
-            Console.WriteLine("Last Event: {0}", overview.QueueTotals.MessagesDetails.LastEvent);
+            Console.WriteLine("Rate: {0}", data.QueueTotals.MessagesDetails.Rate);
+            Console.WriteLine("Interval: {0}", data.QueueTotals.MessagesDetails.Interval);
+            Console.WriteLine("Last Event: {0}", data.QueueTotals.MessagesDetails.LastEvent);
 
             Console.WriteLine("******************** Messages Ready Details ********************");
-            Console.WriteLine("Rate: {0}", overview.QueueTotals.MessagesReadyDetails.Rate);
-            Console.WriteLine("Interval: {0}", overview.QueueTotals.MessagesReadyDetails.Interval);
-            Console.WriteLine("Last Event: {0}", overview.QueueTotals.MessagesReadyDetails.LastEvent);
+            Console.WriteLine("Rate: {0}", data.QueueTotals.MessagesReadyDetails.Rate);
+            Console.WriteLine("Interval: {0}", data.QueueTotals.MessagesReadyDetails.Interval);
+            Console.WriteLine("Last Event: {0}", data.QueueTotals.MessagesReadyDetails.LastEvent);
 
             Console.WriteLine("******************** Messages Unacknowledged Details ********************");
-            Console.WriteLine("Rate: {0}", overview.QueueTotals.MessagesUnacknowledgedDetails.Rate);
-            Console.WriteLine("Interval: {0}", overview.QueueTotals.MessagesUnacknowledgedDetails.Interval);
-            Console.WriteLine("Last Event: {0}", overview.QueueTotals.MessagesUnacknowledgedDetails.LastEvent);
-            Console.WriteLine("Node: {0}", overview.Node);
-            Console.WriteLine("Statistics DB Node: {0}", overview.StatisticsDbNode);
+            Console.WriteLine("Rate: {0}", data.QueueTotals.MessagesUnacknowledgedDetails.Rate);
+            Console.WriteLine("Interval: {0}", data.QueueTotals.MessagesUnacknowledgedDetails.Interval);
+            Console.WriteLine("Last Event: {0}", data.QueueTotals.MessagesUnacknowledgedDetails.LastEvent);
+            Console.WriteLine("Node: {0}", data.Node);
+            Console.WriteLine("Statistics DB Node: {0}", data.StatisticsDbNode);
 
             Console.WriteLine("******************** Listeners ********************");
-            foreach (var listener in overview.Listeners)
+            foreach (var listener in data.Listeners)
             {
                 Console.WriteLine("Node: {0}", listener.Node);
                 Console.WriteLine("Protocol: {0}", listener.Protocol);
@@ -79,7 +82,7 @@ namespace HareDu.Tests
             }
 
             Console.WriteLine("******************** Contexts ********************");
-            foreach (var context in overview.Contexts)
+            foreach (var context in data.Contexts)
             {
                 Console.WriteLine("Node: {0}", context.Node);
                 Console.WriteLine("Description: {0}", context.Description);

@@ -27,7 +27,22 @@ namespace HareDu.Internal
 
         public Dictionary<string, object> ArgumentMap { get; private set; }
 
-        public void Set<T>(string arg, T value)
+        public void Set(string arg, int value)
+        {
+            ArgumentMap.Add(arg, value);
+        }
+
+        public void Set(string arg, long value)
+        {
+            ArgumentMap.Add(arg, value);
+        }
+
+        public void Set(string arg, string value)
+        {
+            ArgumentMap.Add(arg, value);
+        }
+
+        public void Set(string arg, bool value)
         {
             ArgumentMap.Add(arg, value);
         }

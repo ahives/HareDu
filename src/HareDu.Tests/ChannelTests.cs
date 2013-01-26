@@ -24,11 +24,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Channels()
         {
-            var response = Client.Connection
-                                 .Channel
-                                 .GetAll();
+            var data = Client.Connection
+                             .Channel
+                             .GetAll()
+                             .Data();
 
-            foreach (var channel in response.Result)
+            foreach (var channel in data)
             {
                 Console.WriteLine("Name: {0}", channel.Name);
                 Console.WriteLine("Node: {0}", channel.Node);
@@ -66,33 +67,33 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Channel()
         {
-            var channel = Client.Connection
-                                .Channel
-                                .Get(Settings.Default.Channel)
-                                .Result;
+            var data = Client.Connection
+                             .Channel
+                             .Get(Settings.Default.Channel)
+                             .Data();
 
-            Console.WriteLine("Name: {0}", channel.Name);
-            Console.WriteLine("Node: {0}", channel.Node);
-            Console.WriteLine("User: {0}", channel.User);
-            Console.WriteLine("Confirm: {0}", channel.Confirm);
-            Console.WriteLine("Client Flow Blocked: {0}", channel.IsClientFlowBlocked);
-            Console.WriteLine("Is Transactional: {0}", channel.IsTransactional);
-            Console.WriteLine("Idle Since: {0}", channel.IdleSince.ToString());
-            Console.WriteLine("Virtual Host: {0}", channel.VirtualHostName);
-            Console.WriteLine("Prefetch Count: {0}", channel.PrefetchCount);
-            Console.WriteLine("Unacknowledged: {0}", channel.Unacknowledged);
-            Console.WriteLine("Uncommitted: {0}", channel.Uncommitted);
-            Console.WriteLine("Unconfirmed: {0}", channel.Unconfirmed);
-            Console.WriteLine("Acknowledges Uncommitted: {0}", channel.AcknowledgesUncommitted);
-            Console.WriteLine("Consumer Count: {0}", channel.ConsumerCount);
+            Console.WriteLine("Name: {0}", data.Name);
+            Console.WriteLine("Node: {0}", data.Node);
+            Console.WriteLine("User: {0}", data.User);
+            Console.WriteLine("Confirm: {0}", data.Confirm);
+            Console.WriteLine("Client Flow Blocked: {0}", data.IsClientFlowBlocked);
+            Console.WriteLine("Is Transactional: {0}", data.IsTransactional);
+            Console.WriteLine("Idle Since: {0}", data.IdleSince.ToString());
+            Console.WriteLine("Virtual Host: {0}", data.VirtualHostName);
+            Console.WriteLine("Prefetch Count: {0}", data.PrefetchCount);
+            Console.WriteLine("Unacknowledged: {0}", data.Unacknowledged);
+            Console.WriteLine("Uncommitted: {0}", data.Uncommitted);
+            Console.WriteLine("Unconfirmed: {0}", data.Unconfirmed);
+            Console.WriteLine("Acknowledges Uncommitted: {0}", data.AcknowledgesUncommitted);
+            Console.WriteLine("Consumer Count: {0}", data.ConsumerCount);
 
-            if (!channel.MessageStats.IsNull())
+            if (!data.MessageStats.IsNull())
             {
-                Console.WriteLine("Acknowledged: {0}", channel.MessageStats.Acknowledged);
-                Console.WriteLine("Published: {0}", channel.MessageStats.Published);
-                Console.WriteLine("Delivered: {0}", channel.MessageStats.Delivered);
-                Console.WriteLine("Delivered/Get: {0}", channel.MessageStats.DeliveredOrGet);
-                Console.WriteLine("Acknowledged: {0}", channel.MessageStats.Acknowledged);
+                Console.WriteLine("Acknowledged: {0}", data.MessageStats.Acknowledged);
+                Console.WriteLine("Published: {0}", data.MessageStats.Published);
+                Console.WriteLine("Delivered: {0}", data.MessageStats.Delivered);
+                Console.WriteLine("Delivered/Get: {0}", data.MessageStats.DeliveredOrGet);
+                Console.WriteLine("Acknowledged: {0}", data.MessageStats.Acknowledged);
             }
         }
     }

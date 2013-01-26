@@ -29,6 +29,8 @@ namespace HareDu
 
         public Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return all information pertaining to all channels on current RabbitMQ server.");
 
             string url = "api/channels";
@@ -38,7 +40,9 @@ namespace HareDu
 
         public Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            channelName.Validate("channelName", () => LogError(GetArgumentNullExceptionMsg, "Channel.Get"));
+            cancellationToken.RequestCanceled(LogInfo);
+
+            channelName.Validate("Connection.Channel.Get", "channelName", LogError);
 
             string url = string.Format("api/channels/{0}", channelName);
 
