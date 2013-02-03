@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ namespace HareDu
         /// <param name="connectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Close(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Close(string connectionName,
+                                   CancellationToken cancellationToken = default(CancellationToken));
     }
 }

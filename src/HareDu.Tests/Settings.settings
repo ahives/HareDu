@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="HostUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://localhost:55672</Value>
+      <Value Profile="(Default)">http://localhost:15672</Value>
     </Setting>
     <Setting Name="LoginUsername" Type="System.String" Scope="User">
       <Value Profile="(Default)">guest</Value>
@@ -37,6 +37,9 @@
     </Setting>
     <Setting Name="RoutingKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">test_routing_key</Value>
+    </Setting>
+    <Setting Name="Policy" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestPolicy</Value>
     </Setting>
   </Settings>
 </SettingsFile>

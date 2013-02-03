@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,29 +48,27 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            connectionName.Validate("Connection.Get", "connectionName", LogError);
-
             string url = string.Format("api/connections/{0}", connectionName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
+                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
+                    connectionName));
 
             return base.Get(url, cancellationToken).As<Connection>(cancellationToken);
         }
 
         public Task<ServerResponse> Close(string connectionName,
-                                             CancellationToken cancellationToken = default(CancellationToken))
+                                          CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            connectionName.Validate("Connection.Close", "connectionName", LogError);
 
             string url = string.Format("api/connections/{0}", connectionName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.", connectionName));
+                    "Sent request to return all information pertaining to connection '{0}' on current RabbitMQ server.",
+                    connectionName));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

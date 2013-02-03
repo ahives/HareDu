@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,7 +43,8 @@ namespace HareDu
         /// <param name="args"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> New(string queue, Action<QueueBehavior> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
+                                 CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 

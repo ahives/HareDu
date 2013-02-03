@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,8 +50,6 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            userName.Validate("User.Get", "userName", LogError);
-
             LogInfo(string.Format(
                 "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
 
@@ -61,38 +59,32 @@ namespace HareDu
         }
 
         public Task<ServerResponse> New(string userName, Action<UserCharacteristics> args,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            userName.Validate("User.New", "userName", LogError);
-
             LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
-
-            args.Validate("User.New", "args", LogError);
 
             var argsImpl = new UserCharacteristicsImpl();
             args(argsImpl);
-
-            argsImpl.Password.Validate("User.New", "Password", LogError);
 
             string url = string.Format("api/users/{0}", userName);
 
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            userName.Validate("User.Delete", "userName", LogError);
 
             if (userName == Init.Username)
             {
                 string errorMsg = string.Format(
                     "Cannot delete user '{0}' because it is being used to send requests with the credentials of the logged in to the current client session.",
                     userName);
-                LogError(string.Format("{0} method threw a CannotDeleteSessionLoginUserException exception. {1}", "User.Delete", errorMsg));
+                LogError(string.Format("{0} method threw a CannotDeleteSessionLoginUserException exception. {1}",
+                                       "User.Delete", errorMsg));
                 throw new CannotDeleteSessionLoginUserException(errorMsg);
             }
 

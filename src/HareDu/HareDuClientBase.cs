@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,11 +27,6 @@ namespace HareDu
     {
         protected HareDuClientBase(HareDuClientBehaviorImpl args)
         {
-            args.HostUrl.Validate("HareDuClientBase", "args.HostUrl", LogError);
-            args.Username.Validate("HareDuClientBase", "args.Username", LogError);
-            args.Password.Validate("HareDuClientBase", "args.Password", LogError);
-            args.VirtualHost.Validate("HareDuClientBase", "args.VirtualHost", LogError);
-
             Init = args;
             Logger = args.Logger;
             IsLoggingEnabled = !Logger.IsNull();
@@ -89,7 +84,7 @@ namespace HareDu
             {
                 if (url.Contains("/%2f"))
                     LeaveDotsAndSlashesEscaped();
-                
+
                 return Client.GetAsync(url, cancellationToken);
             }
             catch (Exception e)

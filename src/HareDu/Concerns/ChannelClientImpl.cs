@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,13 +42,12 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            channelName.Validate("Connection.Channel.Get", "channelName", LogError);
-
             string url = string.Format("api/channels/{0}", channelName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.", channelName));
+                    "Sent request to return all information pertaining to channel '{0}' on current RabbitMQ server.",
+                    channelName));
 
             return base.Get(url, cancellationToken).As<Channel>(cancellationToken);
         }

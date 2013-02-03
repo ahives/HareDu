@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,13 +46,9 @@ namespace HareDu
         }
 
         public Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.New", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.New", "queue", LogError);
-            args.Validate("Queue.New", "args", LogError);
 
             var argsImpl = new QueueBehaviorImpl();
             args(argsImpl);
@@ -61,7 +57,8 @@ namespace HareDu
 
             LogInfo(string.IsNullOrEmpty(argsImpl.Node)
                         ? string.Format(
-                            "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queue, Init.VirtualHost)
+                            "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queue,
+                            Init.VirtualHost)
                         : string.Format(
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.",
                             queue, Init.VirtualHost, argsImpl.Node));
@@ -69,12 +66,10 @@ namespace HareDu
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string queue,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Delete", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.Delete", "queue", LogError);
 
             string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 
@@ -87,9 +82,6 @@ namespace HareDu
         public Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Purge", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.Purge", "queue", LogError);
 
             string url = string.Format("api/queues/{0}/{1}/contents", Init.VirtualHost.SanitizeVirtualHostName(), queue);
 

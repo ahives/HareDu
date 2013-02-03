@@ -25,7 +25,7 @@ namespace HareDu.Tests {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:55672")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:15672")]
         public string HostUrl {
             get {
                 return ((string)(this["HostUrl"]));
@@ -164,6 +164,18 @@ namespace HareDu.Tests {
             }
             set {
                 this["RoutingKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MyTestPolicy")]
+        public string Policy {
+            get {
+                return ((string)(this["Policy"]));
+            }
+            set {
+                this["Policy"] = value;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,10 +27,9 @@ namespace HareDu.Tests
         {
             Client = HareDuFactory.New(x =>
                                            {
-                                               x.ConnectTo(Settings.Default.HostUrl);
+                                               x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
                                                x.UsingCredentials(Settings.Default.LoginUsername,
                                                                   Settings.Default.LoginPassword);
-                                               x.OnVirtualHost(Settings.Default.VirtualHost);
                                                x.EnableLogging("HareDuLogger");
                                            });
         }
@@ -55,7 +54,8 @@ namespace HareDu.Tests
                                           {
                                               x.IsDurable();
                                               x.OnNode(
-                                                  string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")));
+                                                  string.Format("rabbit@{0}",
+                                                                Environment.GetEnvironmentVariable("COMPUTERNAME")));
                                           })
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);

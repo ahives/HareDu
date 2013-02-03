@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,11 +36,7 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            Init.VirtualHost.Validate("User.Permissions.Get", "Init.VirtualHost", LogError);
-            userName.Validate("User.Permissions.Get", "userName", LogError);
-
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(),
-                                       userName);
+            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
             LogInfo(
                 string.Format(
@@ -67,32 +63,23 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            Init.VirtualHost.Validate("User.Permissions.Set", "Init.VirtualHost", LogError);
-            userName.Validate("User.Permissions.Set", "userName", LogError);
-            args.Validate("User.Permissions.Set", "args", LogError);
-
             var argsImpl = new UserPermissionsBehaviorImpl();
             args(argsImpl);
-
-            argsImpl.ConfigurePermissions.Validate("User.Permissions.Set", "args.ConfigurePermissions", LogError);
-            argsImpl.WritePermissions.Validate("User.Permissions.Set", "args.WritePermissions", LogError);
-            argsImpl.ReadPermissions.Validate("User.Permissions.Set", "args.ReadPermissions", LogError);
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 
             LogInfo(
                 string.Format(
-                    "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.", userName, Init.VirtualHost));
+                    "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
+                    userName, Init.VirtualHost));
 
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("User.Permissions.Delete", "User.Permissions.Init.VirtualHost", LogError);
-            userName.Validate("User.Permissions.Delete", "userName", LogError);
 
             string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
 

@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,32 +11,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace HareDu
 {
     using System;
 
-    internal static class ValidationExtensions
+    public static class ValidationExtensions
     {
-        //static Func<string, string> GetArgumentNullExceptionMsg =
-        //    (msg) => string.Format("{0} method threw an ArgumentNullException exception because param was invalid (i.e. empty, null, or all whitespaces)", msg);
-        //static Func<string, string, string> GetArgumentNullExceptionMsg1 =
-        //    (msg, paramName) => string.Format("{0} method threw an ArgumentNullException exception because parameter '{1}' was invalid (i.e. empty, null, or all whitespaces)", msg, paramName);
-        //static Func<string, string> GetArgumentExceptionMsg =
-        //    (msg) => string.Format("{0} method threw an ArgumentException exception because host URL was invalid (i.e. empty, null, or all whitespaces)", msg);
-
-        private static Func<string, string, string> _emptyOrWhitespaceParamMsg;
-        private static Func<string, string, string> _nullReferenceParamMsg;
+        private static readonly Func<string, string, string> EmptyOrWhitespaceParamMsg;
+        private static readonly Func<string, string, string> NullReferenceParamMsg;
 
         static ValidationExtensions()
         {
-            _emptyOrWhitespaceParamMsg = (source, paramName) =>
-                string.Format(
-                    "{0} method threw an ArgumentException exception because parameter '{1}' was invalid (i.e. empty, null, or all whitespaces)",
-                    source, paramName);
-            _nullReferenceParamMsg = (source, paramName) =>
-                string.Format(
-                    "{0} method threw an ArgumentNullException exception because parameter '{1}' was invalid (i.e. null)",
-                    source, paramName);
+            EmptyOrWhitespaceParamMsg = (source, paramName) =>
+                                        string.Format(
+                                            "{0} method threw an ArgumentException exception because parameter '{1}' was invalid (i.e. empty, null, or all whitespaces)",
+                                            source, paramName);
+            NullReferenceParamMsg = (source, paramName) =>
+                                    string.Format(
+                                        "{0} method threw an ArgumentNullException exception because parameter '{1}' was invalid (i.e. null)",
+                                        source, paramName);
         }
 
         public static void Validate(this string value, string paramName, Action logging)
@@ -46,7 +40,8 @@ namespace HareDu
                 if (!logging.IsNull())
                     logging();
 
-                throw new ArgumentException(string.Format("{0} is null, empty, or consists of all whitespaces", paramName));
+                throw new ArgumentException(string.Format("{0} is null, empty, or consists of all whitespaces",
+                                                          paramName));
             }
         }
 
@@ -55,9 +50,10 @@ namespace HareDu
             if (string.IsNullOrWhiteSpace(value))
             {
                 if (!logging.IsNull())
-                    logging(_emptyOrWhitespaceParamMsg(source, paramName));
+                    logging(EmptyOrWhitespaceParamMsg(source, paramName));
 
-                throw new ArgumentException(string.Format("{0} is null, empty, or consists of all whitespaces", paramName));
+                throw new ArgumentException(string.Format("{0} is null, empty, or consists of all whitespaces",
+                                                          paramName));
             }
         }
 
@@ -65,7 +61,7 @@ namespace HareDu
             where T : class
         {
             if (!logging.IsNull())
-                logging(_nullReferenceParamMsg(source, paramName));
+                logging(NullReferenceParamMsg(source, paramName));
 
             if (value.IsNull())
                 throw new ArgumentException(string.Format("{0} is null", paramName));

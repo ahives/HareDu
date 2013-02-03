@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Internal
 {
-    public static class RabbitMqSantizationExtensions
+    using Contracts;
+
+    internal class VirtualHostTargetImpl :
+        VirtualHostTarget
     {
-        internal static string SanitizeVirtualHostName(this string value)
-        {
-            if (value == @"/")
-            {
-                return value.Replace("/", "%2f");
-            }
+        public string VirtualHost { get; set; }
 
-            return value;
-        }
-
-        internal static string SanitizePropertiesKey(this string value)
+        public void OnVirtualHost(string virtualHost)
         {
-            return value.Replace("%5F", "%255F");
+            VirtualHost = virtualHost;
         }
     }
 }

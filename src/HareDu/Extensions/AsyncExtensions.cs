@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,11 +34,24 @@ namespace HareDu
             return task.Result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <returns></returns>
         public static T Data<T>(this Task<T> task)
         {
             return task.Result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<T> Response<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
             where T : AsyncResponse, new()
         {
@@ -55,6 +68,13 @@ namespace HareDu
                                      TaskScheduler.Current);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<T> As<T>(this Task<HttpResponseMessage> task, CancellationToken cancellationToken)
         {
             return task.ContinueWith(t =>
@@ -71,7 +91,8 @@ namespace HareDu
             if (cancellationToken.IsCancellationRequested)
             {
                 if (!logging.IsNull())
-                    logging("Cancellation of this task was requested by the caller, therefore, request for resources has been canceled.");
+                    logging(
+                        "Cancellation of this task was requested by the caller, therefore, request for resources has been canceled.");
 
                 cancellationToken.ThrowIfCancellationRequested();
             }

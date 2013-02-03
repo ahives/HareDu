@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Connections()
         {
             var data = Client.Connection
-                                 .GetAll()
-                                 .Data();
+                             .GetAll()
+                             .Data();
 
             foreach (var connection in data)
             {
@@ -58,8 +58,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Connection()
         {
             var data = Client.Connection
-                                   .Get(Settings.Default.Connection)
-                                   .Data();
+                             .Get(Settings.Default.Connection)
+                             .Data();
 
             Console.WriteLine("Name: {0}", data.Name);
             Console.WriteLine("Node: {0}", data.Node);

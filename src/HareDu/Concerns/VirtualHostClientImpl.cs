@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,30 +49,31 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> New(string virtualHost,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("VirtualHost.New", "Init.VirtualHost", LogError);
 
             string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
             LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHost));
 
-            return base.Put(url, new StringContent(string.Empty), cancellationToken).Response<ServerResponse>(cancellationToken);
+            return
+                base.Put(url, new StringContent(string.Empty), cancellationToken)
+                    .Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string virtualHost,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             if (virtualHost.SanitizeVirtualHostName() == "2%f")
             {
-                LogError("VirtualHost.Delete method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
+                LogError(
+                    "VirtualHost.Delete method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
-
-            virtualHost.Validate("VirtualHost.New", "virtualHost", LogError);
 
             string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
 
@@ -83,19 +84,12 @@ namespace HareDu
 
         public VirtualHostClient Change(string virtualHost, Action<UserCredentials> args)
         {
-            virtualHost.Validate("VirtualHost.Change", "virtualHost", LogError);
-
             Init.OnVirtualHost(virtualHost);
-
-            args.Validate("VirtualHost.Change", "args", LogError);
 
             var argsImpl = new UserCredentialsImpl();
             args(argsImpl);
 
             Init.UsingCredentials(argsImpl.Username, argsImpl.Password);
-
-            argsImpl.Username.Validate("VirtualHost.Change", "VirtualHost.Init.Username", LogError);
-            argsImpl.Password.Validate("VirtualHost.Change", "VirtualHost.Init.Password", LogError);
 
             Client = GetClient();
 
@@ -106,13 +100,12 @@ namespace HareDu
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            Init.VirtualHost.Validate("VirtualHost.Init.VirtualHost", "Init.VirtualHost", LogError);
-
             string url = string.Format("api/aliveness-test/{0}", Init.VirtualHost.SanitizeVirtualHostName());
 
             LogInfo(
                 string.Format(
-                    "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.", Init.VirtualHost));
+                    "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
+                    Init.VirtualHost));
 
             return base.Get(url, cancellationToken)
                        .ContinueWith(t =>

@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ namespace HareDu.Contracts
         /// 
         /// </summary>
         /// <param name="hostUrl"></param>
-        void ConnectTo(string hostUrl);
+        /// <param name="virtualHost"></param>
+        void ConnectTo(string hostUrl, string virtualHost = "/");
 
         /// <summary>
         /// 
@@ -34,11 +35,5 @@ namespace HareDu.Contracts
         /// </summary>
         /// <param name="loggerName"></param>
         void EnableLogging(string loggerName);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHost"></param>
-        void OnVirtualHost(string virtualHost);
     }
 }

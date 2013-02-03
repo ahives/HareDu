@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,21 +33,15 @@ namespace HareDu
         }
 
         public Task<ServerResponse> New(string queue, string exchange, Action<QueueBindingBehavior> args,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Binding.New", "Queue.Binding.Init.VirtualHost", LogError);
-            queue.Validate("Queue.Binding.New", "queue", LogError);
-            exchange.Validate("Queue.Binding.New", "exchange", LogError);
-            args.Validate("Queue.Binding.New", "args", LogError);
 
             var argsImpl = new QueueBindingBehaviorImpl();
             args(argsImpl);
 
-            argsImpl.RoutingKey.Validate("Queue.Binding.New", "routingKey", LogError);
-
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", Init.VirtualHost.SanitizeVirtualHostName(), exchange, queue);
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", Init.VirtualHost.SanitizeVirtualHostName(),
+                                       exchange, queue);
 
             LogInfo(
                 string.Format(
@@ -58,14 +52,9 @@ namespace HareDu
         }
 
         public Task<ServerResponse> Delete(string queue, string exchange, string propertiesKey,
-                                              CancellationToken cancellationToken = default(CancellationToken))
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Binding.Init.Delete", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.Binding.Delete", "queue", LogError);
-            exchange.Validate("Queue.Binding.Delete", "exchange", LogError);
-            propertiesKey.Validate("Queue.Binding.Delete", "routingKey", LogError);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());
@@ -78,12 +67,10 @@ namespace HareDu
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAll(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<Binding>> GetAll(string queue,
+                                                 CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Binding.GetAll", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.Binding.GetAll", "queue", LogError);
 
             LogInfo(
                 string.Format(
@@ -99,11 +86,6 @@ namespace HareDu
                                  CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
-
-            Init.VirtualHost.Validate("Queue.Binding.Get", "Init.VirtualHost", LogError);
-            queue.Validate("Queue.Binding.Get", "queue", LogError);
-            exchange.Validate("Queue.Binding.Get", "exchange", LogError);
-            propertiesKey.Validate("Queue.Binding.Get", "routingKey", LogError);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", Init.VirtualHost.SanitizeVirtualHostName(),
                                        exchange, queue, propertiesKey.SanitizePropertiesKey());

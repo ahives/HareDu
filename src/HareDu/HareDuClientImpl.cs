@@ -1,4 +1,4 @@
-﻿// Copyright 2012-2013 Albert L. Hives, Chris Patterson, et al.
+﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,10 @@
 
 namespace HareDu
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Concerns;
+
     internal class HareDuClientImpl :
         HareDuClientBase,
         HareDuClient
@@ -25,12 +29,16 @@ namespace HareDu
             User = new UserClientImpl(args);
             Connection = new ConnectionClientImpl(args);
             Cluster = new ClusterClientImpl(args);
+            Policy = new PolicyClientImpl(args);
+            Configuration = new ConfigurationClientImpl(args);
         }
 
         public VirtualHostClient VirtualHost { get; private set; }
         public UserClient User { get; private set; }
         public ConnectionClient Connection { get; private set; }
         public ClusterClient Cluster { get; private set; }
+        public PolicyClient Policy { get; private set; }
+        public ConfigurationClient Configuration { get; set; }
 
         public void CancelPendingRequests()
         {
@@ -38,5 +46,10 @@ namespace HareDu
 
             Client.CancelPendingRequests();
         }
+    }
+
+    internal interface ConfigurationClient
+    {
+        Task<Parameter> Get(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
