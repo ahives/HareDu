@@ -14,8 +14,6 @@
 
 namespace HareDu
 {
-    using System.Threading;
-    using System.Threading.Tasks;
     using Concerns;
 
     internal class HareDuClientImpl :
@@ -33,12 +31,12 @@ namespace HareDu
             Configuration = new ConfigurationClientImpl(args);
         }
 
+        public ConfigurationClient Configuration { get; private set; }
         public VirtualHostClient VirtualHost { get; private set; }
         public UserClient User { get; private set; }
         public ConnectionClient Connection { get; private set; }
         public ClusterClient Cluster { get; private set; }
         public PolicyClient Policy { get; private set; }
-        public ConfigurationClient Configuration { get; set; }
 
         public void CancelPendingRequests()
         {
@@ -46,10 +44,5 @@ namespace HareDu
 
             Client.CancelPendingRequests();
         }
-    }
-
-    internal interface ConfigurationClient
-    {
-        Task<Parameter> Get(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

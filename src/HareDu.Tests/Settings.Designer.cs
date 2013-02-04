@@ -178,5 +178,29 @@ namespace HareDu.Tests {
                 this["Policy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MyTestComponent")]
+        public string Component {
+            get {
+                return ((string)(this["Component"]));
+            }
+            set {
+                this["Component"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MyTestParameter")]
+        public string Parameter {
+            get {
+                return ((string)(this["Parameter"]));
+            }
+            set {
+                this["Parameter"] = value;
+            }
+        }
     }
 }

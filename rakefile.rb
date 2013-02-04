@@ -1,4 +1,4 @@
-COPYRIGHT = "Copyright 2012-2013 Chris Patterson, Albert L. Hives."
+COPYRIGHT = "Copyright 2013-2014 Chris Patterson, Albert L. Hives."
 
 require File.dirname(__FILE__) + "/build_support/BuildUtils.rb"
 require File.dirname(__FILE__) + "/build_support/util.rb"

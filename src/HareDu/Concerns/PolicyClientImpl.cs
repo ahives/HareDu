@@ -98,6 +98,23 @@ namespace HareDu.Concerns
             return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
+        public Task<ServerResponse> New(string policy, Action<PolicyCharacteristics> characteristics,
+                                        CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.RequestCanceled(LogInfo);
+
+            var characteristicsImpl = new PolicyCharacteristicsImpl();
+            characteristics(characteristicsImpl);
+
+            LogInfo(
+                string.Format("Sent request to RabbitMQ server to create a new policy '{0}' on virtual host '{1}'.",
+                              policy, Init.VirtualHost));
+
+            string url = string.Format("api/policies/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), policy);
+
+            return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
+        }
+
         public Task<ServerResponse> Delete(string policy,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -109,23 +126,6 @@ namespace HareDu.Concerns
             string url = string.Format("api/policies/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), policy);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
-        }
-
-        public Task<ServerResponse> New(string policy, Action<PolicyCharacteristics> args,
-                                        CancellationToken cancellationToken = default(CancellationToken))
-        {
-            cancellationToken.RequestCanceled(LogInfo);
-
-            LogInfo(
-                string.Format("Sent request to RabbitMQ server to create a new policy '{0}' on virtual host '{1}'.",
-                              policy, Init.VirtualHost));
-
-            var argsImpl = new PolicyCharacteristicsImpl();
-            args(argsImpl);
-
-            string url = string.Format("api/policies/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), policy);
-
-            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
     }
 }

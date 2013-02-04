@@ -41,5 +41,11 @@
     <Setting Name="Policy" Type="System.String" Scope="User">
       <Value Profile="(Default)">MyTestPolicy</Value>
     </Setting>
+    <Setting Name="Component" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestComponent</Value>
+    </Setting>
+    <Setting Name="Parameter" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MyTestParameter</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

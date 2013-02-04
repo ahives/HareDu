@@ -23,19 +23,21 @@ namespace HareDu.Tests
         HareDuTestBase
     {
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Return_All_Policies_In_VirtualHost()
+        public void Verify_Can_Create_New_Policy()
         {
-            var data = Client.Policy
-                             .GetAll(x => x.On(Settings.Default.VirtualHost))
-                             .Data();
-            foreach (var policy in data)
-            {
-                Console.WriteLine("Pattern: {0} ", policy.Pattern);
-                Console.WriteLine("Definitions");
-                foreach (var definition in policy.Definition)
-                    Console.WriteLine("\t{0}:{1}", definition.Key, definition.Value);
-                Console.WriteLine("Priority: {0}", policy.Priority);
-            }
+            var response = Client.Policy
+                                 .New(Settings.Default.Policy,
+                                      x => x.On(Settings.Default.VirtualHost),
+                                      x =>
+                                          {
+                                              x.UsingPattern(@"^amq\.");
+                                              x.DefinedAs(
+                                                  y => y.Set("federation-upstream-set", "all"));
+                                              x.WithPriority(1);
+                                          })
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+            Console.WriteLine(response.ServerResponseReason);
         }
 
         [Test, Category("Integration"), Explicit]
@@ -55,22 +57,19 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Create_New_Policy()
+        public void Verify_Can_Return_All_Policies_In_VirtualHost()
         {
-            var response = Client.Policy
-                                 .New(Settings.Default.Policy,
-                                      x => x.OnVirtualHost(Settings.Default.VirtualHost),
-                                      x =>
-                                          {
-                                              x.UsingPattern(@"^amq\.");
-                                              x.DefinedAs(
-                                                  y => y.Set("federation-upstream-set", "all"));
-                                              x.WithPriority(1);
-                                          })
-                                 .Response();
-            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
-            Console.WriteLine(response.ServerResponseReason);
+            var data = Client.Policy
+                             .GetAll(x => x.On(Settings.Default.VirtualHost))
+                             .Data();
+            foreach (var policy in data)
+            {
+                Console.WriteLine("Pattern: {0} ", policy.Pattern);
+                Console.WriteLine("Definitions");
+                foreach (var definition in policy.Definition)
+                    Console.WriteLine("\t{0}:{1}", definition.Key, definition.Value);
+                Console.WriteLine("Priority: {0}", policy.Priority);
+            }
         }
-
     }
 }

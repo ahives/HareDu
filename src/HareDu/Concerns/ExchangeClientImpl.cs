@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
@@ -78,21 +78,22 @@ namespace HareDu
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> args,
+        public Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> behavior,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             LogInfo(
-                string.Format("Sent request to RabbitMQ server to create an exchange '{0}' within virtual host '{1}'.",
-                              exchange, Init.VirtualHost));
+                string.Format(
+                    "Sent request to RabbitMQ server to create a new exchange '{0}' within virtual host '{1}'.",
+                    exchange, Init.VirtualHost));
 
-            var argsImpl = new ExchangeBehaviorImpl();
-            args(argsImpl);
+            var behaviorImpl = new ExchangeBehaviorImpl();
+            behavior(behaviorImpl);
 
             string url = string.Format("api/exchanges/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), exchange);
 
-            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
+            return base.Put(url, behaviorImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
         public Task<ServerResponse> Delete(string exchange,

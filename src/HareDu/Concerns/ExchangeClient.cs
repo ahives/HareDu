@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu
+namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
@@ -43,10 +43,10 @@ namespace HareDu
         /// 
         /// </summary>
         /// <param name="exchange"></param>
-        /// <param name="args"></param>
+        /// <param name="behavior"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> args,
+        Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> behavior,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

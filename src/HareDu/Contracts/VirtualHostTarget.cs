@@ -16,6 +16,6 @@ namespace HareDu.Contracts
 {
     public interface VirtualHostTarget
     {
-        void OnVirtualHost(string virtualHost);
+        void On(string virtualHost);
     }
 }

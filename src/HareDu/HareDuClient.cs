@@ -14,6 +14,8 @@
 
 namespace HareDu
 {
+    using Concerns;
+
     public interface HareDuClient
     {
         /// <summary>
@@ -31,7 +33,15 @@ namespace HareDu
         /// </summary>
         ConnectionClient Connection { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         ClusterClient Cluster { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        ConfigurationClient Configuration { get; }
 
         /// <summary>
         /// 

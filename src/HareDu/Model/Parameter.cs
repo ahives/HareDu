@@ -12,18 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu.Model
 {
-    using Contracts;
+    using Newtonsoft.Json;
 
-    internal class VirtualHostTargetImpl :
-        VirtualHostTarget
+    public class Parameter
     {
+        [JsonProperty("vhost")]
         public string VirtualHost { get; set; }
 
-        public void On(string virtualHost)
-        {
-            VirtualHost = virtualHost;
-        }
+        [JsonProperty("component")]
+        public string Component { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
     }
 }

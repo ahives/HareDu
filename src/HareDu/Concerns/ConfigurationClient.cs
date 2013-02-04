@@ -12,18 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Internal
+namespace HareDu.Concerns
 {
-    using Contracts;
-
-    internal class VirtualHostTargetImpl :
-        VirtualHostTarget
+    public interface ConfigurationClient
     {
-        public string VirtualHost { get; set; }
-
-        public void On(string virtualHost)
-        {
-            VirtualHost = virtualHost;
-        }
+        ParameterClient Parameter { get; }
     }
 }
