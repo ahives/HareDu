@@ -32,6 +32,11 @@ namespace HareDu.Concerns
         {
         }
 
+        public PolicyClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+        }
+
         public Task<IEnumerable<Policy>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);

@@ -32,6 +32,11 @@ namespace HareDu.Concerns
         {
         }
 
+        public QueueBindingClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+        }
+
         public Task<ServerResponse> New(string queue, string exchange, Action<QueueBindingBehavior> args,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {

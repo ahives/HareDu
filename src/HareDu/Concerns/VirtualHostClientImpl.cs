@@ -35,6 +35,13 @@ namespace HareDu.Concerns
             Queue = new QueueClientImpl(args);
         }
 
+        public VirtualHostClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+            Exchange = new ExchangeClientImpl(args);
+            Queue = new QueueClientImpl(args);
+        }
+
         public ExchangeClient Exchange { get; private set; }
         public QueueClient Queue { get; private set; }
 

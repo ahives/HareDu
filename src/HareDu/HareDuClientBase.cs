@@ -15,6 +15,7 @@
 namespace HareDu
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -29,6 +30,19 @@ namespace HareDu
         {
             Init = args;
             Logger = args.Logger;
+            IsLoggingEnabled = !Logger.IsNull();
+            Client = GetClient();
+        }
+
+        protected HareDuClientBase(Dictionary<string,object> args)
+        {
+            var init = new HareDuClientBehaviorImpl();
+            init.ConnectTo(Convert.ToString(args["url"]), Convert.ToString(args["vhost"]));
+            init.UsingCredentials(Convert.ToString(args["username"]), Convert.ToString(args["password"]));
+            init.EnableLogging(Convert.ToString(args["enable_logging"]));
+
+            Init = init;
+            Logger = init.Logger;
             IsLoggingEnabled = !Logger.IsNull();
             Client = GetClient();
         }

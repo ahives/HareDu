@@ -14,10 +14,18 @@
 
 namespace HareDu.Concerns
 {
+    using System.Collections.Generic;
+
     internal class ClusterClientImpl :
         ClusterClient
     {
         public ClusterClientImpl(HareDuClientBehaviorImpl args)
+        {
+            Overview = new OverviewClientImpl(args);
+            Node = new NodeClientImpl(args);
+        }
+
+        public ClusterClientImpl(Dictionary<string, object> args)
         {
             Overview = new OverviewClientImpl(args);
             Node = new NodeClientImpl(args);

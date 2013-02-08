@@ -33,6 +33,12 @@ namespace HareDu.Concerns
             Binding = new QueueBindingClientImpl(args);
         }
 
+        public QueueClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+            Binding = new QueueBindingClientImpl(args);
+        }
+
         public QueueBindingClient Binding { get; private set; }
 
         public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken))

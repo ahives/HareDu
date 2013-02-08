@@ -32,6 +32,11 @@ namespace HareDu.Concerns
         {
         }
 
+        public ExchangeClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+        }
+
         public Task<IEnumerable<Exchange>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);

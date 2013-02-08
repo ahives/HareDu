@@ -28,6 +28,11 @@ namespace HareDu.Concerns
         {
         }
 
+        public NodeClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+        }
+
         public Task<IEnumerable<Node>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);

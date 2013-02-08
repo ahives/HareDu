@@ -14,6 +14,7 @@
 
 namespace HareDu
 {
+    using System.Collections.Generic;
     using Concerns;
 
     internal class HareDuClientImpl :
@@ -21,6 +22,17 @@ namespace HareDu
         HareDuClient
     {
         public HareDuClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
+        {
+            VirtualHost = new VirtualHostClientImpl(args);
+            User = new UserClientImpl(args);
+            Connection = new ConnectionClientImpl(args);
+            Cluster = new ClusterClientImpl(args);
+            Policy = new PolicyClientImpl(args);
+            Configuration = new ConfigurationClientImpl(args);
+        }
+
+        public HareDuClientImpl(Dictionary<string, object> args) :
             base(args)
         {
             VirtualHost = new VirtualHostClientImpl(args);

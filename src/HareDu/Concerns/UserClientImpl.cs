@@ -30,10 +30,16 @@ namespace HareDu.Concerns
         public UserClientImpl(HareDuClientBehaviorImpl args) :
             base(args)
         {
-            Permissions = new UserPermissionsClientImpl(args);
+            Permissions = new PermissionsClientImpl(args);
         }
 
-        public UserPermissionsClient Permissions { get; private set; }
+        public UserClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+            Permissions = new PermissionsClientImpl(args);
+        }
+
+        public PermissionsClient Permissions { get; private set; }
 
         public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {

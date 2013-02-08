@@ -155,8 +155,8 @@
     <Compile Include="Concerns\VirtualHostClientImpl.cs" />
     <Compile Include="Concerns\UserClient.cs" />
     <Compile Include="Concerns\UserClientImpl.cs" />
-    <Compile Include="Concerns\UserPermissionsClient.cs" />
-    <Compile Include="Concerns\UserPermissionsClientImpl.cs" />
+    <Compile Include="Concerns\PermissionsClient.cs" />
+    <Compile Include="Concerns\PermissionsClientImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

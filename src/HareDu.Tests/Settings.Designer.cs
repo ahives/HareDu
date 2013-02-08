@@ -202,5 +202,17 @@ namespace HareDu.Tests {
                 this["Parameter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("HareDuLogger")]
+        public string LoggerName {
+            get {
+                return ((string)(this["LoggerName"]));
+            }
+            set {
+                this["LoggerName"] = value;
+            }
+        }
     }
 }

@@ -23,11 +23,16 @@ namespace HareDu.Concerns
     using Internal;
     using Model;
 
-    public class UserPermissionsClientImpl :
+    public class PermissionsClientImpl :
         HareDuClientBase,
-        UserPermissionsClient
+        PermissionsClient
     {
-        public UserPermissionsClientImpl(HareDuClientBehaviorImpl args) :
+        public PermissionsClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
+        {
+        }
+
+        public PermissionsClientImpl(Dictionary<string, object> args) :
             base(args)
         {
         }

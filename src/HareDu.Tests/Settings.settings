@@ -47,5 +47,8 @@
     <Setting Name="Parameter" Type="System.String" Scope="User">
       <Value Profile="(Default)">MyTestParameter</Value>
     </Setting>
+    <Setting Name="LoggerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HareDuLogger</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

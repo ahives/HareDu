@@ -32,6 +32,11 @@ namespace HareDu.Concerns
         {
         }
 
+        public ParameterClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+        }
+
         public Task<Parameter> Get(Action<ComponentTarget> target,
                                    CancellationToken cancellationToken = default(CancellationToken))
         {

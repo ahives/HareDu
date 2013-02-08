@@ -15,6 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using System.Threading;
     using NUnit.Framework;
@@ -24,16 +25,47 @@ namespace HareDu.Tests
         HareDuTestBase
     {
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Delete_Virtual_Host()
+        public void Verify_Can_Get_All_Virtual_Hosts()
         {
-            var response = Client.VirtualHost
-                                 .Delete(Settings.Default.VirtualHost)
-                                 .Response();
-            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+            var data = Client.VirtualHost
+                             .GetAll()
+                             .Data();
+
+            foreach (var vhost in data)
+            {
+                Console.WriteLine("Name: {0}", vhost.Name);
+                Console.WriteLine("Tracing: {0}", vhost.Tracing);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
         }
 
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Get_All_Virtual_Hosts()
+        public void Verify_Can_Get_All_Virtual_Hosts_With_Dictionary()
+        {
+            var initArgs = new Dictionary<string, object>();
+            initArgs["url"] = Settings.Default.HostUrl;
+            initArgs["vhost"] = Settings.Default.VirtualHost;
+            initArgs["username"] = Settings.Default.LoginUsername;
+            initArgs["password"] = Settings.Default.LoginPassword;
+            initArgs["enable_logging"] = Settings.Default.LoggerName;
+            var client = HareDuFactory.New(initArgs);
+
+            var data = client.VirtualHost
+                             .GetAll()
+                             .Data();
+
+            foreach (var vhost in data)
+            {
+                Console.WriteLine("Name: {0}", vhost.Name);
+                Console.WriteLine("Tracing: {0}", vhost.Tracing);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Cancel_Get_All_Virtual_Hosts_Request()
         {
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
@@ -86,6 +118,15 @@ namespace HareDu.Tests
                                 .Delete(string.Empty)
                                 .Response();
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Delete_Virtual_Host()
+        {
+            var response = Client.VirtualHost
+                                 .Delete(Settings.Default.VirtualHost)
+                                 .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
     }
 }

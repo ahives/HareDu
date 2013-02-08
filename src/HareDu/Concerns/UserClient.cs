@@ -27,7 +27,7 @@ namespace HareDu.Concerns
         /// <summary>
         /// 
         /// </summary>
-        UserPermissionsClient Permissions { get; }
+        PermissionsClient Permissions { get; }
 
         /// <summary>
         /// 

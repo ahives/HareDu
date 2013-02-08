@@ -14,11 +14,19 @@
 
 namespace HareDu.Concerns
 {
+    using System.Collections.Generic;
+
     internal class ConfigurationClientImpl :
         HareDuClientBase,
         ConfigurationClient
     {
         public ConfigurationClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
+        {
+            Parameter = new ParameterClientImpl(args);
+        }
+
+        public ConfigurationClientImpl(Dictionary<string, object> args) :
             base(args)
         {
             Parameter = new ParameterClientImpl(args);

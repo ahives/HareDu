@@ -23,7 +23,13 @@ namespace HareDu.Concerns
         HareDuClientBase,
         ChannelClient
     {
-        public ChannelClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public ChannelClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
+        {
+        }
+
+        public ChannelClientImpl(Dictionary<string, object> args) :
+            base(args)
         {
         }
 

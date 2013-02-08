@@ -27,7 +27,7 @@ namespace HareDu.Tests
                                                x.ConnectTo(Settings.Default.HostUrl);
                                                x.UsingCredentials(Settings.Default.LoginUsername,
                                                                   Settings.Default.LoginPassword);
-                                               x.EnableLogging("HareDuLogger");
+                                               x.EnableLogging(Settings.Default.LoggerName);
                                            });
         }
 

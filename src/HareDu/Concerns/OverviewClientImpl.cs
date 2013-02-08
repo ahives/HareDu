@@ -14,6 +14,7 @@
 
 namespace HareDu.Concerns
 {
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Model;
@@ -22,7 +23,13 @@ namespace HareDu.Concerns
         HareDuClientBase,
         OverviewClient
     {
-        public OverviewClientImpl(HareDuClientBehaviorImpl args) : base(args)
+        public OverviewClientImpl(HareDuClientBehaviorImpl args) :
+            base(args)
+        {
+        }
+
+        public OverviewClientImpl(Dictionary<string, object> args) :
+            base(args)
         {
         }
 

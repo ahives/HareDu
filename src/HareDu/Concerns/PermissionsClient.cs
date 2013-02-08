@@ -22,7 +22,7 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface UserPermissionsClient
+    public interface PermissionsClient
     {
         Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken));
 

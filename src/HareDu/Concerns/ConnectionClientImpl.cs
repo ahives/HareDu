@@ -30,6 +30,12 @@ namespace HareDu.Concerns
             Channel = new ChannelClientImpl(args);
         }
 
+        public ConnectionClientImpl(Dictionary<string, object> args) :
+            base(args)
+        {
+            Channel = new ChannelClientImpl(args);
+        }
+
         public ChannelClient Channel { get; private set; }
 
         public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
