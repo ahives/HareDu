@@ -17,6 +17,7 @@ namespace HareDu.Tests
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -36,13 +37,17 @@ namespace HareDu.Tests
                                                  try
                                                  {
                                                      tokenSource.Cancel();
-                                                     var request = Client.VirtualHost
-                                                                         .Queue
-                                                                         .New(
-                                                                             string.Format("{0}6",
-                                                                                           Settings.Default.Queue),
-                                                                             x => x.IsDurable(),
-                                                                             token);
+                                                     var request = Client
+                                                         .EstablishConnection<VirtualHostResources>(
+                                                             x =>
+                                                             x.Using(Settings.Default.LoginUsername,
+                                                                     Settings.Default.LoginPassword))
+                                                         .Queue
+                                                         .New(string.Format("{0}6",
+                                                                            Settings.Default.Queue), x => x.Source(
+                                                                                Settings.Default.VirtualHost),
+                                                              x => x.IsDurable(),
+                                                              token);
                                                  }
                                                  catch (AggregateException ex)
                                                  {

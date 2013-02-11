@@ -14,43 +14,13 @@
 
 namespace HareDu
 {
+    using System;
     using Concerns;
+    using Contracts;
 
     public interface HareDuClient
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        VirtualHostClient VirtualHost { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        UserClient User { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        ConnectionClient Connection { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        ClusterClient Cluster { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        ConfigurationClient Configuration { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        PolicyClient Policy { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void CancelPendingRequests();
+        T EstablishConnection<T>(Action<ResourceRequest> request)
+            where T : ResourceClient;
     }
 }

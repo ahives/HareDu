@@ -16,24 +16,20 @@ namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Common.Logging;
     using Contracts;
     using Internal;
     using Model;
 
-    internal class ParameterClientImpl :
-        HareDuClientBase,
-        ParameterClient
+    internal class ParameterResourcesImpl :
+        HareDuResourcesBase,
+        ParameterResources
     {
-        public ParameterClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
-        {
-        }
-
-        public ParameterClientImpl(Dictionary<string, object> args) :
-            base(args)
+        public ParameterResourcesImpl(HttpClient client, ILog logger) : base(client, logger)
         {
         }
 

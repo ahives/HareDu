@@ -22,51 +22,48 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface PolicyClient
+    public interface UserResources :
+        ResourceClient
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Policy>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        PermissionsResources Permissions { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Policy>> GetAll(Action<PolicyBehavior> args,
-                                         CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="policy"></param>
-        /// <param name="args"></param>
+        /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Policy> Get(string policy, Action<PolicyBehavior> args,
-                         CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> Get(string userName, CancellationToken cancellationToken =
+                                            default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="policy"></param>
+        /// <param name="userName"></param>
         /// <param name="characteristics"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string policy, Action<VirtualHostTarget> target,
-                                 Action<PolicyCharacteristics> characteristics,
-                                 CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string userName, Action<UserCharacteristics> characteristics,
+                                 CancellationToken cancellationToken =
+                                     default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="policy"></param>
+        /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string policy, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken =
+                                                         default(CancellationToken));
     }
 }

@@ -14,12 +14,29 @@
 
 namespace HareDu.Concerns
 {
+    using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common.Logging;
     using Model;
 
-    public interface OverviewClient
+    internal class OverviewResourcesImpl :
+        HareDuResourcesBase,
+        OverviewResources
     {
-        Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken));
+        public OverviewResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
+        {
+        }
+
+        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
+
+            string url = "api/overview";
+
+            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
+        }
     }
 }

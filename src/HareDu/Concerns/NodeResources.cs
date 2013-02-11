@@ -14,24 +14,18 @@
 
 namespace HareDu.Concerns
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Async;
-    using Contracts;
     using Model;
 
-    public interface PermissionsClient
+    public interface NodeResources :
+        ResourceClient
     {
-        Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Node>> GetAll(
+            CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<ServerResponse> Set(string userName,
-                                 Action<UserPermissionsBehavior> args,
-                                 CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Node> Get(string nodeName,
+                       CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -15,21 +15,18 @@
 namespace HareDu.Concerns
 {
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common.Logging;
     using Model;
 
-    internal class NodeClientImpl :
-        HareDuClientBase,
-        NodeClient
+    internal class NodeResourcesImpl :
+        HareDuResourcesBase,
+        NodeResources
     {
-        public NodeClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
-        {
-        }
-
-        public NodeClientImpl(Dictionary<string, object> args) :
-            base(args)
+        public NodeResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
         }
 
@@ -37,9 +34,9 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
-
             string url = "api/nodes";
+
+            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             return base.Get(url, cancellationToken).As<IEnumerable<Node>>(cancellationToken);
         }
@@ -48,9 +45,9 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
-
             string url = string.Format("api/nodes/{0}", nodeName);
+
+            LogInfo("Sent request to return all information pertaining to all nodes on RabbitMQ cluster.");
 
             return base.Get(url, cancellationToken).As<Node>(cancellationToken);
         }

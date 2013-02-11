@@ -16,38 +16,34 @@ namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Common.Logging;
     using Contracts;
     using Internal;
     using Model;
 
-    internal class UserClientImpl :
-        HareDuClientBase,
-        UserClient
+    internal class UserResourcesImpl :
+        HareDuResourcesBase,
+        UserResources
     {
-        public UserClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
+        public UserResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
-            Permissions = new PermissionsClientImpl(args);
+            Permissions = new PermissionsResourcesImpl(client, logger);
         }
 
-        public UserClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-            Permissions = new PermissionsClientImpl(args);
-        }
-
-        public PermissionsClient Permissions { get; private set; }
+        public PermissionsResources Permissions { get; private set; }
 
         public Task<IEnumerable<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo("Sent request to return all information pertaining to all users on current RabbitMQ server.");
-
             string url = "api/users";
+
+            LogInfo("Sent request to return all information pertaining to all users on current RabbitMQ server.");
 
             return base.Get(url, cancellationToken).As<IEnumerable<User>>(cancellationToken);
         }
@@ -56,27 +52,27 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
+            string url = string.Format("api/users/{0}", userName);
+
             LogInfo(string.Format(
                 "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
-
-            string url = string.Format("api/users/{0}", userName);
 
             return base.Get(url, cancellationToken).As<User>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string userName, Action<UserCharacteristics> args,
+        public Task<ServerResponse> New(string userName, Action<UserCharacteristics> characteristics,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
-
-            var argsImpl = new UserCharacteristicsImpl();
-            args(argsImpl);
+            var characteristicsImpl = new UserCharacteristicsImpl();
+            characteristics(characteristicsImpl);
 
             string url = string.Format("api/users/{0}", userName);
 
-            return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
+            LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
+
+            return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
         public Task<ServerResponse> Delete(string userName,
@@ -84,19 +80,9 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            if (userName == Init.Username)
-            {
-                string errorMsg = string.Format(
-                    "Cannot delete user '{0}' because it is being used to send requests with the credentials of the logged in to the current client session.",
-                    userName);
-                LogError(string.Format("{0} method threw a CannotDeleteSessionLoginUserException exception. {1}",
-                                       "User.Delete", errorMsg));
-                throw new CannotDeleteSessionLoginUserException(errorMsg);
-            }
+            string url = string.Format("api/users/{0}", userName);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userName));
-
-            string url = string.Format("api/users/{0}", userName);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

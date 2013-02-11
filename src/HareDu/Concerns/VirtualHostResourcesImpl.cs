@@ -14,32 +14,23 @@
 
 namespace HareDu.Concerns
 {
-    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
-    using Contracts;
-    using Internal;
+    using Common.Logging;
     using Model;
 
-    internal class VirtualHostClientImpl :
-        HareDuClientBase,
-        VirtualHostClient
+    public class VirtualHostResourcesImpl :
+        HareDuResourcesBase,
+        VirtualHostResources
     {
-        public VirtualHostClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
+        public VirtualHostResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
-            Exchange = new ExchangeClientImpl(args);
-            Queue = new QueueClientImpl(args);
-        }
-
-        public VirtualHostClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-            Exchange = new ExchangeClientImpl(args);
-            Queue = new QueueClientImpl(args);
+            Exchange = new ExchangeClientImpl(client, logger);
+            Queue = new QueueClientImpl(client, logger);
         }
 
         public ExchangeClient Exchange { get; private set; }
@@ -49,9 +40,9 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo("Sent request to return all information on all virtual hosts on current RabbitMQ server.");
-
             string url = "api/vhosts";
+
+            LogInfo("Sent request to return all information on all virtual hosts on current RabbitMQ server.");
 
             return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
@@ -89,30 +80,17 @@ namespace HareDu.Concerns
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public VirtualHostClient Change(string virtualHost, Action<UserCredentials> args)
-        {
-            Init.OnVirtualHost(virtualHost);
-
-            var argsImpl = new UserCredentialsImpl();
-            args(argsImpl);
-
-            Init.UsingCredentials(argsImpl.Username, argsImpl.Password);
-
-            Client = GetClient();
-
-            return this;
-        }
-
-        public Task<AlivenessTestResponse> IsAlive(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<AlivenessTestResponse> IsAlive(string virtualHost,
+                                                   CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/aliveness-test/{0}", Init.VirtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/aliveness-test/{0}", virtualHost.SanitizeVirtualHostName());
 
             LogInfo(
                 string.Format(
                     "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
-                    Init.VirtualHost));
+                    virtualHost));
 
             return base.Get(url, cancellationToken)
                        .ContinueWith(t =>

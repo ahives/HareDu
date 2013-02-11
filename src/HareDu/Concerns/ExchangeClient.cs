@@ -35,9 +35,10 @@ namespace HareDu.Concerns
         /// 
         /// </summary>
         /// <param name="exchange"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Exchange> Get(string exchange, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Exchange> Get(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -46,25 +47,25 @@ namespace HareDu.Concerns
         /// <param name="behavior"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string exchange, Action<ExchangeBehavior> behavior,
+        Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target, Action<ExchangeBehavior> behavior,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchange"></param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string exchange, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="exchange"></param>
+        /// <param name="target"></param>
         /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindings(string exchange, Action<BindingDirection> args,
-                                                  CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> args, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -15,6 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -24,8 +25,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
-            var data = Client.Cluster
-                             .Node
+            var data = Client
+                                .EstablishConnection<NodeResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                             //.Node
                              .GetAll()
                              .Data();
 
@@ -90,8 +93,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Node_On_Cluster()
         {
-            var data = Client.Cluster
-                             .Node
+            var data = Client
+                                .EstablishConnection<NodeResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                             //.Node
                              .Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")))
                              .Data();
 

@@ -16,37 +16,34 @@ namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Common.Logging;
     using Contracts;
     using Internal;
     using Model;
 
-    public class PermissionsClientImpl :
-        HareDuClientBase,
-        PermissionsClient
+    internal class PermissionsResourcesImpl :
+        HareDuResourcesBase,
+        PermissionsResources
     {
-        public PermissionsClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
+        public PermissionsResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
         }
 
-        public PermissionsClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-        }
-
-        public Task<Permissions> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Permissions> Get(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
+            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
 
             LogInfo(
                 string.Format(
                     "Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.",
-                    userName, Init.VirtualHost));
+                    userName, virtualHost));
 
             return base.Get(url, cancellationToken).As<Permissions>(cancellationToken);
         }
@@ -63,30 +60,33 @@ namespace HareDu.Concerns
             return base.Get(url, cancellationToken).As<IEnumerable<Permissions>>(cancellationToken);
         }
 
-        public Task<ServerResponse> Set(string userName, Action<UserPermissionsBehavior> args,
-                                        CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Set(string userName, string virtualHost, Action<UserPermissionsBehavior> args, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             var argsImpl = new UserPermissionsBehaviorImpl();
             args(argsImpl);
 
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
+            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
 
             LogInfo(
                 string.Format(
                     "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
-                    userName, Init.VirtualHost));
+                    userName, virtualHost));
 
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/permissions/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), userName);
+            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
+
+            LogInfo(
+                string.Format(
+                    "Sent request to the RabbitMQ server to delete permissions for user '{0}' on virtual host '{1}'.",
+                    userName, virtualHost));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

@@ -14,26 +14,36 @@
 
 namespace HareDu.Contracts
 {
+    using System;
+
     public interface HareDuClientBehavior
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hostUrl"></param>
-        /// <param name="virtualHost"></param>
-        void ConnectTo(string hostUrl, string virtualHost = "/");
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="hostUrl"></param>
+        ///// <param name="virtualHost"></param>
+        //void ConnectTo(string hostUrl, string virtualHost = "/");
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        void UsingCredentials(string username, string password);
+        /// <param name="hostUrl"></param>
+        void ConnectTo(string hostUrl);
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="username"></param>
+        ///// <param name="password"></param>
+        //void UsingCredentials(string username, string password);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="loggerName"></param>
         void EnableLogging(string loggerName);
+
+        void TimeoutAfter(TimeSpan timeout);
     }
 }

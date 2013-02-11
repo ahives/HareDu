@@ -14,47 +14,60 @@
 
 namespace HareDu
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using Common.Logging;
     using Concerns;
+    using Contracts;
+    using Internal;
 
     internal class HareDuClientImpl :
-        HareDuClientBase,
+        Logging,
         HareDuClient
     {
         public HareDuClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
+            base(args.Logger)
         {
-            VirtualHost = new VirtualHostClientImpl(args);
-            User = new UserClientImpl(args);
-            Connection = new ConnectionClientImpl(args);
-            Cluster = new ClusterClientImpl(args);
-            Policy = new PolicyClientImpl(args);
-            Configuration = new ConfigurationClientImpl(args);
+            Behavior = args;
         }
 
-        public HareDuClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-            VirtualHost = new VirtualHostClientImpl(args);
-            User = new UserClientImpl(args);
-            Connection = new ConnectionClientImpl(args);
-            Cluster = new ClusterClientImpl(args);
-            Policy = new PolicyClientImpl(args);
-            Configuration = new ConfigurationClientImpl(args);
-        }
+        protected HareDuClientBehaviorImpl Behavior { get; private set; }
 
-        public ConfigurationClient Configuration { get; private set; }
-        public VirtualHostClient VirtualHost { get; private set; }
-        public UserClient User { get; private set; }
-        public ConnectionClient Connection { get; private set; }
-        public ClusterClient Cluster { get; private set; }
-        public PolicyClient Policy { get; private set; }
+        public T EstablishConnection<T>(Action<ResourceRequest> request)
+            where T : ResourceClient
+        {
+            var resourceRequest = new ResourceRequestImpl();
+            request(resourceRequest);
+
+            var uri = new Uri(string.Format("{0}/", Behavior.HostUrl));
+            var handler = new HttpClientHandler
+                              {
+                                  Credentials = new NetworkCredential(resourceRequest.Username, resourceRequest.Password)
+                              };
+            var client = new HttpClient(handler);
+            client.BaseAddress = uri;
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (Behavior.Timeout != TimeSpan.Zero)
+                client.Timeout = Behavior.Timeout;
+
+            var type = typeof(T);
+            var implClass = GetType().Assembly
+                                     .GetTypes()
+                                     .FirstOrDefault(x => type.IsAssignableFrom(x) && !x.IsInterface);
+
+            return (T)Activator.CreateInstance(implClass, client, Behavior.Logger);
+        }
 
         public void CancelPendingRequests()
         {
-            LogInfo("Cancel all pending requests.");
+            //LogInfo("Cancel all pending requests.");
 
-            Client.CancelPendingRequests();
+            //Client.CancelPendingRequests();
         }
     }
 }

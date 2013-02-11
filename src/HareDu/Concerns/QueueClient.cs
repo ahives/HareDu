@@ -40,26 +40,27 @@ namespace HareDu.Concerns
         /// 
         /// </summary>
         /// <param name="queue"></param>
-        /// <param name="args"></param>
+        /// <param name="target"></param>
+        /// <param name="behavior"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
-                                 CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string queue, Action<QueueTarget> target, Action<QueueBehavior> behavior, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="queue"></param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Delete(string queue, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Deletes all the messages in the specified queue.
         /// </summary>
-        /// <param name="queue">Name of the queue to purge</param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Purge(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -15,6 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -24,7 +25,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Connections()
         {
-            var data = Client.Connection
+            var data = Client
+                                .EstablishConnection<ConnectionResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.Connection
                              .GetAll()
                              .Data();
 
@@ -57,7 +61,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Connection()
         {
-            var data = Client.Connection
+            var data = Client
+                                .EstablishConnection<ConnectionResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.Connection
                              .Get(Settings.Default.Connection)
                              .Data();
 

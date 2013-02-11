@@ -23,31 +23,39 @@ namespace HareDu
     {
         public HareDuClientBehaviorImpl()
         {
-            VirtualHost = "/";
+            //VirtualHost = "/";
         }
 
         public string HostUrl { get; private set; }
 
+        // TODO: DELETE ME
         public string Username { get; private set; }
 
+        // TODO: DELETE ME
         public string Password { get; private set; }
 
+        // TODO: DELETE ME
         public string VirtualHost { get; private set; }
 
         public ILog Logger { get; private set; }
 
         public TimeSpan Timeout { get; private set; }
 
-        public void ConnectTo(string hostUrl, string virtualHost = "/")
+        //public void ConnectTo(string hostUrl, string virtualHost = "/")
+        //{
+        //    HostUrl = hostUrl;
+        //    VirtualHost = virtualHost;
+        //}
+
+        //public void UsingCredentials(string username, string password)
+        //{
+        //    Username = username;
+        //    Password = password;
+        //}
+
+        public void ConnectTo(string hostUrl)
         {
             HostUrl = hostUrl;
-            VirtualHost = virtualHost;
-        }
-
-        public void UsingCredentials(string username, string password)
-        {
-            Username = username;
-            Password = password;
         }
 
         public void EnableLogging(string loggerName)
@@ -58,10 +66,10 @@ namespace HareDu
             }
         }
 
-        public void OnVirtualHost(string virtualHost)
-        {
-            VirtualHost = virtualHost;
-        }
+        //public void OnVirtualHost(string virtualHost)
+        //{
+        //    VirtualHost = virtualHost;
+        //}
 
         public void TimeoutAfter(TimeSpan timeout)
         {

@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -27,9 +28,9 @@ namespace HareDu.Tests
         {
             Client = HareDuFactory.New(x =>
                                            {
-                                               x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
-                                               x.UsingCredentials(Settings.Default.LoginUsername,
-                                                                  Settings.Default.LoginPassword);
+                                               //x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
+                                               //x.UsingCredentials(Settings.Default.LoginUsername,
+                                               //                   Settings.Default.LoginPassword);
                                                x.EnableLogging("HareDuLogger");
                                            });
         }
@@ -37,9 +38,11 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Queue()
         {
-            var response = Client.VirtualHost
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Queue
-                                 .New(string.Format("{0}5", Settings.Default.Queue), x => x.IsDurable())
+                                 .New(string.Format("{0}5", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost), x => x.IsDurable())
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -47,9 +50,11 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Queue_On_Specific_Node()
         {
-            var response = Client.VirtualHost
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Queue
-                                 .New(string.Format("{0}4", Settings.Default.Queue),
+                                 .New(string.Format("{0}4", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost),
                                       x =>
                                           {
                                               x.IsDurable();
@@ -64,33 +69,32 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Queue_With_Arguments()
         {
-            var response = Client.VirtualHost
-                                 .Queue
-                                 .New(string.Format("{0}4", Settings.Default.Queue),
-                                      x =>
-                                          {
-                                              x.IsDurable();
-                                              x.WithArguments(y =>
-                                                                  {
-                                                                      y.SetPerQueueExpiration(1000);
-                                                                      y.SetQueueExpiration(1000);
-                                                                      //y.SetDeadLetterExchange("");
-                                                                      //y.SetDeadLetterExchangeRoutingKey("");
-                                                                      //y.SetAlternateExchange("");
-                                                                      //y.Set("", 0);
-                                                                      //y.Set("", 0);
-                                                                  });
-                                          })
-                                 .Response();
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Queue
+                .New(string.Format("{0}4", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost),
+                     x =>
+                         {
+                             x.IsDurable();
+                             x.WithArguments(y =>
+                                                 {
+                                                     y.SetPerQueueExpiration(1000);
+                                                     y.SetQueueExpiration(1000);
+                                                 });
+                         })
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Queue()
         {
-            var response = Client.VirtualHost
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Queue
-                                 .Delete(string.Format("{0}5", Settings.Default.Queue))
+                                 .Delete(x => x.Source(string.Format("{0}5", Settings.Default.Queue), Settings.Default.VirtualHost))
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -98,7 +102,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Queues()
         {
-            var data = Client.VirtualHost
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.VirtualHost
                              .Queue
                              .GetAll()
                              .Data();
@@ -123,9 +130,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Purge_Queue()
         {
-            var response = Client.VirtualHost
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.VirtualHost
                                  .Queue
-                                 .Purge(Settings.Default.Queue)
+                                 .Purge(x => x.Source(Settings.Default.Queue, Settings.Default.VirtualHost))
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }

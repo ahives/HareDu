@@ -15,6 +15,7 @@
 namespace HareDu.Tests
 {
     using System;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -24,8 +25,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_Overview()
         {
-            var data = Client.Cluster
-                             .Overview
+            var data = Client
+                                .EstablishConnection<OverviewResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                             //.Overview
                              .Get()
                              .Data();
 

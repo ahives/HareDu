@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -27,9 +28,9 @@ namespace HareDu.Tests
         {
             Client = HareDuFactory.New(x =>
                                            {
-                                               x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
-                                               x.UsingCredentials(Settings.Default.LoginUsername,
-                                                                  Settings.Default.LoginPassword);
+                                               //x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
+                                               //x.UsingCredentials(Settings.Default.LoginUsername,
+                                               //                   Settings.Default.LoginPassword);
                                                x.EnableLogging("HareDuLogger");
                                            });
         }
@@ -37,35 +38,42 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Exchange()
         {
-            var response = Client.VirtualHost
-                                 .Exchange
-                                 .New(string.Format("{0}1", Settings.Default.Exchange),
-                                      x =>
-                                          {
-                                              x.IsDurable();
-                                              x.UsingRoutingType(
-                                                  y => y.Fanout());
-                                          })
-                                 .Response();
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Exchange
+                .New(string.Format("{0}1", Settings.Default.Exchange),
+                     x => x.Source(Settings.Default.VirtualHost),
+                     x =>
+                         {
+                             x.IsDurable();
+                             x.UsingRoutingType(
+                                 y => y.Fanout());
+                         })
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Exchanges()
         {
-            var response = Client.VirtualHost
-                                 .Exchange
-                                 .Delete(Settings.Default.Exchange)
-                                 .Response();
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Exchange
+                .Delete(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Bindings_On_Destination()
         {
-            var data = Client.VirtualHost
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .Exchange
-                             .GetAllBindings(Settings.Default.Exchange, x => x.Destination())
+                             .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Destination())
                              .Data();
 
             foreach (var binding in data)
@@ -84,9 +92,11 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Bindings_On_Source()
         {
-            var data = Client.VirtualHost
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .Exchange
-                             .GetAllBindings(Settings.Default.Exchange, x => x.Source())
+                             .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Source())
                              .Data();
 
             foreach (var binding in data)
@@ -105,7 +115,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Exchanges()
         {
-            var data = Client.VirtualHost
+            var data = Client
+                                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+//.VirtualHost
                              .Exchange
                              .GetAll()
                              .Data();
@@ -126,10 +139,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_An_Exchange()
         {
-            var data = Client.VirtualHost
-                             .Exchange
-                             .Get(Settings.Default.Exchange)
-                             .Data();
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Exchange
+                .Get(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
+                .Data();
 
             Console.WriteLine("Name: {0}", data.Name);
             Console.WriteLine("Type: {0}", data.Type);

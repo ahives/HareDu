@@ -15,25 +15,21 @@
 namespace HareDu.Concerns
 {
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Common.Logging;
     using Model;
 
-    internal class ConnectionClientImpl :
-        HareDuClientBase,
-        ConnectionClient
+    internal class ConnectionResourcesImpl :
+        HareDuResourcesBase,
+        ConnectionResources
     {
-        public ConnectionClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
+        public ConnectionResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
-            Channel = new ChannelClientImpl(args);
-        }
-
-        public ConnectionClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-            Channel = new ChannelClientImpl(args);
+            Channel = new ChannelClientImpl(client, logger);
         }
 
         public ChannelClient Channel { get; private set; }
@@ -42,9 +38,9 @@ namespace HareDu.Concerns
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            LogInfo("Sent request to return all information pertaining to all connections on current RabbitMQ server.");
-
             string url = "api/connections";
+
+            LogInfo("Sent request to return all information pertaining to all connections on current RabbitMQ server.");
 
             return base.Get(url, cancellationToken).As<IEnumerable<Connection>>(cancellationToken);
         }

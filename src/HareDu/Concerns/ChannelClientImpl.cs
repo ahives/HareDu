@@ -15,21 +15,27 @@
 namespace HareDu.Concerns
 {
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Common.Logging;
     using Model;
 
     internal class ChannelClientImpl :
-        HareDuClientBase,
+        HareDuResourcesBase,
         ChannelClient
     {
-        public ChannelClientImpl(HareDuClientBehaviorImpl args) :
-            base(args)
-        {
-        }
+        //public ChannelClientImpl(HareDuClientBehaviorImpl args) :
+        //    base(args)
+        //{
+        //}
 
-        public ChannelClientImpl(Dictionary<string, object> args) :
-            base(args)
+        //public ChannelClientImpl(Dictionary<string, object> args) :
+        //    base(args)
+        //{
+        //}
+        public ChannelClientImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
         }
 

@@ -22,7 +22,8 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface ParameterClient
+    public interface ParameterResources :
+        ResourceClient
     {
         Task<Parameter> Get(Action<ComponentTarget> target,
                             CancellationToken cancellationToken = default(CancellationToken));

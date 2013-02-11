@@ -38,16 +38,17 @@ namespace HareDu
 
         public static HareDuClient New(Dictionary<string, object> args)
         {
-            try
-            {
-                var client = new HareDuClientImpl(args);
+            throw new NotImplementedException();
+            //try
+            //{
+            //    var client = new HareDuClientImpl(args);
 
-                return client;
-            }
-            catch (Exception e)
-            {
-                throw new HareDuClientInitException("", e);
-            }
+            //    return client;
+            //}
+            //catch (Exception e)
+            //{
+            //    throw new HareDuClientInitException("", e);
+            //}
         }
     }
 }

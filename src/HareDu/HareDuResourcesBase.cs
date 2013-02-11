@@ -15,42 +15,23 @@
 namespace HareDu
 {
     using System;
-    using System.Collections.Generic;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Common.Logging;
 
-    public abstract class HareDuClientBase
+    public abstract class HareDuResourcesBase :
+        Logging
     {
-        protected HareDuClientBase(HareDuClientBehaviorImpl args)
+        public HareDuResourcesBase(HttpClient client, ILog logger) :
+            base(logger)
         {
-            Init = args;
-            Logger = args.Logger;
-            IsLoggingEnabled = !Logger.IsNull();
-            Client = GetClient();
-        }
-
-        protected HareDuClientBase(Dictionary<string,object> args)
-        {
-            var init = new HareDuClientBehaviorImpl();
-            init.ConnectTo(Convert.ToString(args["url"]), Convert.ToString(args["vhost"]));
-            init.UsingCredentials(Convert.ToString(args["username"]), Convert.ToString(args["password"]));
-            init.EnableLogging(Convert.ToString(args["enable_logging"]));
-
-            Init = init;
-            Logger = init.Logger;
-            IsLoggingEnabled = !Logger.IsNull();
-            Client = GetClient();
+            Client = client;
         }
 
         protected HttpClient Client { get; set; }
-        protected ILog Logger { get; private set; }
-        protected bool IsLoggingEnabled { get; private set; }
-        protected HareDuClientBehaviorImpl Init { get; private set; }
+        //protected HareDuClientBehaviorImpl Behavior { get; private set; }
 
         /// <summary>
         /// Overrides default behaviour of System.Uri because RabbitMQ uses a forward slash, "/" , to represent the default virtual host.
@@ -75,20 +56,6 @@ namespace HareDu
             }
 
             setUpdatableFlagsMethod.Invoke(uriParser, new object[] {0});
-        }
-
-        protected HttpClient GetClient()
-        {
-            var client = new HttpClient(new HttpClientHandler
-                                            {
-                                                Credentials = new NetworkCredential(Init.Username, Init.Password)
-                                            }) {BaseAddress = new Uri(string.Format("{0}/", Init.HostUrl))};
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            if (Init.Timeout != TimeSpan.Zero)
-                client.Timeout = Init.Timeout;
-
-            return client;
         }
 
         protected virtual Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken =
@@ -157,24 +124,6 @@ namespace HareDu
                 LogError(e);
                 throw;
             }
-        }
-
-        protected virtual void LogError(Exception e)
-        {
-            if (IsLoggingEnabled)
-                Logger.Error(x => x("[Msg]: {0}, [Stack Trace] {1}", e.Message, e.StackTrace));
-        }
-
-        protected virtual void LogError(string message)
-        {
-            if (IsLoggingEnabled)
-                Logger.Error(message);
-        }
-
-        protected virtual void LogInfo(string message)
-        {
-            if (IsLoggingEnabled)
-                Logger.Info(message);
         }
     }
 }

@@ -22,46 +22,51 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface QueueBindingClient
+    public interface PolicyResources :
+        ResourceClient
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="exchange"></param>
-        /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(Action<QueueBinding> target, Action<QueueBindingBehavior> behavior,
+        Task<IEnumerable<Policy>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Policy>> GetAll(Action<PolicyTarget> target,
+                                         CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Policy> Get(Action<PolicyTarget> target,
+                         CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="characteristics"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ServerResponse> New(Action<PolicyTarget> target,
+                                 Action<PolicyCharacteristics> characteristics,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<QueueBindingTarget> target, string propertiesKey, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="target"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAll(Action<QueueBindingTarget> target, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="exchange"></param>
-        /// <param name="propertiesKey"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<Binding> Get(Action<QueueBindingTarget> target, string propertiesKey,
-                          CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<PolicyTarget> target, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

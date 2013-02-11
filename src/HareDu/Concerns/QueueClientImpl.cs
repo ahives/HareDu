@@ -16,27 +16,23 @@ namespace HareDu.Concerns
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Common.Logging;
     using Contracts;
     using Internal;
     using Model;
 
     internal class QueueClientImpl :
-        HareDuClientBase,
+        HareDuResourcesBase,
         QueueClient
     {
-        public QueueClientImpl(HareDuClientBehaviorImpl args)
-            : base(args)
+        public QueueClientImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
-            Binding = new QueueBindingClientImpl(args);
-        }
-
-        public QueueClientImpl(Dictionary<string, object> args) :
-            base(args)
-        {
-            Binding = new QueueBindingClientImpl(args);
+            Binding = new QueueBindingClientImpl(client, logger);
         }
 
         public QueueBindingClient Binding { get; private set; }
@@ -51,49 +47,79 @@ namespace HareDu.Concerns
             return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string queue, Action<QueueBehavior> args,
+        public Task<ServerResponse> New(string queue, Action<QueueTarget> target, Action<QueueBehavior> behavior,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             var argsImpl = new QueueBehaviorImpl();
-            args(argsImpl);
+            behavior(argsImpl);
 
-            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
+            var targetImpl = new QueueTargetImpl();
+            target(targetImpl);
+
+            string url = string.Format("api/queues/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), queue);
 
             LogInfo(string.IsNullOrEmpty(argsImpl.Node)
                         ? string.Format(
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}'.", queue,
-                            Init.VirtualHost)
+                            targetImpl.VirtualHost)
                         : string.Format(
                             "Sent request to RabbitMQ server to create queue '{0}' on virtual host '{1}' on node '{2}'.",
-                            queue, Init.VirtualHost, argsImpl.Node));
+                            queue, targetImpl.VirtualHost, argsImpl.Node));
 
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string queue,
-                                           CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/queues/{0}/{1}", Init.VirtualHost.SanitizeVirtualHostName(), queue);
+            var targetImpl = new QueueTargetImpl();
+            target(targetImpl);
+
+            string url = string.Format("api/queues/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Queue);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete queue '{0}' from virtual host '{1}'.",
-                                  queue, Init.VirtualHost));
+                                  targetImpl.Queue, targetImpl.VirtualHost));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Purge(string queue, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Purge(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/queues/{0}/{1}/contents", Init.VirtualHost.SanitizeVirtualHostName(), queue);
+            var targetImpl = new QueueTargetImpl();
+            target(targetImpl);
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to purge the contents of queue '{0}'.", queue));
+            string url = string.Format("api/queues/{0}/{1}/contents", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Queue);
+
+            LogInfo(string.Format("Sent request to RabbitMQ server to purge the contents of queue '{0}'.", targetImpl.Queue));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
+        }
+    }
+
+    public interface QueueTarget
+    {
+        void Source(string queue, string virtualHost);
+        void Source(string virtualHost);
+    }
+
+    internal class QueueTargetImpl : QueueTarget
+    {
+        public string Queue { get; private set; }
+
+        public string VirtualHost { get; private set; }
+        public void Source(string queue, string virtualHost)
+        {
+            Queue = queue;
+            VirtualHost = virtualHost;
+        }
+        public void Source(string virtualHost)
+        {
+            VirtualHost = virtualHost;
         }
     }
 }

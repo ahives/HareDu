@@ -14,24 +14,13 @@
 
 namespace HareDu.Concerns
 {
-    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Model;
 
-    internal class ClusterClientImpl :
-        ClusterClient
+    public interface OverviewResources :
+        ResourceClient
     {
-        public ClusterClientImpl(HareDuClientBehaviorImpl args)
-        {
-            Overview = new OverviewClientImpl(args);
-            Node = new NodeClientImpl(args);
-        }
-
-        public ClusterClientImpl(Dictionary<string, object> args)
-        {
-            Overview = new OverviewClientImpl(args);
-            Node = new NodeClientImpl(args);
-        }
-
-        public OverviewClient Overview { get; private set; }
-        public NodeClient Node { get; private set; }
+        Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

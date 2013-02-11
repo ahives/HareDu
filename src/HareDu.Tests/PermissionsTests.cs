@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -25,14 +26,17 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User_Persmissions()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .Permissions
-                                 .Set(Settings.Default.Username, x =>
-                                                                     {
-                                                                         x.Configure(".*");
-                                                                         x.Read(".*");
-                                                                         x.Write(".*");
-                                                                     })
+                                 .Set(string.Format("{0}1", Settings.Default.Username), Settings.Default.VirtualHost, x =>
+                                                                                                  {
+                                                                                                      x.Configure(".*");
+                                                                                                      x.Read(".*");
+                                                                                                      x.Write(".*");
+                                                                                                  })
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -40,9 +44,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User_Permissions()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .Permissions
-                                 .Delete(Settings.Default.Username)
+                                 .Delete(Settings.Default.Username, Settings.Default.VirtualHost)
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -50,7 +57,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_User_Permissions()
         {
-            var data = Client.User
+            var data = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                              .Permissions
                              .GetAll()
                              .Data();
@@ -70,9 +80,12 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_User_Permissions()
         {
-            var data = Client.User
+            var data = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                              .Permissions
-                             .Get(Settings.Default.Username)
+                             .Get(Settings.Default.Username, Settings.Default.VirtualHost)
                              .Data();
 
             Console.WriteLine("Virtual Host: {0}", data.VirtualHost);
@@ -88,9 +101,12 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Throws_Exception_When_Permissions_Null()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .Permissions
-                                 .Set(Settings.Default.Username, null)
+                                 .Set(Settings.Default.Username, Settings.Default.VirtualHost, null)
                                  .Response();
         }
     }

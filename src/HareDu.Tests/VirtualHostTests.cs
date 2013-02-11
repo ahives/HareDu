@@ -18,6 +18,7 @@ namespace HareDu.Tests
     using System.Collections.Generic;
     using System.Net;
     using System.Threading;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -27,9 +28,11 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
-            var data = Client.VirtualHost
-                             .GetAll()
-                             .Data();
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .GetAll()
+                .Data();
 
             foreach (var vhost in data)
             {
@@ -51,7 +54,9 @@ namespace HareDu.Tests
             initArgs["enable_logging"] = Settings.Default.LoggerName;
             var client = HareDuFactory.New(initArgs);
 
-            var data = client.VirtualHost
+            var data = client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .GetAll()
                              .Data();
 
@@ -71,9 +76,11 @@ namespace HareDu.Tests
             var token = tokenSource.Token;
 
             tokenSource.Cancel();
-            var data = Client.VirtualHost
-                             .GetAll(token)
-                             .Data();
+            var data = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .GetAll(token)
+                .Data();
 
             foreach (var vhost in data)
             {
@@ -85,26 +92,23 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
-        public void Verify_Create_Virtual_Host_Is_Working()
+        public void Verify_Can_Create_Virtual_Host()
         {
-            var response = Client.VirtualHost
-                                 .New(Settings.Default.VirtualHost)
-                                 .Response();
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .New(string.Format("{0}1", Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test, Category("Integration"), Explicit]
         public void Verify_Server_Working()
         {
-            var response = Client.VirtualHost
-                                 .Change(Settings.Default.VirtualHost, x =>
-                                                                           {
-                                                                               x.SetUsername(
-                                                                                   Settings.Default.LoginUsername);
-                                                                               x.SetPassword(
-                                                                                   Settings.Default.LoginPassword);
-                                                                           })
-                                 .IsAlive()
+            var response = Client
+                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                 .IsAlive(Settings.Default.VirtualHost)
                                  .Response();
             Assert.AreEqual(null, response.Status);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -114,7 +118,9 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
-            var request = Client.VirtualHost
+            var request = Client
+                                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                 .Delete(string.Empty)
                                 .Response();
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
@@ -123,7 +129,9 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_Virtual_Host()
         {
-            var response = Client.VirtualHost
+            var response = Client
+                                .EstablishConnection<VirtualHostResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Delete(Settings.Default.VirtualHost)
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);

@@ -16,6 +16,7 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
+    using Concerns;
     using NUnit.Framework;
 
     [TestFixture]
@@ -25,7 +26,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .New(string.Format("{0}1", Settings.Default.Username), x =>
                                                                                             {
                                                                                                 x.WithPassword(
@@ -42,7 +46,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_User_With_Multiple_Tags()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .New(string.Format("{0}2", Settings.Default.Username), x =>
                                                                                             {
                                                                                                 x.WithPassword(
@@ -65,7 +72,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Delete_User()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .Delete(Settings.Default.Username)
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -74,7 +84,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_All_Users()
         {
-            var data = Client.User
+            var data = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                              .GetAll()
                              .Data();
 
@@ -91,7 +104,10 @@ namespace HareDu.Tests
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Return_User()
         {
-            var data = Client.User
+            var data = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                              .Get(Settings.Default.Username)
                              .Data();
 
@@ -106,7 +122,10 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentNullException))]
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .New(Settings.Default.Username, null)
                                  .Response();
         }
@@ -115,7 +134,10 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentException))]
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .New(Settings.Default.Username, x => x.WithTags(y => y.Administrator()))
                                  .Response();
         }
@@ -124,7 +146,10 @@ namespace HareDu.Tests
         [ExpectedException(typeof (ArgumentException))]
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
-            var response = Client.User
+            var response = Client
+                                .EstablishConnection<UserResources>(
+                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                //.User
                                  .New(null, x =>
                                                 {
                                                     x.WithPassword(Settings.Default.UserPassword);
