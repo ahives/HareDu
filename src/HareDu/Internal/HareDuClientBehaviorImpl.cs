@@ -21,11 +21,6 @@ namespace HareDu
     public class HareDuClientBehaviorImpl :
         HareDuClientBehavior
     {
-        public HareDuClientBehaviorImpl()
-        {
-            //VirtualHost = "/";
-        }
-
         public string HostUrl { get; private set; }
 
         // TODO: DELETE ME

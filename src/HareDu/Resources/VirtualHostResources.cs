@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
     using System.Threading;
@@ -20,36 +20,56 @@ namespace HareDu.Concerns
     using Async;
     using Model;
 
-    public interface ConnectionResources :
+    public interface VirtualHostResources :
         ResourceClient
     {
         /// <summary>
         /// 
         /// </summary>
-        ChannelClient Channel { get; }
+        ExchangeResources Exchange { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        QueueResources Queue { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        QueueBindingResources QueueExchangeBindings { get; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="connectionName"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Connection> Get(string connectionName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string virtualHost,
+                                 CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="connectionName"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Close(string connectionName,
-                                   CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string virtualHost,
+                                    CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtualHost"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<AlivenessTestResponse> IsAlive(string virtualHost,
+                                            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

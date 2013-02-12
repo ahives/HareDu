@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
     using System.Net.Http;
@@ -29,10 +29,10 @@ namespace HareDu.Concerns
         public ConnectionResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
-            Channel = new ChannelClientImpl(client, logger);
+            Channel = new ChannelResourcesImpl(client, logger);
         }
 
-        public ChannelClient Channel { get; private set; }
+        public ChannelResources Channel { get; private set; }
 
         public Task<IEnumerable<Connection>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {

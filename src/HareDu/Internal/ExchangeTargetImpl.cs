@@ -12,10 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Internal
 {
-    public interface VirtualHostTarget
+    using Contracts;
+    using Resources;
+
+    public class ExchangeTargetImpl :
+        ExchangeTarget
     {
-        void Source(string virtualHost);
+        public string Exchange { get; private set; }
+
+        public string VirtualHost { get; private set; }
+
+        public void Source(string exchange, string virtualHost)
+        {
+            Exchange = exchange;
+            VirtualHost = virtualHost;
+        }
+
+        public void Source(string virtualHost)
+        {
+            VirtualHost = virtualHost;
+        }
     }
 }

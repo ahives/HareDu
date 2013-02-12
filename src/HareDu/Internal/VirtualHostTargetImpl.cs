@@ -21,7 +21,7 @@ namespace HareDu.Internal
     {
         public string VirtualHost { get; set; }
 
-        public void On(string virtualHost)
+        public void Source(string virtualHost)
         {
             VirtualHost = virtualHost;
         }

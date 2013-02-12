@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
     using System.Net.Http;
@@ -29,12 +29,14 @@ namespace HareDu.Concerns
         public VirtualHostResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
-            Exchange = new ExchangeClientImpl(client, logger);
-            Queue = new QueueClientImpl(client, logger);
+            Exchange = new ExchangeResourcesImpl(client, logger);
+            Queue = new QueueResourcesImpl(client, logger);
+            QueueExchangeBindings = new QueueBindingResourcesImpl(client, logger);
         }
 
-        public ExchangeClient Exchange { get; private set; }
-        public QueueClient Queue { get; private set; }
+        public ExchangeResources Exchange { get; private set; }
+        public QueueResources Queue { get; private set; }
+        public QueueBindingResources QueueExchangeBindings { get; private set; }
 
         public Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {

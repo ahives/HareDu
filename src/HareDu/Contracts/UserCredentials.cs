@@ -1,4 +1,4 @@
-﻿// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
+// Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,16 +16,6 @@ namespace HareDu.Contracts
 {
     public interface UserCredentials
     {
-        /// <summary>
-        /// Sets the username for authentication against RabbitMQ server.
-        /// </summary>
-        /// <param name="username"></param>
-        void SetUsername(string username);
-
-        /// <summary>
-        /// Sets the password for authentication against RabbitMQ server.
-        /// </summary>
-        /// <param name="password"></param>
-        void SetPassword(string password);
+        void Credentials(string username, string password);
     }
 }

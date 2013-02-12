@@ -18,8 +18,8 @@ namespace HareDu.Tests
     using System.Collections.Generic;
     using System.Net;
     using System.Threading;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class VirtualHostTests :
@@ -29,8 +29,8 @@ namespace HareDu.Tests
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
             var data = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .GetAll()
                 .Data();
 
@@ -55,8 +55,8 @@ namespace HareDu.Tests
             var client = HareDuFactory.New(initArgs);
 
             var data = client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .GetAll()
                              .Data();
 
@@ -77,8 +77,8 @@ namespace HareDu.Tests
 
             tokenSource.Cancel();
             var data = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .GetAll(token)
                 .Data();
 
@@ -95,8 +95,8 @@ namespace HareDu.Tests
         public void Verify_Can_Create_Virtual_Host()
         {
             var response = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .New(string.Format("{0}1", Settings.Default.VirtualHost))
                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -106,8 +106,8 @@ namespace HareDu.Tests
         public void Verify_Server_Working()
         {
             var response = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .IsAlive(Settings.Default.VirtualHost)
                                  .Response();
             Assert.AreEqual(null, response.Status);
@@ -119,8 +119,8 @@ namespace HareDu.Tests
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
             var request = Client
-                                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                 .Delete(string.Empty)
                                 .Response();
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
@@ -130,8 +130,8 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Virtual_Host()
         {
             var response = Client
-                                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Delete(Settings.Default.VirtualHost)
                                  .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);

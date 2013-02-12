@@ -16,8 +16,8 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class ExchangeTests :
@@ -39,8 +39,8 @@ namespace HareDu.Tests
         public void Verify_Can_Create_Exchange()
         {
             var response = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
                 .New(string.Format("{0}1", Settings.Default.Exchange),
                      x => x.Source(Settings.Default.VirtualHost),
@@ -58,8 +58,8 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Exchanges()
         {
             var response = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
                 .Delete(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
                 .Response();
@@ -70,8 +70,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Bindings_On_Destination()
         {
             var data = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .Exchange
                              .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Destination())
                              .Data();
@@ -93,8 +93,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Bindings_On_Source()
         {
             var data = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .Exchange
                              .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Source())
                              .Data();
@@ -116,8 +116,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Exchanges()
         {
             var data = Client
-                                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
 //.VirtualHost
                              .Exchange
                              .GetAll()
@@ -140,8 +140,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_An_Exchange()
         {
             var data = Client
-                .EstablishConnection<VirtualHostResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
                 .Get(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
                 .Data();

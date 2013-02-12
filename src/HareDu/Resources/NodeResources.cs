@@ -12,28 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Model;
 
-    public interface ChannelClient
+    public interface NodeResources :
+        ResourceClient
     {
-        /// <summary>
-        /// Returns all the information pertaining to the open channels.
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Node>> GetAll(
+            CancellationToken cancellationToken = default(CancellationToken));
 
-        /// <summary>
-        /// Returns the information pertaining to a specific channel.
-        /// </summary>
-        /// <param name="channelName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Node> Get(string nodeName,
+                       CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -14,8 +14,10 @@
 
 namespace HareDu.Contracts
 {
-    public interface VirtualHostTarget
+    public interface QueueBindingTarget
     {
         void Source(string virtualHost);
+        void Source(string queue, string virtualHost);
+        void Source(string queue, string exchange, string virtualHost);
     }
 }

@@ -15,12 +15,14 @@
 namespace HareDu
 {
     using System;
-    using Concerns;
     using Contracts;
+    using Resources;
 
     public interface HareDuClient
     {
-        T EstablishConnection<T>(Action<ResourceRequest> request)
+        T RequestResource<T>(Action<UserCredentials> userCredentials)
             where T : ResourceClient;
+
+        void CancelPendingRequests();
     }
 }

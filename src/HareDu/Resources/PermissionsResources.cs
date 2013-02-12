@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -24,7 +24,8 @@ namespace HareDu.Concerns
 
     public interface PermissionsResources
     {
-        Task<Permissions> Get(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Permissions> Get(string userName, string virtualHost,
+                              CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
@@ -32,6 +33,7 @@ namespace HareDu.Concerns
                                  Action<UserPermissionsBehavior> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<ServerResponse> Delete(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(string userName, string virtualHost,
+                                    CancellationToken cancellationToken = default(CancellationToken));
     }
 }

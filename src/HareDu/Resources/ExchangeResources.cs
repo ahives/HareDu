@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -22,46 +22,53 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface QueueBindingClient
+    public interface ExchangeResources
     {
+        /// <summary>
+        /// Returns information of all exchanges on the current virtual host.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Exchange>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queue"></param>
         /// <param name="exchange"></param>
-        /// <param name="args"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(Action<QueueBinding> target, Action<QueueBindingBehavior> behavior,
+        Task<Exchange> Get(Action<ExchangeTarget> target,
+                           CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exchange"></param>
+        /// <param name="behavior"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target, Action<ExchangeBehavior> behavior,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<QueueBindingTarget> target, string propertiesKey, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<ExchangeTarget> target,
+                                    CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="target"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAll(Action<QueueBindingTarget> target, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queue"></param>
         /// <param name="exchange"></param>
-        /// <param name="propertiesKey"></param>
+        /// <param name="target"></param>
+        /// <param name="direction"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Binding> Get(Action<QueueBindingTarget> target, string propertiesKey,
-                          CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> direction,
+                                                  CancellationToken cancellationToken = default(CancellationToken));
     }
 }

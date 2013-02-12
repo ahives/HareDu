@@ -25,8 +25,6 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               //x.UsingCredentials(Settings.Default.LoginUsername,
-                                               //                   Settings.Default.LoginPassword);
                                                x.EnableLogging(Settings.Default.LoggerName);
                                            });
         }

@@ -12,59 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Contracts;
     using Model;
 
-    public interface VirtualHostResources :
-        ResourceClient
+    public interface QueueBindingResources
     {
         /// <summary>
         /// 
         /// </summary>
-        ExchangeClient Exchange { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        QueueClient Queue { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <param name="binding"></param>
+        /// <param name="behavior"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<VirtualHost>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHost"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<ServerResponse> New(string virtualHost,
+        Task<ServerResponse> New(Action<QueueBinding> binding, Action<QueueBindingBehavior> behavior, Action<VirtualHostTarget> target,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHost"></param>
+        /// <param name="target"></param>
+        /// <param name="propertiesKey"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string virtualHost,
+        Task<ServerResponse> Delete(Action<QueueBindingTarget> target, string propertiesKey,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="virtualHost"></param>
+        /// <param name="queue"></param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AlivenessTestResponse> IsAlive(string virtualHost,
-                                            CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Binding>> GetAll(Action<QueueBindingTarget> target,
+                                          CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
+        /// <param name="propertiesKey"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Binding> Get(Action<QueueBindingTarget> target, string propertiesKey,
+                          CancellationToken cancellationToken = default(CancellationToken));
     }
 }

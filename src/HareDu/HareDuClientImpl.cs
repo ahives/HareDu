@@ -15,15 +15,13 @@
 namespace HareDu
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using Common.Logging;
-    using Concerns;
     using Contracts;
     using Internal;
+    using Resources;
 
     internal class HareDuClientImpl :
         Logging,
@@ -35,18 +33,20 @@ namespace HareDu
             Behavior = args;
         }
 
-        protected HareDuClientBehaviorImpl Behavior { get; private set; }
+        private HareDuClientBehaviorImpl Behavior { get; set; }
+        public HttpClient Client { get; set; }
 
-        public T EstablishConnection<T>(Action<ResourceRequest> request)
+        public T RequestResource<T>(Action<UserCredentials> userCredentials)
             where T : ResourceClient
         {
-            var resourceRequest = new ResourceRequestImpl();
-            request(resourceRequest);
+            var userCredentialsImpl = new UserCredentialsImpl();
+            userCredentials(userCredentialsImpl);
 
             var uri = new Uri(string.Format("{0}/", Behavior.HostUrl));
             var handler = new HttpClientHandler
                               {
-                                  Credentials = new NetworkCredential(resourceRequest.Username, resourceRequest.Password)
+                                  Credentials =
+                                      new NetworkCredential(userCredentialsImpl.Username, userCredentialsImpl.Password)
                               };
             var client = new HttpClient(handler);
             client.BaseAddress = uri;
@@ -55,19 +55,21 @@ namespace HareDu
             if (Behavior.Timeout != TimeSpan.Zero)
                 client.Timeout = Behavior.Timeout;
 
-            var type = typeof(T);
+            Client = client;
+
+            var type = typeof (T);
             var implClass = GetType().Assembly
                                      .GetTypes()
                                      .FirstOrDefault(x => type.IsAssignableFrom(x) && !x.IsInterface);
 
-            return (T)Activator.CreateInstance(implClass, client, Behavior.Logger);
+            return (T) Activator.CreateInstance(implClass, client, Behavior.Logger);
         }
 
         public void CancelPendingRequests()
         {
-            //LogInfo("Cancel all pending requests.");
+            LogInfo("Cancel all pending requests.");
 
-            //Client.CancelPendingRequests();
+            Client.CancelPendingRequests();
         }
     }
 }

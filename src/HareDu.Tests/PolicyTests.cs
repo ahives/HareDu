@@ -16,8 +16,8 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class PolicyTests :
@@ -27,8 +27,8 @@ namespace HareDu.Tests
         public void Verify_Can_Create_New_Policy()
         {
             var response = Client
-                .EstablishConnection<PolicyResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .RequestResource<PolicyResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .New(x => x.Source(Settings.Default.Policy, Settings.Default.VirtualHost),
                      x =>
                          {
@@ -46,8 +46,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Policies()
         {
             var data = Client
-                                .EstablishConnection<PolicyResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<PolicyResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Policy
                              .GetAll()
                              .Data();
@@ -65,8 +65,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Policies_In_VirtualHost()
         {
             var data = Client
-                                .EstablishConnection<PolicyResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<PolicyResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .GetAll(x => x.Source(Settings.Default.VirtualHost))
                              .Data();
             foreach (var policy in data)

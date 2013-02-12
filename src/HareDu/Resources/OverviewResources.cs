@@ -12,20 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Model;
 
-    public interface NodeResources :
+    public interface OverviewResources :
         ResourceClient
     {
-        Task<IEnumerable<Node>> GetAll(
-            CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<Node> Get(string nodeName,
-                       CancellationToken cancellationToken = default(CancellationToken));
+        Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

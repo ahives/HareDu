@@ -17,8 +17,8 @@ namespace HareDu.Tests
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class AsyncTests :
@@ -38,9 +38,9 @@ namespace HareDu.Tests
                                                  {
                                                      tokenSource.Cancel();
                                                      var request = Client
-                                                         .EstablishConnection<VirtualHostResources>(
+                                                         .RequestResource<VirtualHostResources>(
                                                              x =>
-                                                             x.Using(Settings.Default.LoginUsername,
+                                                             x.Credentials(Settings.Default.LoginUsername,
                                                                      Settings.Default.LoginPassword))
                                                          .Queue
                                                          .New(string.Format("{0}6",

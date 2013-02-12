@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -25,11 +25,11 @@ namespace HareDu.Concerns
     using Internal;
     using Model;
 
-    internal class ExchangeClientImpl :
+    internal class ExchangeResourcesImpl :
         HareDuResourcesBase,
-        ExchangeClient
+        ExchangeResources
     {
-        public ExchangeClientImpl(HttpClient client, ILog logger) :
+        public ExchangeResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
         }
@@ -46,7 +46,8 @@ namespace HareDu.Concerns
             return base.Get(url, cancellationToken).As<IEnumerable<Exchange>>(cancellationToken);
         }
 
-        public Task<Exchange> Get(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Exchange> Get(Action<ExchangeTarget> target,
+                                  CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
@@ -58,12 +59,13 @@ namespace HareDu.Concerns
                     "Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.",
                     targetImpl.Exchange, targetImpl.VirtualHost));
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Exchange);
+            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Exchange);
 
             return base.Get(url, cancellationToken).As<Exchange>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> args,
+        public Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> direction,
                                                          CancellationToken cancellationToken =
                                                              default(CancellationToken))
         {
@@ -72,11 +74,12 @@ namespace HareDu.Concerns
             var targetImpl = new ExchangeTargetImpl();
             target(targetImpl);
 
-            var argsImpl = new BindingDirectionImpl();
-            args(argsImpl);
+            var directionImpl = new BindingDirectionImpl();
+            direction(directionImpl);
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Exchange, argsImpl.BindingDirection);
+                                       targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Exchange,
+                                       directionImpl.BindingDirection);
 
             LogInfo(
                 string.Format(
@@ -86,7 +89,8 @@ namespace HareDu.Concerns
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target, Action<ExchangeBehavior> behavior,
+        public Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target,
+                                        Action<ExchangeBehavior> behavior,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
@@ -97,7 +101,8 @@ namespace HareDu.Concerns
             var targetImpl = new ExchangeTargetImpl();
             target(targetImpl);
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), exchange);
+            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       exchange);
 
             LogInfo(
                 string.Format(
@@ -107,7 +112,8 @@ namespace HareDu.Concerns
             return base.Put(url, behaviorImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(Action<ExchangeTarget> target,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
@@ -117,32 +123,10 @@ namespace HareDu.Concerns
             LogInfo(string.Format("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.",
                                   targetImpl.Exchange, targetImpl.VirtualHost));
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Exchange);
+            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Exchange);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
-        }
-    }
-
-    public interface ExchangeTarget
-    {
-        void Source(string exchange, string virtualHost);
-        void Source(string virtualHost);
-    }
-
-    public class ExchangeTargetImpl : ExchangeTarget
-    {
-        public string Exchange { get; private set; }
-
-        public string VirtualHost { get; private set; }
-        public void Source(string exchange, string virtualHost)
-        {
-            Exchange = exchange;
-            VirtualHost = virtualHost;
-        }
-
-        public void Source(string virtualHost)
-        {
-            VirtualHost = virtualHost;
         }
     }
 }

@@ -12,31 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using Common.Logging;
     using Model;
 
-    internal class OverviewResourcesImpl :
-        HareDuResourcesBase,
-        OverviewResources
+    public interface ChannelResources
     {
-        public OverviewResourcesImpl(HttpClient client, ILog logger) :
-            base(client, logger)
-        {
-        }
+        /// <summary>
+        /// Returns all the information pertaining to the open channels.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Channel>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
-        public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
-
-            string url = "api/overview";
-
-            return base.Get(url, cancellationToken).As<Overview>(cancellationToken);
-        }
+        /// <summary>
+        /// Returns the information pertaining to a specific channel.
+        /// </summary>
+        /// <param name="channelName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Channel> Get(string channelName, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -22,32 +22,43 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface ExchangeClient
+    public interface PolicyResources :
+        ResourceClient
     {
         /// <summary>
-        /// Returns information of all exchanges on the current virtual host.
+        /// 
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Exchange>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Policy>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchange"></param>
-        /// <param name="virtualHost"></param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Exchange> Get(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Policy>> GetAll(Action<PolicyTarget> target,
+                                         CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="exchange"></param>
-        /// <param name="behavior"></param>
+        /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target, Action<ExchangeBehavior> behavior,
+        Task<Policy> Get(Action<PolicyTarget> target,
+                         CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="characteristics"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ServerResponse> New(Action<PolicyTarget> target,
+                                 Action<PolicyCharacteristics> characteristics,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -56,16 +67,7 @@ namespace HareDu.Concerns
         /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<ExchangeTarget> target, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exchange"></param>
-        /// <param name="target"></param>
-        /// <param name="args"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> args, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<PolicyTarget> target,
+                                    CancellationToken cancellationToken = default(CancellationToken));
     }
 }

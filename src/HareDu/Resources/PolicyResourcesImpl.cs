@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -77,7 +77,8 @@ namespace HareDu.Concerns
                     "Sent request to RabbitMQ server to return policy information pertaining to policy '{0}' belonging to virtual host '{1}'.",
                     targetImpl.Policy, targetImpl.VirtualHost));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Policy);
 
             return base.Get(url, cancellationToken).As<Policy>(cancellationToken);
         }
@@ -97,7 +98,8 @@ namespace HareDu.Concerns
                 string.Format("Sent request to RabbitMQ server to create a new policy '{0}' on virtual host '{1}'.",
                               targetImpl.Policy, targetImpl.VirtualHost));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Policy);
 
             return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
@@ -113,7 +115,8 @@ namespace HareDu.Concerns
             LogInfo(string.Format("Sent request to RabbitMQ server to delete policy '{0}' from virtual host '{1}'.",
                                   targetImpl.Policy, targetImpl.VirtualHost));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Policy);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
@@ -128,16 +131,17 @@ namespace HareDu.Concerns
     internal class PolicyTargetImpl : PolicyTarget
     {
         public string VirtualHost { get; private set; }
+        public string Policy { get; private set; }
+
         public void Source(string policy, string virtualHost)
         {
             Policy = policy;
             VirtualHost = virtualHost;
         }
+
         public void Source(string virtualHost)
         {
             VirtualHost = virtualHost;
         }
-
-        public string Policy { get; private set; }
     }
 }

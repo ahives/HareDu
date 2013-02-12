@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System.Collections.Generic;
     using System.Net.Http;
@@ -21,20 +21,11 @@ namespace HareDu.Concerns
     using Common.Logging;
     using Model;
 
-    internal class ChannelClientImpl :
+    internal class ChannelResourcesImpl :
         HareDuResourcesBase,
-        ChannelClient
+        ChannelResources
     {
-        //public ChannelClientImpl(HareDuClientBehaviorImpl args) :
-        //    base(args)
-        //{
-        //}
-
-        //public ChannelClientImpl(Dictionary<string, object> args) :
-        //    base(args)
-        //{
-        //}
-        public ChannelClientImpl(HttpClient client, ILog logger) :
+        public ChannelResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
         }

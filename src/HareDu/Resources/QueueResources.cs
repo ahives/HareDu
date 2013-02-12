@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -22,12 +22,12 @@ namespace HareDu.Concerns
     using Contracts;
     using Model;
 
-    public interface QueueClient
+    public interface QueueResources
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        QueueBindingClient Binding { get; }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //QueueBindingResources QueueExchangeBindings { get; }
 
         /// <summary>
         /// 
@@ -44,7 +44,8 @@ namespace HareDu.Concerns
         /// <param name="behavior"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> New(string queue, Action<QueueTarget> target, Action<QueueBehavior> behavior, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> New(string queue, Action<QueueTarget> target, Action<QueueBehavior> behavior,
+                                 CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
@@ -53,7 +54,8 @@ namespace HareDu.Concerns
         /// <param name="target"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Delete(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Delete(Action<QueueTarget> target,
+                                    CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Deletes all the messages in the specified queue.
@@ -61,6 +63,7 @@ namespace HareDu.Concerns
         /// <param name="target"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Purge(Action<QueueTarget> target, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ServerResponse> Purge(Action<QueueTarget> target,
+                                   CancellationToken cancellationToken = default(CancellationToken));
     }
 }

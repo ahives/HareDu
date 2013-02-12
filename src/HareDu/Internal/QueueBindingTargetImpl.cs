@@ -16,15 +16,31 @@ namespace HareDu.Internal
 {
     using Contracts;
 
-    internal class UserCredentialsImpl : UserCredentials
+    internal class QueueBindingTargetImpl :
+        QueueBindingTarget
     {
-        public string Username { get; private set; }
-        public string Password { get; private set; }
+        public string Exchange { get; private set; }
 
-        public void Credentials(string username, string password)
+        public string Queue { get; private set; }
+
+        public string VirtualHost { get; private set; }
+
+        public void Source(string queue, string virtualHost)
         {
-            Username = username;
-            Password = password;
+            Queue = queue;
+            VirtualHost = virtualHost;
+        }
+
+        public void Source(string virtualHost)
+        {
+            VirtualHost = virtualHost;
+        }
+
+        public void Source(string queue, string exchange, string virtualHost)
+        {
+            Queue = queue;
+            Exchange = exchange;
+            VirtualHost = virtualHost;
         }
     }
 }

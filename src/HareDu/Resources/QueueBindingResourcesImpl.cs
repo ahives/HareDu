@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -25,33 +25,35 @@ namespace HareDu.Concerns
     using Internal;
     using Model;
 
-    internal class QueueBindingClientImpl :
+    internal class QueueBindingResourcesImpl :
         HareDuResourcesBase,
-        QueueBindingClient
+        QueueBindingResources
     {
-        public QueueBindingClientImpl(HttpClient client, ILog logger) :
+        public QueueBindingResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
         }
 
-        public Task<ServerResponse> New(Action<QueueBinding> target, Action<QueueBindingBehavior> behavior,
-                                        CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> New(Action<QueueBinding> binding, Action<QueueBindingBehavior> behavior, Action<VirtualHostTarget> target, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             var behaviorImpl = new QueueBindingBehaviorImpl();
             behavior(behaviorImpl);
 
-            var targetImpl = new QueueBindingImpl();
+            var bindingImpl = new QueueBindingImpl();
+            binding(bindingImpl);
+
+            var targetImpl = new VirtualHostTargetImpl();
             target(targetImpl);
 
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", targetImpl.VirtualHostName.SanitizeVirtualHostName(),
-                                       targetImpl.Exchange, targetImpl.Queue);
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       bindingImpl.Exchange, bindingImpl.Queue);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.",
-                    targetImpl.Queue, targetImpl.Exchange, targetImpl.VirtualHostName));
+                    bindingImpl.Queue, bindingImpl.Exchange, targetImpl.VirtualHost));
 
             return base.Post(url, behaviorImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
@@ -64,7 +66,8 @@ namespace HareDu.Concerns
             var targetImpl = new QueueBindingTargetImpl();
             target(targetImpl);
 
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}",
+                                       targetImpl.VirtualHost.SanitizeVirtualHostName(),
                                        targetImpl.Exchange, targetImpl.Queue, propertiesKey.SanitizePropertiesKey());
 
             LogInfo(
@@ -88,7 +91,8 @@ namespace HareDu.Concerns
                     "Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.",
                     targetImpl.Queue, targetImpl.VirtualHost));
 
-            string url = string.Format("api/queues/{0}/{1}/bindings", targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Queue);
+            string url = string.Format("api/queues/{0}/{1}/bindings", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+                                       targetImpl.Queue);
 
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
@@ -101,7 +105,8 @@ namespace HareDu.Concerns
             var targetImpl = new QueueBindingTargetImpl();
             target(targetImpl);
 
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}",
+                                       targetImpl.VirtualHost.SanitizeVirtualHostName(),
                                        targetImpl.Exchange, targetImpl.Queue, propertiesKey.SanitizePropertiesKey());
 
             LogInfo(
@@ -111,58 +116,5 @@ namespace HareDu.Concerns
 
             return base.Get(url, cancellationToken).As<Binding>(cancellationToken);
         }
-    }
-
-    public interface QueueBindingTarget
-    {
-        void Source(string queue, string virtualHost);
-        void Source(string queue, string exchange, string virtualHost);
-    }
-
-    internal class QueueBindingTargetImpl :
-        QueueBindingTarget
-    {
-        public string Exchange { get; private set; }
-
-        public string Queue { get; private set; }
-
-        public string VirtualHost { get; private set; }
-        public void Source(string queue, string virtualHost)
-        {
-            Queue = queue;
-            VirtualHost = virtualHost;
-        }
-        public void Source(string queue, string exchange, string virtualHost)
-        {
-            Queue = queue;
-            Exchange = exchange;
-            VirtualHost = virtualHost;
-        }
-    }
-
-    public interface QueueBinding
-    {
-        void Bind(string queue, string exchange);
-        void VirtualHost(string virtualHost);
-    }
-
-    internal class QueueBindingImpl : QueueBinding
-    {
-        public void Bind(string queue, string exchange)
-        {
-            Queue = queue;
-            Exchange = exchange;
-        }
-
-        public string Queue { get; private set; }
-
-        public string Exchange { get; private set; }
-
-        public void VirtualHost(string virtualHost)
-        {
-            VirtualHostName = virtualHost;
-        }
-
-        public string VirtualHostName { get; private set; }
     }
 }

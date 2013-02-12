@@ -12,10 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Internal
 {
-    public interface VirtualHostTarget
+    using Contracts;
+
+    internal class QueueBindingImpl :
+        QueueBinding
     {
-        void Source(string virtualHost);
+        public string Queue { get; private set; }
+
+        public string Exchange { get; private set; }
+
+        public void Binding(string queue, string exchange)
+        {
+            Queue = queue;
+            Exchange = exchange;
+        }
     }
 }

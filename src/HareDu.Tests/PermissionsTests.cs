@@ -16,8 +16,8 @@ namespace HareDu.Tests
 {
     using System;
     using System.Net;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class PermissionsTests :
@@ -27,8 +27,8 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User_Persmissions()
         {
             var response = Client
-                                .EstablishConnection<UserResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<UserResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions
                                  .Set(string.Format("{0}1", Settings.Default.Username), Settings.Default.VirtualHost, x =>
@@ -45,8 +45,8 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_User_Permissions()
         {
             var response = Client
-                                .EstablishConnection<UserResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<UserResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions
                                  .Delete(Settings.Default.Username, Settings.Default.VirtualHost)
@@ -58,8 +58,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_User_Permissions()
         {
             var data = Client
-                                .EstablishConnection<UserResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<UserResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .Permissions
                              .GetAll()
@@ -81,8 +81,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_User_Permissions()
         {
             var data = Client
-                                .EstablishConnection<UserResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<UserResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .Permissions
                              .Get(Settings.Default.Username, Settings.Default.VirtualHost)
@@ -102,8 +102,8 @@ namespace HareDu.Tests
         public void Verify_Throws_Exception_When_Permissions_Null()
         {
             var response = Client
-                                .EstablishConnection<UserResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<UserResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions
                                  .Set(Settings.Default.Username, Settings.Default.VirtualHost, null)

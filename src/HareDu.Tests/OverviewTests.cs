@@ -15,8 +15,8 @@
 namespace HareDu.Tests
 {
     using System;
-    using Concerns;
     using NUnit.Framework;
+    using Resources;
 
     [TestFixture]
     public class OverviewTests :
@@ -26,8 +26,8 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Overview()
         {
             var data = Client
-                                .EstablishConnection<OverviewResources>(
-                    x => x.Using(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                                .RequestResource<OverviewResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Overview
                              .Get()
                              .Data();

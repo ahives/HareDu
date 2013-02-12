@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Concerns
+namespace HareDu.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -34,7 +34,8 @@ namespace HareDu.Concerns
         {
         }
 
-        public Task<Permissions> Get(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Permissions> Get(string userName, string virtualHost,
+                                     CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
@@ -60,7 +61,8 @@ namespace HareDu.Concerns
             return base.Get(url, cancellationToken).As<IEnumerable<Permissions>>(cancellationToken);
         }
 
-        public Task<ServerResponse> Set(string userName, string virtualHost, Action<UserPermissionsBehavior> args, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Set(string userName, string virtualHost, Action<UserPermissionsBehavior> args,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
@@ -77,7 +79,8 @@ namespace HareDu.Concerns
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName, string virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> Delete(string userName, string virtualHost,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
