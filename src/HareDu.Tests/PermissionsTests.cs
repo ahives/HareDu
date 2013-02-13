@@ -27,7 +27,7 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User_Persmissions()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions
@@ -45,7 +45,7 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_User_Permissions()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions
@@ -58,7 +58,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_User_Permissions()
         {
             var data = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .Permissions
@@ -81,7 +81,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_User_Permissions()
         {
             var data = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .Permissions
@@ -102,7 +102,7 @@ namespace HareDu.Tests
         public void Verify_Throws_Exception_When_Permissions_Null()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Permissions

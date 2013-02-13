@@ -26,7 +26,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Connections()
         {
             var data = Client
-                                .RequestResource<ConnectionResources>(
+                                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
                              .GetAll()
@@ -62,7 +62,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Connection()
         {
             var data = Client
-                                .RequestResource<ConnectionResources>(
+                                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
                              .Get(Settings.Default.Connection)

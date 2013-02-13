@@ -16,7 +16,8 @@ namespace HareDu.Model
 {
     using Newtonsoft.Json;
 
-    public class QueueTotals
+    public class QueueTotals :
+        HareDuModel
     {
         [JsonProperty("messages")]
         public long Messages { get; set; }

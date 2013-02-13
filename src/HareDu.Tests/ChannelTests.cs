@@ -26,7 +26,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Channels()
         {
             var data = Client
-                                .RequestResource<ConnectionResources>(
+                                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
                              .Channel
@@ -72,7 +72,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Channel()
         {
             var data = Client
-                                .RequestResource<ConnectionResources>(
+                                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
                              .Channel

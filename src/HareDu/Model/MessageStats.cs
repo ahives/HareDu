@@ -16,7 +16,8 @@ namespace HareDu.Model
 {
     using Newtonsoft.Json;
 
-    public class MessageStats
+    public class MessageStats :
+        HareDuModel
     {
         [JsonProperty("publish")]
         public int Published { get; set; }

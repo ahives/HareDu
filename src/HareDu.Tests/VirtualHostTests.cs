@@ -29,7 +29,7 @@ namespace HareDu.Tests
         public void Verify_Can_Get_All_Virtual_Hosts()
         {
             var data = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .GetAll()
                 .Data();
@@ -55,7 +55,7 @@ namespace HareDu.Tests
             var client = HareDuFactory.New(initArgs);
 
             var data = client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              .GetAll()
                              .Data();
@@ -77,7 +77,7 @@ namespace HareDu.Tests
 
             tokenSource.Cancel();
             var data = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .GetAll(token)
                 .Data();
@@ -95,7 +95,7 @@ namespace HareDu.Tests
         public void Verify_Can_Create_Virtual_Host()
         {
             var response = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .New(string.Format("{0}1", Settings.Default.VirtualHost))
                 .Response();
@@ -106,7 +106,7 @@ namespace HareDu.Tests
         public void Verify_Server_Working()
         {
             var response = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .IsAlive(Settings.Default.VirtualHost)
                                  .Response();
@@ -119,7 +119,7 @@ namespace HareDu.Tests
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
             var request = Client
-                                .RequestResource<VirtualHostResources>(
+                                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                 .Delete(string.Empty)
                                 .Response();
@@ -130,7 +130,7 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Virtual_Host()
         {
             var response = Client
-                                .RequestResource<VirtualHostResources>(
+                                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  .Delete(Settings.Default.VirtualHost)
                                  .Response();

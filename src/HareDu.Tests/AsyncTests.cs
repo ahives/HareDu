@@ -38,7 +38,7 @@ namespace HareDu.Tests
                                                  {
                                                      tokenSource.Cancel();
                                                      var request = Client
-                                                         .RequestResource<VirtualHostResources>(
+                                                         .Factory<VirtualHostResources>(
                                                              x =>
                                                              x.Credentials(Settings.Default.LoginUsername,
                                                                      Settings.Default.LoginPassword))

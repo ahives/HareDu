@@ -20,7 +20,7 @@ namespace HareDu
 
     public interface HareDuClient
     {
-        T RequestResource<T>(Action<UserCredentials> userCredentials)
+        T Factory<T>(Action<UserCredentials> userCredentials)
             where T : ResourceClient;
 
         void CancelPendingRequests();

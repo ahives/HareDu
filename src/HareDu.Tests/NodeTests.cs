@@ -26,7 +26,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
             var data = Client
-                                .RequestResource<NodeResources>(
+                                .Factory<NodeResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Node
                              .GetAll()
@@ -94,7 +94,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Node_On_Cluster()
         {
             var data = Client
-                                .RequestResource<NodeResources>(
+                                .Factory<NodeResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Node
                              .Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")))

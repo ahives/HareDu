@@ -27,7 +27,7 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .New(string.Format("{0}1", Settings.Default.Username), x =>
@@ -47,7 +47,7 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User_With_Multiple_Tags()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .New(string.Format("{0}2", Settings.Default.Username), x =>
@@ -73,7 +73,7 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_User()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .Delete(Settings.Default.Username)
@@ -85,7 +85,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Users()
         {
             var data = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .GetAll()
@@ -105,7 +105,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_User()
         {
             var data = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                              .Get(Settings.Default.Username)
@@ -123,7 +123,7 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .New(Settings.Default.Username, null)
@@ -135,7 +135,7 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .New(Settings.Default.Username, x => x.WithTags(y => y.Administrator()))
@@ -147,7 +147,7 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
             var response = Client
-                                .RequestResource<UserResources>(
+                                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.User
                                  .New(null, x =>

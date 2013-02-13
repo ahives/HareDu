@@ -36,7 +36,7 @@ namespace HareDu
         private HareDuClientBehaviorImpl Behavior { get; set; }
         public HttpClient Client { get; set; }
 
-        public T RequestResource<T>(Action<UserCredentials> userCredentials)
+        public T Factory<T>(Action<UserCredentials> userCredentials)
             where T : ResourceClient
         {
             var userCredentialsImpl = new UserCredentialsImpl();

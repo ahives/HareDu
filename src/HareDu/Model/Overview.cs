@@ -17,7 +17,8 @@ namespace HareDu.Model
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class Overview
+    public class Overview :
+        HareDuModel
     {
         [JsonProperty("management_version")]
         public string ManagementVersion { get; set; }

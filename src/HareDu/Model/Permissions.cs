@@ -16,7 +16,8 @@ namespace HareDu.Model
 {
     using Newtonsoft.Json;
 
-    public class Permissions
+    public class Permissions :
+        HareDuModel
     {
         [JsonProperty("user")]
         public string User { get; set; }

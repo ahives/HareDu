@@ -26,7 +26,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Overview()
         {
             var data = Client
-                                .RequestResource<OverviewResources>(
+                                .Factory<OverviewResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Overview
                              .Get()

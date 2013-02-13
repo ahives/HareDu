@@ -17,7 +17,8 @@ namespace HareDu.Model
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class Policy
+    public class Policy :
+        HareDuModel
     {
         public Policy()
         {

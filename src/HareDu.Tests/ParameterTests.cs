@@ -27,7 +27,7 @@ namespace HareDu.Tests
         public void Verify_Can_Add_New_Parameter()
         {
             var response = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  //.Parameter
                                  .New(x =>
@@ -43,7 +43,7 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Parameter()
         {
             var response = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                                  //.Parameter
                                  .Delete(x =>
@@ -59,7 +59,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters()
         {
             var data = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Parameter
                              .GetAll()
@@ -77,7 +77,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters_For_Given_Component()
         {
             var data = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Parameter
                              .GetAll(Settings.Default.Component)
@@ -95,7 +95,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters_For_Given_Component_On_Given_VirtualHost()
         {
             var data = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Parameter
                              .GetAll(x =>
@@ -117,7 +117,7 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Parameter_For_Given_Component_On_Given_VirtualHost()
         {
             var data = Client
-                                .RequestResource<ParameterResources>(
+                                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                              //.Parameter
                              .Get(x =>

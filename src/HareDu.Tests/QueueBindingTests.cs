@@ -22,23 +22,11 @@ namespace HareDu.Tests
     public class QueueBindingTests :
         HareDuTestBase
     {
-        [SetUp]
-        public new void Setup()
-        {
-            //Client = HareDuFactory.New(x =>
-            //                               {
-            //                                   x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
-            //                                   //x.UsingCredentials(Settings.Default.LoginUsername,
-            //                                   //                   Settings.Default.LoginPassword);
-            //                                   x.EnableLogging("HareDuLogger");
-            //                               });
-        }
-
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Bind_to_Exchange()
         {
             var response = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
                 .New(x => x.Binding(Settings.Default.Queue, Settings.Default.Exchange),
@@ -52,10 +40,11 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Binding()
         {
             var response = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
-                .Delete(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost), "fanout")
+                .Delete(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost),
+                        "fanout")
                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -64,7 +53,7 @@ namespace HareDu.Tests
         public void Verify_Can_Get_All_Queue_Bindings()
         {
             var data = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
                 .GetAll(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost))
@@ -87,7 +76,7 @@ namespace HareDu.Tests
         public void Verify_Can_Get_Queue_Binding()
         {
             var data = Client
-                .RequestResource<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
                 .Get(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost),
