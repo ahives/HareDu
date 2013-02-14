@@ -17,7 +17,7 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class UserPermissionsBehaviorImpl :
+    internal class UserPermissionsBehaviorImpl :
         UserPermissionsBehavior
     {
         public UserPermissionsBehaviorImpl()

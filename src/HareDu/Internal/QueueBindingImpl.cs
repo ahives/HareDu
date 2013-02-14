@@ -20,7 +20,6 @@ namespace HareDu.Internal
         QueueBinding
     {
         public string Queue { get; private set; }
-
         public string Exchange { get; private set; }
 
         public void Binding(string queue, string exchange)

@@ -21,6 +21,11 @@ namespace HareDu.Resources
     public interface OverviewResources :
         ResourceClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

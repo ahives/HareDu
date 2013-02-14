@@ -15,7 +15,6 @@
 namespace HareDu
 {
     using System;
-    using System.Collections.Generic;
     using Contracts;
 
     public static class HareDuFactory
@@ -34,21 +33,6 @@ namespace HareDu
             {
                 throw new HareDuClientInitException("", e);
             }
-        }
-
-        public static HareDuClient New(Dictionary<string, object> args)
-        {
-            throw new NotImplementedException();
-            //try
-            //{
-            //    var client = new HareDuClientImpl(args);
-
-            //    return client;
-            //}
-            //catch (Exception e)
-            //{
-            //    throw new HareDuClientInitException("", e);
-            //}
         }
     }
 }

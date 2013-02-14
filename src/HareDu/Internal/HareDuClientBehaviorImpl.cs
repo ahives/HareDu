@@ -18,35 +18,12 @@ namespace HareDu
     using Common.Logging;
     using Contracts;
 
-    public class HareDuClientBehaviorImpl :
+    internal class HareDuClientBehaviorImpl :
         HareDuClientBehavior
     {
         public string HostUrl { get; private set; }
-
-        // TODO: DELETE ME
-        public string Username { get; private set; }
-
-        // TODO: DELETE ME
-        public string Password { get; private set; }
-
-        // TODO: DELETE ME
-        public string VirtualHost { get; private set; }
-
         public ILog Logger { get; private set; }
-
         public TimeSpan Timeout { get; private set; }
-
-        //public void ConnectTo(string hostUrl, string virtualHost = "/")
-        //{
-        //    HostUrl = hostUrl;
-        //    VirtualHost = virtualHost;
-        //}
-
-        //public void UsingCredentials(string username, string password)
-        //{
-        //    Username = username;
-        //    Password = password;
-        //}
 
         public void ConnectTo(string hostUrl)
         {
@@ -60,11 +37,6 @@ namespace HareDu
                 Logger = LogManager.GetLogger(loggerName);
             }
         }
-
-        //public void OnVirtualHost(string virtualHost)
-        //{
-        //    VirtualHost = virtualHost;
-        //}
 
         public void TimeoutAfter(TimeSpan timeout)
         {

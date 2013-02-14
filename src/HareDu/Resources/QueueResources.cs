@@ -24,11 +24,6 @@ namespace HareDu.Resources
 
     public interface QueueResources
     {
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //QueueBindingResources QueueExchangeBindings { get; }
-
         /// <summary>
         /// 
         /// </summary>

@@ -44,32 +44,6 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Get_All_Virtual_Hosts_With_Dictionary()
-        {
-            var initArgs = new Dictionary<string, object>();
-            initArgs["url"] = Settings.Default.HostUrl;
-            initArgs["vhost"] = Settings.Default.VirtualHost;
-            initArgs["username"] = Settings.Default.LoginUsername;
-            initArgs["password"] = Settings.Default.LoginPassword;
-            initArgs["enable_logging"] = Settings.Default.LoggerName;
-            var client = HareDuFactory.New(initArgs);
-
-            var data = client
-                .Factory<VirtualHostResources>(
-                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             .GetAll()
-                             .Data();
-
-            foreach (var vhost in data)
-            {
-                Console.WriteLine("Name: {0}", vhost.Name);
-                Console.WriteLine("Tracing: {0}", vhost.Tracing);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
-        }
-
-        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Cancel_Get_All_Virtual_Hosts_Request()
         {
             var tokenSource = new CancellationTokenSource();

@@ -19,7 +19,7 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class ExchangeBehaviorImpl :
+    internal class ExchangeBehaviorImpl :
         ExchangeBehavior
     {
         public ExchangeBehaviorImpl()

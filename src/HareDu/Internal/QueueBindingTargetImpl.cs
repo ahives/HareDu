@@ -20,9 +20,7 @@ namespace HareDu.Internal
         QueueBindingTarget
     {
         public string Exchange { get; private set; }
-
         public string Queue { get; private set; }
-
         public string VirtualHost { get; private set; }
 
         public void Source(string queue, string virtualHost)

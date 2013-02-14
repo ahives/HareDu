@@ -16,10 +16,10 @@ namespace HareDu.Internal
 {
     using Contracts;
 
-    internal class QueueTargetImpl : QueueTarget
+    internal class QueueTargetImpl :
+        QueueTarget
     {
         public string Queue { get; private set; }
-
         public string VirtualHost { get; private set; }
 
         public void Source(string queue, string virtualHost)

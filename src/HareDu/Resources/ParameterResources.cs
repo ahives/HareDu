@@ -25,20 +25,55 @@ namespace HareDu.Resources
     public interface ParameterResources :
         ResourceClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<Parameter> Get(Action<ComponentTarget> target,
                             CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Parameter>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Parameter>> GetAll(string component,
                                             CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Parameter>> GetAll(Action<ComponentTarget> target,
                                             CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<ServerResponse> New(Action<ComponentTarget> target,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<ServerResponse> Delete(Action<ComponentTarget> target,
                                     CancellationToken cancellationToken = default(CancellationToken));
     }

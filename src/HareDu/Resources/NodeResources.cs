@@ -22,9 +22,20 @@ namespace HareDu.Resources
     public interface NodeResources :
         ResourceClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Node>> GetAll(
             CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<Node> Get(string nodeName,
                        CancellationToken cancellationToken = default(CancellationToken));
     }

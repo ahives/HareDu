@@ -19,7 +19,7 @@ namespace HareDu.Internal
     internal class VirtualHostTargetImpl :
         VirtualHostTarget
     {
-        public string VirtualHost { get; set; }
+        public string VirtualHost { get; private set; }
 
         public void Source(string virtualHost)
         {

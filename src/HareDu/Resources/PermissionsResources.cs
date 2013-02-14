@@ -24,15 +24,42 @@ namespace HareDu.Resources
 
     public interface PermissionsResources
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="virtualHost"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<Permissions> Get(string userName, string virtualHost,
                               CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<IEnumerable<Permissions>> GetAll(CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="virtualHost"></param>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<ServerResponse> Set(string userName, string virtualHost,
                                  Action<UserPermissionsBehavior> args,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="virtualHost"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<ServerResponse> Delete(string userName, string virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
     }

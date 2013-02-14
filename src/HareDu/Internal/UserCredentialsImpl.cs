@@ -16,7 +16,8 @@ namespace HareDu.Internal
 {
     using Contracts;
 
-    internal class UserCredentialsImpl : UserCredentials
+    internal class UserCredentialsImpl :
+        UserCredentials
     {
         public string Username { get; private set; }
         public string Password { get; private set; }

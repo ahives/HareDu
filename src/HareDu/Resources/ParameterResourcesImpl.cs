@@ -29,7 +29,8 @@ namespace HareDu.Resources
         HareDuResourcesBase,
         ParameterResources
     {
-        public ParameterResourcesImpl(HttpClient client, ILog logger) : base(client, logger)
+        public ParameterResourcesImpl(HttpClient client, ILog logger) :
+            base(client, logger)
         {
         }
 

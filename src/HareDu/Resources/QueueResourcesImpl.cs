@@ -32,10 +32,7 @@ namespace HareDu.Resources
         public QueueResourcesImpl(HttpClient client, ILog logger) :
             base(client, logger)
         {
-            //QueueExchangeBindings = new QueueBindingResourcesImpl(client, logger);
         }
-
-        //public QueueBindingResources QueueExchangeBindings { get; private set; }
 
         public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {

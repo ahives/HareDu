@@ -18,7 +18,7 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class UserCharacteristicsImpl :
+    internal class UserCharacteristicsImpl :
         UserCharacteristics
     {
         public UserCharacteristicsImpl()

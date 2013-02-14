@@ -15,13 +15,11 @@
 namespace HareDu.Internal
 {
     using Contracts;
-    using Resources;
 
-    public class ExchangeTargetImpl :
+    internal class ExchangeTargetImpl :
         ExchangeTarget
     {
         public string Exchange { get; private set; }
-
         public string VirtualHost { get; private set; }
 
         public void Source(string exchange, string virtualHost)

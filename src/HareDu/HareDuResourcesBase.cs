@@ -24,14 +24,13 @@ namespace HareDu
     public abstract class HareDuResourcesBase :
         Logging
     {
-        public HareDuResourcesBase(HttpClient client, ILog logger) :
+        protected HareDuResourcesBase(HttpClient client, ILog logger) :
             base(logger)
         {
             Client = client;
         }
 
         protected HttpClient Client { get; set; }
-        //protected HareDuClientBehaviorImpl Behavior { get; private set; }
 
         /// <summary>
         /// Overrides default behaviour of System.Uri because RabbitMQ uses a forward slash, "/" , to represent the default virtual host.

@@ -19,7 +19,7 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class QueueBehaviorImpl :
+    internal class QueueBehaviorImpl :
         QueueBehavior
     {
         public QueueBehaviorImpl()
@@ -36,8 +36,7 @@ namespace HareDu.Internal
         [JsonProperty(PropertyName = "arguments", Order = 3, Required = Required.Default)]
         public IEnumerable<string> Arguments { get; set; }
 
-        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default,
-            NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "node", Order = 4, Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Node { get; set; }
 
         public void OnNode(string nodeName)

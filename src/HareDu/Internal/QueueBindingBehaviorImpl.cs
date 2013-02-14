@@ -19,7 +19,7 @@ namespace HareDu.Internal
     using Contracts;
     using Newtonsoft.Json;
 
-    public class QueueBindingBehaviorImpl :
+    internal class QueueBindingBehaviorImpl :
         QueueBindingBehavior
     {
         public QueueBindingBehaviorImpl()

@@ -22,7 +22,7 @@ namespace HareDu.Resources
     using Common.Logging;
     using Model;
 
-    public class VirtualHostResourcesImpl :
+    internal class VirtualHostResourcesImpl :
         HareDuResourcesBase,
         VirtualHostResources
     {
