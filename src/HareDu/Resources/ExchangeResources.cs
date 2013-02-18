@@ -38,7 +38,7 @@ namespace HareDu.Resources
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Exchange> Get(Action<ExchangeTarget> target,
+        Task<Exchange> Get(Action<ExchangeTarget> exchange, Action<VirtualHostTarget> virtualHost,
                            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -46,29 +46,33 @@ namespace HareDu.Resources
         /// </summary>
         /// <param name="exchange"></param>
         /// <param name="behavior"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target, Action<ExchangeBehavior> behavior,
+        Task<ServerResponse> New(Action<ExchangeTarget> exchange, Action<ExchangeBehavior> behavior,
+                                 Action<VirtualHostTarget> virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="exchange"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<ExchangeTarget> target,
+        Task<ServerResponse> Delete(Action<ExchangeTarget> exchange, Action<VirtualHostTarget> virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="exchange"></param>
-        /// <param name="target"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="direction"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> direction,
+        Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> exchange, Action<VirtualHostTarget> virtualHost,
+                                                  Action<BindingDirection> direction,
                                                   CancellationToken cancellationToken = default(CancellationToken));
     }
 }

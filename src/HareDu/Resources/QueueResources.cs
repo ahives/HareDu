@@ -35,30 +35,33 @@ namespace HareDu.Resources
         /// 
         /// </summary>
         /// <param name="queue"></param>
-        /// <param name="target"></param>
         /// <param name="behavior"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> New(string queue, Action<QueueTarget> target, Action<QueueBehavior> behavior,
+        Task<ServerResponse> New(Action<QueueTarget> queue, Action<QueueBehavior> behavior,
+                                 Action<VirtualHostTarget> virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="queue"></param>
-        /// <param name="target"></param>
+        /// <param name="queue"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Delete(Action<QueueTarget> target,
+        Task<ServerResponse> Delete(Action<QueueTarget> queue, Action<VirtualHostTarget> virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Deletes all the messages in the specified queue.
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="queue"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken">Task cancellation token.</param>
         /// <returns>Returns an asynchronous task having the server response and HTTP response code as the result.</returns>
-        Task<ServerResponse> Purge(Action<QueueTarget> target,
+        Task<ServerResponse> Clear(Action<QueueTarget> queue, Action<VirtualHostTarget> virtualHost,
                                    CancellationToken cancellationToken = default(CancellationToken));
     }
 }

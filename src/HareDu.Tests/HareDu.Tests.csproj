@@ -76,7 +76,7 @@
     <Compile Include="ConnectionTests.cs" />
     <Compile Include="ExchangeTests.cs" />
     <Compile Include="HareDuTestBase.cs" />
-    <Compile Include="IntegrationTests.cs" />
+    <Compile Include="ScenarioTests.cs" />
     <Compile Include="NodeTests.cs" />
     <Compile Include="OverviewTests.cs" />
     <Compile Include="PermissionsTests.cs" />

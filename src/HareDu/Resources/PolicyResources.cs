@@ -35,39 +35,42 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Policy>> GetAll(Action<PolicyTarget> target,
+        Task<IEnumerable<Policy>> GetAll(Action<VirtualHostTarget> virtualHost,
                                          CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="policy"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Policy> Get(Action<PolicyTarget> target,
+        Task<Policy> Get(Action<PolicyTarget> policy, Action<VirtualHostTarget> virtualHost,
                          CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="policy"></param>
         /// <param name="characteristics"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(Action<PolicyTarget> target,
-                                 Action<PolicyCharacteristics> characteristics,
+        Task<ServerResponse> New(Action<PolicyTarget> policy, Action<PolicyCharacteristics> characteristics,
+                                 Action<VirtualHostTarget> virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="policy"></param>
+        /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<PolicyTarget> target,
+        Task<ServerResponse> Delete(Action<PolicyTarget> policy, Action<VirtualHostTarget> virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
     }
 }

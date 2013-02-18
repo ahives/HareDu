@@ -34,7 +34,9 @@ namespace HareDu.Resources
         {
         }
 
-        public Task<ServerResponse> New(Action<QueueBinding> binding, Action<QueueBindingBehavior> behavior, Action<VirtualHostTarget> target, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ServerResponse> New(Action<QueueBinding> binding, Action<QueueBindingBehavior> behavior,
+                                        Action<VirtualHostTarget> virtualHost,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
@@ -44,75 +46,103 @@ namespace HareDu.Resources
             var bindingImpl = new QueueBindingImpl();
             binding(bindingImpl);
 
-            var targetImpl = new VirtualHostTargetImpl();
-            target(targetImpl);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
-            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
+            string url = string.Format("api/bindings/{0}/e/{1}/q/{2}",
+                                       virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
                                        bindingImpl.Exchange, bindingImpl.Queue);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to bind queue '{0}' to exchange '{1}' belonging to virtual host '{2}'.",
-                    bindingImpl.Queue, bindingImpl.Exchange, targetImpl.VirtualHost));
+                    bindingImpl.Queue, bindingImpl.Exchange, virtualHostTargetImpl.Target));
 
             return base.Post(url, behaviorImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(Action<QueueBindingTarget> target, string propertiesKey,
+        public Task<ServerResponse> Delete(Action<QueueTarget> queue, Action<ExchangeTarget> exchange,
+                                           Action<VirtualHostTarget> virtualHost,
+                                           Action<PropertiesKeyTarget> propertiesKey,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new QueueBindingTargetImpl();
-            target(targetImpl);
+            var queueTargetImpl = new QueueTargetImpl();
+            queue(queueTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
+
+            var propertiesKeyTargetImpl = new PropertiesKeyTargetImpl();
+            propertiesKey(propertiesKeyTargetImpl);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}",
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Exchange, targetImpl.Queue, propertiesKey.SanitizePropertiesKey());
+                                       virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       exchangeTargetImpl.Target, queueTargetImpl.Target,
+                                       propertiesKeyTargetImpl.Target.SanitizePropertiesKey());
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to delete queue binding between queue '{0}' and exchange '{1}' in virtual host '{2}'.",
-                    targetImpl.Queue, targetImpl.Exchange, targetImpl.VirtualHost));
+                    queueTargetImpl.Target, exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAll(Action<QueueBindingTarget> target,
+        public Task<IEnumerable<Binding>> GetAll(Action<QueueTarget> queue, Action<VirtualHostTarget> virtualHost,
                                                  CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new QueueBindingTargetImpl();
-            target(targetImpl);
+            var queueTargetImpl = new QueueTargetImpl();
+            queue(queueTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return all bindings on queue '{0}' belonging to virtual host '{1}'.",
-                    targetImpl.Queue, targetImpl.VirtualHost));
+                    queueTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/queues/{0}/{1}/bindings", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Queue);
+            string url = string.Format("api/queues/{0}/{1}/bindings",
+                                       virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       queueTargetImpl.Target);
 
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<Binding> Get(Action<QueueBindingTarget> target, string propertiesKey,
+        public Task<Binding> Get(Action<QueueTarget> queue, Action<ExchangeTarget> exchange,
+                                 Action<VirtualHostTarget> virtualHost, Action<PropertiesKeyTarget> propertiesKey,
                                  CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new QueueBindingTargetImpl();
-            target(targetImpl);
+            var queueTargetImpl = new QueueTargetImpl();
+            queue(queueTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
+
+            var propertiesKeyTargetImpl = new PropertiesKeyTargetImpl();
+            propertiesKey(propertiesKeyTargetImpl);
 
             string url = string.Format("api/bindings/{0}/e/{1}/q/{2}/{3}",
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Exchange, targetImpl.Queue, propertiesKey.SanitizePropertiesKey());
+                                       virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       exchangeTargetImpl.Target, queueTargetImpl.Target,
+                                       propertiesKeyTargetImpl.Target.SanitizePropertiesKey());
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return queue binding between queue '{0}' and exchange '{1}' in virtual host '{2}'.",
-                    targetImpl.Queue, targetImpl.Exchange, targetImpl.VirtualHost));
+                    queueTargetImpl.Target, exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Get(url, cancellationToken).As<Binding>(cancellationToken);
         }

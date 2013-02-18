@@ -26,12 +26,12 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Channels()
         {
             var data = Client
-                                .Factory<ConnectionResources>(
+                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
-                             .Channel
-                             .GetAll()
-                             .Data();
+                .Channel
+                .GetAll()
+                .Data();
 
             foreach (var channel in data)
             {
@@ -72,12 +72,12 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Channel()
         {
             var data = Client
-                                .Factory<ConnectionResources>(
+                .Factory<ConnectionResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 //.Connection
-                             .Channel
-                             .Get(Settings.Default.Channel)
-                             .Data();
+                .Channel
+                .Get(Settings.Default.Channel)
+                .Data();
 
             Console.WriteLine("Name: {0}", data.Name);
             Console.WriteLine("Node: {0}", data.Node);

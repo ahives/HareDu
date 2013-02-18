@@ -41,13 +41,12 @@ namespace HareDu.Tests
                                                          .Factory<VirtualHostResources>(
                                                              x =>
                                                              x.Credentials(Settings.Default.LoginUsername,
-                                                                     Settings.Default.LoginPassword))
+                                                                           Settings.Default.LoginPassword))
                                                          .Queue
-                                                         .New(string.Format("{0}6",
-                                                                            Settings.Default.Queue), x => x.Source(
-                                                                                Settings.Default.VirtualHost),
-                                                              x => x.IsDurable(),
-                                                              token);
+                                                         .New(
+                                                             x => x.Queue(string.Format("{0}6", Settings.Default.Queue)),
+                                                             x => x.IsDurable(),
+                                                             x => x.VirtualHost(Settings.Default.VirtualHost), token);
                                                  }
                                                  catch (AggregateException ex)
                                                  {

@@ -26,11 +26,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Overview()
         {
             var data = Client
-                                .Factory<OverviewResources>(
+                .Factory<OverviewResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Overview
-                             .Get()
-                             .Data();
+                .Get()
+                .Data();
 
             Console.WriteLine("Management Version: {0}", data.ManagementVersion);
             Console.WriteLine("Statistics Level: {0}", data.StatisticsLevel);
@@ -53,7 +52,7 @@ namespace HareDu.Tests
                 Console.WriteLine("Acknowledged: {0}", messageStats.Acknowledged);
             }
 
-            Console.WriteLine("******************** Message Details ********************");
+            Console.WriteLine("******************** Queue Totals ********************");
             Console.WriteLine("Messages: {0}", data.QueueTotals.Messages);
             Console.WriteLine("Messages Ready: {0}", data.QueueTotals.MessagesReady);
             Console.WriteLine("Messages Unacknowledged: {0}", data.QueueTotals.MessagesUnacknowledged);

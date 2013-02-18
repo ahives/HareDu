@@ -27,7 +27,7 @@ namespace HareDu.Internal
 
         public Dictionary<string, string> Definition { get; set; }
 
-        public void Set(string key, string value)
+        public void As(string key, string value)
         {
             Definition[key] = value;
         }

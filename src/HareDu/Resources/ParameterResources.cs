@@ -28,10 +28,12 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
+        /// <param name="component"></param>
         /// <returns></returns>
-        Task<Parameter> Get(Action<ComponentTarget> target,
+        Task<Parameter> Get(string component, string name, Action<VirtualHostTarget> target,
                             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -53,28 +55,33 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="component"></param>
         /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Parameter>> GetAll(Action<ComponentTarget> target,
+        Task<IEnumerable<Parameter>> GetAll(string component, Action<VirtualHostTarget> target,
                                             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="component"></param>
+        /// <param name="name"></param>
         /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(Action<ComponentTarget> target,
+        Task<ServerResponse> New(string component, string name, Action<VirtualHostTarget> target,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="component"></param>
+        /// <param name="name"></param>
         /// <param name="target"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(Action<ComponentTarget> target,
+        Task<ServerResponse> Delete(string component, string name, Action<VirtualHostTarget> target,
                                     CancellationToken cancellationToken = default(CancellationToken));
     }
 }

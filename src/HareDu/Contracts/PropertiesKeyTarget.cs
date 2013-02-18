@@ -14,8 +14,8 @@
 
 namespace HareDu.Contracts
 {
-    public interface VirtualHostTarget
+    public interface PropertiesKeyTarget
     {
-        void VirtualHost(string virtualHost);
+        void PropertiesKey(string propertiesKey);
     }
 }

@@ -14,12 +14,15 @@
 
 namespace HareDu.Resources
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
     using Common.Logging;
+    using Contracts;
+    using Internal;
     using Model;
 
     internal class VirtualHostResourcesImpl :
@@ -49,50 +52,61 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<VirtualHost>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string virtualHost,
+        public Task<ServerResponse> New(Action<VirtualHostTarget> virtualHost,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.", virtualHost));
+            string url = string.Format("api/vhosts/{0}", virtualHostTargetImpl.Target.SanitizeVirtualHostName());
+
+            LogInfo(string.Format("Sent request to RabbitMQ server to create virtual host '{0}'.",
+                                  virtualHostTargetImpl.Target));
 
             return
                 base.Put(url, new StringContent(string.Empty), cancellationToken)
                     .Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string virtualHost,
+        public Task<ServerResponse> Delete(Action<VirtualHostTarget> virtualHost,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            if (virtualHost.SanitizeVirtualHostName() == "2%f")
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            if (virtualHostTargetImpl.Target.SanitizeVirtualHostName() == "2%f")
             {
                 LogError(
                     "VirtualHost.Delete method threw a CannotDeleteVirtualHostException exception for attempting to delete the default virtual host.");
                 throw new CannotDeleteVirtualHostException("Cannot delete the default virtual host.");
             }
 
-            string url = string.Format("api/vhosts/{0}", virtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/vhosts/{0}", virtualHostTargetImpl.Target.SanitizeVirtualHostName());
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.", virtualHost));
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete virtual host '{0}'.",
+                                  virtualHostTargetImpl.Target));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<AlivenessTestResponse> IsAlive(string virtualHost,
+        public Task<AlivenessTestResponse> IsAlive(Action<VirtualHostTarget> virtualHost,
                                                    CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/aliveness-test/{0}", virtualHost.SanitizeVirtualHostName());
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            string url = string.Format("api/aliveness-test/{0}", virtualHostTargetImpl.Target.SanitizeVirtualHostName());
 
             LogInfo(
                 string.Format(
                     "Sent request to execute an aliveness test on virtual host '{0}' on current RabbitMQ server.",
-                    virtualHost));
+                    virtualHostTargetImpl.Target));
 
             return base.Get(url, cancellationToken)
                        .ContinueWith(t =>

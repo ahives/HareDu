@@ -14,10 +14,12 @@
 
 namespace HareDu.Resources
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Async;
+    using Contracts;
     using Model;
 
     public interface VirtualHostResources :
@@ -51,7 +53,7 @@ namespace HareDu.Resources
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string virtualHost,
+        Task<ServerResponse> New(Action<VirtualHostTarget> virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace HareDu.Resources
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string virtualHost,
+        Task<ServerResponse> Delete(Action<VirtualHostTarget> virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace HareDu.Resources
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AlivenessTestResponse> IsAlive(string virtualHost,
+        Task<AlivenessTestResponse> IsAlive(Action<VirtualHostTarget> virtualHost,
                                             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

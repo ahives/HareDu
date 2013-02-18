@@ -16,7 +16,6 @@ namespace HareDu.Contracts
 {
     public interface ExchangeTarget
     {
-        void Source(string exchange, string virtualHost);
-        void Source(string virtualHost);
+        void Exchange(string exchange);
     }
 }

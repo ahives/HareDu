@@ -30,9 +30,11 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Queue
-                .New(string.Format("{0}5", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost),
-                     x => x.IsDurable())
+                .New(x => x.Queue(string.Format("{0}5", Settings.Default.Queue)),
+                     x => x.IsDurable(),
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -43,15 +45,17 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Queue
-                .New(string.Format("{0}4", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost),
+                .New(x => x.Queue(string.Format("{0}4", Settings.Default.Queue)),
                      x =>
                          {
                              x.IsDurable();
                              x.OnNode(
                                  string.Format("rabbit@{0}",
                                                Environment.GetEnvironmentVariable("COMPUTERNAME")));
-                         })
+                         },
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -62,7 +66,7 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Queue
-                .New(string.Format("{0}4", Settings.Default.Queue), x => x.Source(Settings.Default.VirtualHost),
+                .New(x => x.Queue(string.Format("{0}4", Settings.Default.Queue)),
                      x =>
                          {
                              x.IsDurable();
@@ -71,8 +75,10 @@ namespace HareDu.Tests
                                                      y.SetPerQueueExpiration(1000);
                                                      y.SetQueueExpiration(1000);
                                                  });
-                         })
+                         },
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -83,7 +89,8 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Queue
-                .Delete(x => x.Source(string.Format("{0}5", Settings.Default.Queue), Settings.Default.VirtualHost))
+                .Delete(x => x.Queue(string.Format("{0}5", Settings.Default.Queue)),
+                        x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -116,14 +123,15 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Purge_Queue()
+        public void Verify_Can_Clear_Queue()
         {
             var response = Client
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Queue
-                .Purge(x => x.Source(Settings.Default.Queue, Settings.Default.VirtualHost))
+                .Clear(x => x.Queue(Settings.Default.Queue), x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
     }

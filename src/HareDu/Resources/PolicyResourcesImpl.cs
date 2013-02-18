@@ -46,44 +46,48 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<Policy>>(cancellationToken);
         }
 
-        public Task<IEnumerable<Policy>> GetAll(Action<PolicyTarget> target,
+        public Task<IEnumerable<Policy>> GetAll(Action<VirtualHostTarget> virtualHost,
                                                 CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new PolicyTargetImpl();
-            target(targetImpl);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to return all policy information pertaining to virtual host {0} on current RabbitMQ server.",
-                    targetImpl.VirtualHost));
+                    virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/policies/{0}", targetImpl.VirtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/policies/{0}", virtualHostTargetImpl.Target.SanitizeVirtualHostName());
 
             return base.Get(url, cancellationToken).As<IEnumerable<Policy>>(cancellationToken);
         }
 
-        public Task<Policy> Get(Action<PolicyTarget> target,
+        public Task<Policy> Get(Action<PolicyTarget> policy, Action<VirtualHostTarget> virtualHost,
                                 CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new PolicyTargetImpl();
-            target(targetImpl);
+            var policyTargetImpl = new PolicyTargetImpl();
+            policy(policyTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return policy information pertaining to policy '{0}' belonging to virtual host '{1}'.",
-                    targetImpl.Policy, targetImpl.VirtualHost));
+                    policyTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       policyTargetImpl.Target);
 
             return base.Get(url, cancellationToken).As<Policy>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(Action<PolicyTarget> target, Action<PolicyCharacteristics> characteristics,
+        public Task<ServerResponse> New(Action<PolicyTarget> policy, Action<PolicyCharacteristics> characteristics,
+                                        Action<VirtualHostTarget> virtualHost,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
@@ -91,57 +95,40 @@ namespace HareDu.Resources
             var characteristicsImpl = new PolicyCharacteristicsImpl();
             characteristics(characteristicsImpl);
 
-            var targetImpl = new PolicyTargetImpl();
-            target(targetImpl);
+            var policyTargetImpl = new PolicyTargetImpl();
+            policy(policyTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(
                 string.Format("Sent request to RabbitMQ server to create a new policy '{0}' on virtual host '{1}'.",
-                              targetImpl.Policy, targetImpl.VirtualHost));
+                              policyTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       policyTargetImpl.Target);
 
             return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(Action<PolicyTarget> target,
+        public Task<ServerResponse> Delete(Action<PolicyTarget> policy, Action<VirtualHostTarget> virtualHost,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new PolicyTargetImpl();
-            target(targetImpl);
+            var policyTargetImpl = new PolicyTargetImpl();
+            policy(policyTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete policy '{0}' from virtual host '{1}'.",
-                                  targetImpl.Policy, targetImpl.VirtualHost));
+                                  policyTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/policies/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Policy);
+            string url = string.Format("api/policies/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       policyTargetImpl.Target);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
-        }
-    }
-
-    public interface PolicyTarget
-    {
-        void Source(string policy, string virtualHost);
-        void Source(string virtualHost);
-    }
-
-    internal class PolicyTargetImpl : PolicyTarget
-    {
-        public string VirtualHost { get; private set; }
-        public string Policy { get; private set; }
-
-        public void Source(string policy, string virtualHost)
-        {
-            Policy = policy;
-            VirtualHost = virtualHost;
-        }
-
-        public void Source(string virtualHost)
-        {
-            VirtualHost = virtualHost;
         }
     }
 }

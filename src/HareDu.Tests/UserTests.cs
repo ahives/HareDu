@@ -27,19 +27,16 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .New(string.Format("{0}1", Settings.Default.Username), x =>
-                                                                                            {
-                                                                                                x.WithPassword(
-                                                                                                    Settings.Default
-                                                                                                            .UserPassword);
-                                                                                                x.WithTags(
-                                                                                                    y =>
-                                                                                                    y.Administrator());
-                                                                                            })
-                                 .Response();
+                .New(x => x.User(string.Format("{0}1", Settings.Default.Username)),
+                     x =>
+                         {
+                             x.WithPassword(Settings.Default.UserPassword);
+                             x.WithTags(y => y.Administrator());
+                         })
+                .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -47,25 +44,20 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User_With_Multiple_Tags()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .New(string.Format("{0}2", Settings.Default.Username), x =>
-                                                                                            {
-                                                                                                x.WithPassword(
-                                                                                                    Settings.Default
-                                                                                                            .UserPassword);
-                                                                                                x.WithTags(y =>
-                                                                                                               {
-                                                                                                                   y
-                                                                                                                       .Monitoring
-                                                                                                                       ();
-                                                                                                                   y
-                                                                                                                       .Management
-                                                                                                                       ();
-                                                                                                               });
-                                                                                            })
-                                 .Response();
+                .New(x => x.User(string.Format("{0}2", Settings.Default.Username)),
+                     x =>
+                         {
+                             x.WithPassword(Settings.Default.UserPassword);
+                             x.WithTags(y =>
+                                            {
+                                                y.Monitoring();
+                                                y.Management();
+                                            });
+                         })
+                .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -73,11 +65,11 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_User()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .Delete(Settings.Default.Username)
-                                 .Response();
+                .Delete(x => x.User(Settings.Default.Username))
+                .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -85,11 +77,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Users()
         {
             var data = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                             .GetAll()
-                             .Data();
+                .GetAll()
+                .Data();
 
             foreach (var user in data)
             {
@@ -105,11 +96,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_User()
         {
             var data = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                             .Get(Settings.Default.Username)
-                             .Data();
+                .Get(x => x.User(Settings.Default.Username))
+                .Data();
 
             Console.WriteLine("Username: {0}", data.Name);
             Console.WriteLine("Password Hash: {0}", data.PasswordHash);
@@ -123,11 +113,10 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Password_And_Tags_Missing_When_Creating_User()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .New(Settings.Default.Username, null)
-                                 .Response();
+                .New(x => x.User(Settings.Default.Username), null)
+                .Response();
         }
 
         [Test, Category("Integration"), Explicit]
@@ -135,11 +124,10 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Password_Missing_When_Creating_User()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .New(Settings.Default.Username, x => x.WithTags(y => y.Administrator()))
-                                 .Response();
+                .New(x => x.User(Settings.Default.Username), x => x.WithTags(y => y.Administrator()))
+                .Response();
         }
 
         [Test, Category("Integration"), Explicit]
@@ -147,15 +135,15 @@ namespace HareDu.Tests
         public void Verify_Exception_Thrown_When_Username_Missing_When_Creating_User()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .New(null, x =>
-                                                {
-                                                    x.WithPassword(Settings.Default.UserPassword);
-                                                    x.WithTags(y => y.Administrator());
-                                                })
-                                 .Response();
+                .New(x => x.User(null),
+                     x =>
+                         {
+                             x.WithPassword(Settings.Default.UserPassword);
+                             x.WithTags(y => y.Administrator());
+                         })
+                .Response();
         }
     }
 }

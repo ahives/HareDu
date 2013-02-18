@@ -16,27 +16,13 @@ namespace HareDu.Internal
 {
     using Contracts;
 
-    internal class ComponentTargetImpl :
-        ComponentTarget
+    internal class PolicyTargetImpl :
+        TargetBase,
+        PolicyTarget
     {
-        public string Component { get; private set; }
-        public string VirtualHost { get; private set; }
-        public string Name { get; private set; }
-
-        public void For(string component)
+        public void Policy(string policy)
         {
-            Component = component;
-        }
-
-        public void For(string component, string name)
-        {
-            Component = component;
-            Name = name;
-        }
-
-        public void On(string virtualHost)
-        {
-            VirtualHost = virtualHost;
+            Target = policy;
         }
     }
 }

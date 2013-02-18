@@ -31,7 +31,7 @@ namespace HareDu.Tests
                 .QueueExchangeBindings
                 .New(x => x.Binding(Settings.Default.Queue, Settings.Default.Exchange),
                      x => x.UsingRoutingKey(Settings.Default.RoutingKey),
-                     x => x.Source(Settings.Default.VirtualHost))
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
         }
@@ -43,9 +43,12 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
-                .Delete(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost),
-                        "fanout")
+                .Delete(x => x.Queue(Settings.Default.Queue),
+                        x => x.Exchange(Settings.Default.Exchange),
+                        x => x.VirtualHost(Settings.Default.VirtualHost),
+                        x => x.PropertiesKey("fanout"))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -56,7 +59,7 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
-                .GetAll(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost))
+                .GetAll(x => x.Queue(Settings.Default.Queue), x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Data();
 
             foreach (var queue in data)
@@ -79,8 +82,10 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .QueueExchangeBindings
-                .Get(x => x.Source(Settings.Default.Queue, Settings.Default.Exchange, Settings.Default.VirtualHost),
-                     "fanout")
+                .Get(x => x.Queue(Settings.Default.Queue),
+                     x => x.Exchange(Settings.Default.Exchange),
+                     x => x.VirtualHost(Settings.Default.VirtualHost),
+                     x => x.PropertiesKey("fanout"))
                 .Data();
 
             Console.WriteLine("Source: {0}", data.Source);

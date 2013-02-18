@@ -27,8 +27,8 @@ namespace HareDu.Contracts
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="arg"></param>
-        void DefinedAs(Action<PolicyDefinition> arg);
+        /// <param name="definition"></param>
+        void Define(Action<PolicyDefinition> definition);
 
         /// <summary>
         /// 

@@ -46,51 +46,59 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<Exchange>>(cancellationToken);
         }
 
-        public Task<Exchange> Get(Action<ExchangeTarget> target,
+        public Task<Exchange> Get(Action<ExchangeTarget> exchange, Action<VirtualHostTarget> virtualHost,
                                   CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ExchangeTargetImpl();
-            target(targetImpl);
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return information pertaining to exchange '{0}' belonging to virtual host '{1}'.",
-                    targetImpl.Exchange, targetImpl.VirtualHost));
+                    exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Exchange);
+            string url = string.Format("api/exchanges/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       exchangeTargetImpl.Target);
 
             return base.Get(url, cancellationToken).As<Exchange>(cancellationToken);
         }
 
-        public Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> target, Action<BindingDirection> direction,
+        public Task<IEnumerable<Binding>> GetAllBindings(Action<ExchangeTarget> exchange,
+                                                         Action<VirtualHostTarget> virtualHost,
+                                                         Action<BindingDirection> direction,
                                                          CancellationToken cancellationToken =
                                                              default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ExchangeTargetImpl();
-            target(targetImpl);
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             var directionImpl = new BindingDirectionImpl();
             direction(directionImpl);
 
             string url = string.Format("api/exchanges/{0}/{1}/bindings/{2}",
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Exchange,
+                                       virtualHostTargetImpl.Target.SanitizeVirtualHostName(), exchangeTargetImpl.Target,
                                        directionImpl.BindingDirection);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to return all the bindings for exchange '{0}' belonging to virtual host '{1}'.",
-                    targetImpl.Exchange, targetImpl.VirtualHost));
+                    exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Get(url, cancellationToken).As<IEnumerable<Binding>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string exchange, Action<ExchangeTarget> target,
-                                        Action<ExchangeBehavior> behavior,
+        public Task<ServerResponse> New(Action<ExchangeTarget> exchange, Action<ExchangeBehavior> behavior,
+                                        Action<VirtualHostTarget> virtualHost,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
@@ -98,33 +106,39 @@ namespace HareDu.Resources
             var behaviorImpl = new ExchangeBehaviorImpl();
             behavior(behaviorImpl);
 
-            var targetImpl = new ExchangeTargetImpl();
-            target(targetImpl);
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       exchange);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            string url = string.Format("api/exchanges/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       exchangeTargetImpl.Target);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to create a new exchange '{0}' within virtual host '{1}'.",
-                    exchange, targetImpl.VirtualHost));
+                    exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Put(url, behaviorImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(Action<ExchangeTarget> target,
+        public Task<ServerResponse> Delete(Action<ExchangeTarget> exchange, Action<VirtualHostTarget> virtualHost,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ExchangeTargetImpl();
-            target(targetImpl);
+            var exchangeTargetImpl = new ExchangeTargetImpl();
+            exchange(exchangeTargetImpl);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
 
             LogInfo(string.Format("Sent request to RabbitMQ server to delete exchange '{0}' from virtual host '{1}'.",
-                                  targetImpl.Exchange, targetImpl.VirtualHost));
+                                  exchangeTargetImpl.Target, virtualHostTargetImpl.Target));
 
-            string url = string.Format("api/exchanges/{0}/{1}", targetImpl.VirtualHost.SanitizeVirtualHostName(),
-                                       targetImpl.Exchange);
+            string url = string.Format("api/exchanges/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       exchangeTargetImpl.Target);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

@@ -27,11 +27,11 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Permissions> Get(string userName, string virtualHost,
+        Task<Permissions> Get(Action<UserTarget> user, Action<VirtualHostTarget> virtualHost,
                               CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -44,23 +44,23 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
+        /// <param name="behavior"></param>
         /// <param name="virtualHost"></param>
-        /// <param name="args"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Set(string userName, string virtualHost,
-                                 Action<UserPermissionsBehavior> args,
+        Task<ServerResponse> Set(Action<UserTarget> user, Action<UserPermissionsBehavior> behavior,
+                                 Action<VirtualHostTarget> virtualHost,
                                  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
         /// <param name="virtualHost"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string userName, string virtualHost,
+        Task<ServerResponse> Delete(Action<UserTarget> user, Action<VirtualHostTarget> virtualHost,
                                     CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -17,13 +17,12 @@ namespace HareDu.Internal
     using Contracts;
 
     internal class VirtualHostTargetImpl :
+        TargetBase,
         VirtualHostTarget
     {
-        public string VirtualHost { get; private set; }
-
-        public void Source(string virtualHost)
+        public void VirtualHost(string virtualHost)
         {
-            VirtualHost = virtualHost;
+            Target = virtualHost;
         }
     }
 }

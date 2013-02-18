@@ -23,18 +23,6 @@ namespace HareDu.Tests
     public class ExchangeTests :
         HareDuTestBase
     {
-        [SetUp]
-        public new void Setup()
-        {
-            Client = HareDuFactory.New(x =>
-                                           {
-                                               //x.ConnectTo(Settings.Default.HostUrl, Settings.Default.VirtualHost);
-                                               //x.UsingCredentials(Settings.Default.LoginUsername,
-                                               //                   Settings.Default.LoginPassword);
-                                               x.EnableLogging("HareDuLogger");
-                                           });
-        }
-
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Create_Exchange()
         {
@@ -42,15 +30,15 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
-                .New(string.Format("{0}1", Settings.Default.Exchange),
-                     x => x.Source(Settings.Default.VirtualHost),
+                .New(x => x.Exchange(string.Format("{0}1", Settings.Default.Exchange)),
                      x =>
                          {
                              x.IsDurable();
-                             x.UsingRoutingType(
-                                 y => y.Fanout());
-                         })
+                             x.UsingRoutingType(y => y.Fanout());
+                         },
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -61,7 +49,7 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
-                .Delete(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
+                .Delete(x => x.Exchange(Settings.Default.Exchange), x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -72,9 +60,11 @@ namespace HareDu.Tests
             var data = Client
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             .Exchange
-                             .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Destination())
-                             .Data();
+                .Exchange
+                .GetAllBindings(x => x.Exchange(Settings.Default.Exchange),
+                                x => x.VirtualHost(Settings.Default.VirtualHost),
+                                x => x.Destination())
+                .Data();
 
             foreach (var binding in data)
             {
@@ -95,9 +85,11 @@ namespace HareDu.Tests
             var data = Client
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             .Exchange
-                             .GetAllBindings(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost), x => x.Source())
-                             .Data();
+                .Exchange
+                .GetAllBindings(x => x.Exchange(Settings.Default.Exchange),
+                                x => x.VirtualHost(Settings.Default.VirtualHost),
+                                x => x.Source())
+                .Data();
 
             foreach (var binding in data)
             {
@@ -116,12 +108,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Exchanges()
         {
             var data = Client
-                                .Factory<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-//.VirtualHost
-                             .Exchange
-                             .GetAll()
-                             .Data();
+                .Exchange
+                .GetAll()
+                .Data();
 
             foreach (var exchange in data)
             {
@@ -143,7 +134,7 @@ namespace HareDu.Tests
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
                 .Exchange
-                .Get(x => x.Source(Settings.Default.Exchange, Settings.Default.VirtualHost))
+                .Get(x => x.Exchange(Settings.Default.Exchange), x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Data();
 
             Console.WriteLine("Name: {0}", data.Name);

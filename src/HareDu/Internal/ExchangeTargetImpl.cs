@@ -17,20 +17,12 @@ namespace HareDu.Internal
     using Contracts;
 
     internal class ExchangeTargetImpl :
+        TargetBase,
         ExchangeTarget
     {
-        public string Exchange { get; private set; }
-        public string VirtualHost { get; private set; }
-
-        public void Source(string exchange, string virtualHost)
+        public void Exchange(string exchange)
         {
-            Exchange = exchange;
-            VirtualHost = virtualHost;
-        }
-
-        public void Source(string virtualHost)
-        {
-            VirtualHost = virtualHost;
+            Target = exchange;
         }
     }
 }

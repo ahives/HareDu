@@ -34,17 +34,24 @@ namespace HareDu.Resources
         {
         }
 
-        public Task<Permissions> Get(string userName, string virtualHost,
+        public Task<Permissions> Get(Action<UserTarget> user, Action<VirtualHostTarget> virtualHost,
                                      CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
+
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       userTargetImpl.Target);
 
             LogInfo(
                 string.Format(
                     "Sent request to return user permission information pertaining to user '{0}' on virtual host '{1}' users on current RabbitMQ server.",
-                    userName, virtualHost));
+                    userTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Get(url, cancellationToken).As<Permissions>(cancellationToken);
         }
@@ -61,35 +68,50 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<Permissions>>(cancellationToken);
         }
 
-        public Task<ServerResponse> Set(string userName, string virtualHost, Action<UserPermissionsBehavior> args,
+        public Task<ServerResponse> Set(Action<UserTarget> user, Action<UserPermissionsBehavior> behavior,
+                                        Action<VirtualHostTarget> virtualHost,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
             var argsImpl = new UserPermissionsBehaviorImpl();
-            args(argsImpl);
+            behavior(argsImpl);
 
-            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
+
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       userTargetImpl.Target);
 
             LogInfo(
                 string.Format(
                     "Sent request to the RabbitMQ server to set permissions for user '{0}' on virtual host '{1}'.",
-                    userName, virtualHost));
+                    userTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Put(url, argsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName, string virtualHost,
+        public Task<ServerResponse> Delete(Action<UserTarget> user, Action<VirtualHostTarget> virtualHost,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/permissions/{0}/{1}", virtualHost.SanitizeVirtualHostName(), userName);
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
+
+            string url = string.Format("api/permissions/{0}/{1}", virtualHostTargetImpl.Target.SanitizeVirtualHostName(),
+                                       userTargetImpl.Target);
 
             LogInfo(
                 string.Format(
                     "Sent request to the RabbitMQ server to delete permissions for user '{0}' on virtual host '{1}'.",
-                    userName, virtualHost));
+                    userTargetImpl.Target, virtualHostTargetImpl.Target));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

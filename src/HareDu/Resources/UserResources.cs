@@ -40,30 +40,30 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<User> Get(string userName, CancellationToken cancellationToken =
-                                            default(CancellationToken));
+        Task<User> Get(Action<UserTarget> user, CancellationToken cancellationToken =
+                                                    default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
         /// <param name="characteristics"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> New(string userName, Action<UserCharacteristics> characteristics,
+        Task<ServerResponse> New(Action<UserTarget> user, Action<UserCharacteristics> characteristics,
                                  CancellationToken cancellationToken =
                                      default(CancellationToken));
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="user"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ServerResponse> Delete(string userName, CancellationToken cancellationToken =
-                                                         default(CancellationToken));
+        Task<ServerResponse> Delete(Action<UserTarget> user, CancellationToken cancellationToken =
+                                                                 default(CancellationToken));
     }
 }

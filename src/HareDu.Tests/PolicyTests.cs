@@ -29,15 +29,16 @@ namespace HareDu.Tests
             var response = Client
                 .Factory<PolicyResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                .New(x => x.Source(Settings.Default.Policy, Settings.Default.VirtualHost),
+                .New(x => x.Policy(Settings.Default.Policy),
                      x =>
                          {
+                             x.Define(y => y.As("federation-upstream-set", "all"));
                              x.UsingPattern(@"^amq\.");
-                             x.DefinedAs(
-                                 y => y.Set("federation-upstream-set", "all"));
                              x.WithPriority(1);
-                         })
+                         },
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
                 .Response();
+
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
             Console.WriteLine(response.ServerResponseReason);
         }
@@ -46,11 +47,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Policies()
         {
             var data = Client
-                                .Factory<PolicyResources>(
+                .Factory<PolicyResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.Policy
-                             .GetAll()
-                             .Data();
+                .GetAll()
+                .Data();
+
             foreach (var policy in data)
             {
                 Console.WriteLine("Pattern: {0} ", policy.Pattern);
@@ -65,10 +66,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Policies_In_VirtualHost()
         {
             var data = Client
-                                .Factory<PolicyResources>(
+                .Factory<PolicyResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             .GetAll(x => x.Source(Settings.Default.VirtualHost))
-                             .Data();
+                .GetAll(x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
+
             foreach (var policy in data)
             {
                 Console.WriteLine("Pattern: {0} ", policy.Pattern);
@@ -77,6 +79,22 @@ namespace HareDu.Tests
                     Console.WriteLine("\t{0}:{1}", definition.Key, definition.Value);
                 Console.WriteLine("Priority: {0}", policy.Priority);
             }
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Return_Policy_In_VirtualHost()
+        {
+            var data = Client
+                .Factory<PolicyResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Get(x => x.Policy(Settings.Default.Policy), x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
+
+            Console.WriteLine("Pattern: {0} ", data.Pattern);
+            Console.WriteLine("Definitions");
+            foreach (var definition in data.Definition)
+                Console.WriteLine("\t{0}:{1}", definition.Key, definition.Value);
+            Console.WriteLine("Priority: {0}", data.Priority);
         }
     }
 }

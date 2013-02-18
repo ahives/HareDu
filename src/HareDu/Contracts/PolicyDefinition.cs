@@ -16,6 +16,6 @@ namespace HareDu.Contracts
 {
     public interface PolicyDefinition
     {
-        void Set(string key, string value);
+        void As(string key, string value);
     }
 }

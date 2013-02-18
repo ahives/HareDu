@@ -15,7 +15,6 @@
 namespace HareDu.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using System.Threading;
     using NUnit.Framework;
@@ -25,24 +24,6 @@ namespace HareDu.Tests
     public class VirtualHostTests :
         HareDuTestBase
     {
-        [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Get_All_Virtual_Hosts()
-        {
-            var data = Client
-                .Factory<VirtualHostResources>(
-                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                .GetAll()
-                .Data();
-
-            foreach (var vhost in data)
-            {
-                Console.WriteLine("Name: {0}", vhost.Name);
-                Console.WriteLine("Tracing: {0}", vhost.Tracing);
-                Console.WriteLine("****************************************************");
-                Console.WriteLine();
-            }
-        }
-
         [Test, Category("Integration"), Explicit]
         public void Verify_Can_Cancel_Get_All_Virtual_Hosts_Request()
         {
@@ -71,9 +52,38 @@ namespace HareDu.Tests
             var response = Client
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                .New(string.Format("{0}1", Settings.Default.VirtualHost))
+                .New(x => x.VirtualHost(string.Format("{0}1", Settings.Default.VirtualHost)))
                 .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Delete_Virtual_Host()
+        {
+            var response = Client
+                .Factory<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Delete(x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Get_All_Virtual_Hosts()
+        {
+            var data = Client
+                .Factory<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .GetAll()
+                .Data();
+
+            foreach (var vhost in data)
+            {
+                Console.WriteLine("Name: {0}", vhost.Name);
+                Console.WriteLine("Tracing: {0}", vhost.Tracing);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
         }
 
         [Test, Category("Integration"), Explicit]
@@ -82,8 +92,8 @@ namespace HareDu.Tests
             var response = Client
                 .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                                 .IsAlive(Settings.Default.VirtualHost)
-                                 .Response();
+                .IsAlive(x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(null, response.Status);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
@@ -93,22 +103,11 @@ namespace HareDu.Tests
         public void Verify_Throw_Exception_When_Virtual_Host_Missing()
         {
             var request = Client
-                                .Factory<VirtualHostResources>(
+                .Factory<VirtualHostResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                                .Delete(string.Empty)
-                                .Response();
+                .Delete(x => x.VirtualHost(string.Empty))
+                .Response();
             Assert.AreNotEqual(HttpStatusCode.NoContent, request.StatusCode);
-        }
-
-        [Test, Category("Integration"), Explicit]
-        public void Verify_Can_Delete_Virtual_Host()
-        {
-            var response = Client
-                                .Factory<VirtualHostResources>(
-                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                                 .Delete(Settings.Default.VirtualHost)
-                                 .Response();
-            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
     }
 }

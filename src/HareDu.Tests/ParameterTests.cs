@@ -27,15 +27,11 @@ namespace HareDu.Tests
         public void Verify_Can_Add_New_Parameter()
         {
             var response = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                                 //.Parameter
-                                 .New(x =>
-                                          {
-                                              x.For(Settings.Default.Component, Settings.Default.Parameter);
-                                              x.On(Settings.Default.VirtualHost);
-                                          })
-                                 .Response();
+                .New(Settings.Default.Component, Settings.Default.Parameter,
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -43,15 +39,11 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_Parameter()
         {
             var response = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                                 //.Parameter
-                                 .Delete(x =>
-                                             {
-                                                 x.For(Settings.Default.Component, Settings.Default.Parameter);
-                                                 x.On(Settings.Default.VirtualHost);
-                                             })
-                                 .Response();
+                .Delete(Settings.Default.Component, Settings.Default.Parameter,
+                        x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -59,11 +51,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters()
         {
             var data = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Parameter
-                             .GetAll()
-                             .Data();
+                .GetAll()
+                .Data();
 
             foreach (var parameter in data)
             {
@@ -77,11 +68,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters_For_Given_Component()
         {
             var data = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Parameter
-                             .GetAll(Settings.Default.Component)
-                             .Data();
+                .GetAll(Settings.Default.Component)
+                .Data();
 
             foreach (var parameter in data)
             {
@@ -95,15 +85,10 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Parameters_For_Given_Component_On_Given_VirtualHost()
         {
             var data = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Parameter
-                             .GetAll(x =>
-                                         {
-                                             x.For(Settings.Default.Component);
-                                             x.On(Settings.Default.VirtualHost);
-                                         })
-                             .Data();
+                .GetAll(Settings.Default.Component, x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
 
             foreach (var parameter in data)
             {
@@ -117,15 +102,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Parameter_For_Given_Component_On_Given_VirtualHost()
         {
             var data = Client
-                                .Factory<ParameterResources>(
+                .Factory<ParameterResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Parameter
-                             .Get(x =>
-                                      {
-                                          x.For(Settings.Default.Component, Settings.Default.Parameter);
-                                          x.On(Settings.Default.VirtualHost);
-                                      })
-                             .Data();
+                .Get(Settings.Default.Component, Settings.Default.Parameter,
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
 
             Console.WriteLine("Component: {0}", data.Component);
             Console.WriteLine("Name: {0}", data.Name);

@@ -34,7 +34,7 @@ namespace HareDu.Resources
         {
         }
 
-        public Task<Parameter> Get(Action<ComponentTarget> target,
+        public Task<Parameter> Get(string component, string name, Action<VirtualHostTarget> target,
                                    CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
@@ -42,11 +42,11 @@ namespace HareDu.Resources
             LogInfo(
                 "Sent request to return all information pertaining to all parameters on all virtual hosts on current RabbitMQ server.");
 
-            var targetImpl = new ComponentTargetImpl();
+            var targetImpl = new VirtualHostTargetImpl();
             target(targetImpl);
 
-            string url = string.Format("api/parameters/{0}/{1}/{2}", targetImpl.Component,
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Name);
+            string url = string.Format("api/parameters/{0}/{1}/{2}", component,
+                                       targetImpl.Target.SanitizeVirtualHostName(), name);
 
             return base.Get(url, cancellationToken).As<Parameter>(cancellationToken);
         }
@@ -78,59 +78,59 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<Parameter>>(cancellationToken);
         }
 
-        public Task<IEnumerable<Parameter>> GetAll(Action<ComponentTarget> target,
+        public Task<IEnumerable<Parameter>> GetAll(string component, Action<VirtualHostTarget> target,
                                                    CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ComponentTargetImpl();
+            var targetImpl = new VirtualHostTargetImpl();
             target(targetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to return all information pertaining to all parameters for component '{0} on virtual host '{1}' on current RabbitMQ server.",
-                    targetImpl.Component, targetImpl.VirtualHost));
+                    component, targetImpl.Target));
 
-            string url = string.Format("api/parameters/{0}/{1}", targetImpl.Component,
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/parameters/{0}/{1}", component,
+                                       targetImpl.Target.SanitizeVirtualHostName());
 
             return base.Get(url, cancellationToken).As<IEnumerable<Parameter>>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(Action<ComponentTarget> target,
+        public Task<ServerResponse> New(string component, string name, Action<VirtualHostTarget> target,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ComponentTargetImpl();
+            var targetImpl = new VirtualHostTargetImpl();
             target(targetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to create a new parameter named '{0}' for component '{1}' on virtual host '{2}'.",
-                    targetImpl.Name, targetImpl.Component, targetImpl.VirtualHost));
+                    name, component, targetImpl.Target));
 
-            string url = string.Format("api/parameters/{0}/{1}", targetImpl.Component,
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName());
+            string url = string.Format("api/parameters/{0}/{1}/{2}", component,
+                                       targetImpl.Target.SanitizeVirtualHostName(), name);
 
             return base.Put(url, targetImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(Action<ComponentTarget> target,
+        public Task<ServerResponse> Delete(string component, string name, Action<VirtualHostTarget> target,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            var targetImpl = new ComponentTargetImpl();
+            var targetImpl = new VirtualHostTargetImpl();
             target(targetImpl);
 
             LogInfo(
                 string.Format(
                     "Sent request to RabbitMQ server to delete parameter '{0}' of component '{1}' on virtual host '{2}'.",
-                    targetImpl.Name, targetImpl.Component, targetImpl.VirtualHost));
+                    name, component, targetImpl.Target));
 
-            string url = string.Format("api/parameters/{0}/{1}/{2}", targetImpl.Component,
-                                       targetImpl.VirtualHost.SanitizeVirtualHostName(), targetImpl.Name);
+            string url = string.Format("api/parameters/{0}/{1}/{2}", component,
+                                       targetImpl.Target.SanitizeVirtualHostName(), name);
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

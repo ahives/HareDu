@@ -26,11 +26,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_Nodes_On_Cluster()
         {
             var data = Client
-                                .Factory<NodeResources>(
+                .Factory<NodeResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Node
-                             .GetAll()
-                             .Data();
+                //.Node
+                .GetAll()
+                .Data();
 
             foreach (var node in data)
             {
@@ -94,11 +94,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_Node_On_Cluster()
         {
             var data = Client
-                                .Factory<NodeResources>(
+                .Factory<NodeResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                             //.Node
-                             .Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")))
-                             .Data();
+                //.Node
+                .Get(string.Format("rabbit@{0}", Environment.GetEnvironmentVariable("COMPUTERNAME")))
+                .Data();
 
             Console.WriteLine("Name: {0}", data.Name);
             Console.WriteLine("Type: {0}", data.Type);

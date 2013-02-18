@@ -27,17 +27,18 @@ namespace HareDu.Tests
         public void Verify_Can_Create_User_Persmissions()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .Permissions
-                                 .Set(string.Format("{0}1", Settings.Default.Username), Settings.Default.VirtualHost, x =>
-                                                                                                  {
-                                                                                                      x.Configure(".*");
-                                                                                                      x.Read(".*");
-                                                                                                      x.Write(".*");
-                                                                                                  })
-                                 .Response();
+                .Permissions
+                .Set(x => x.User(string.Format("{0}1", Settings.Default.Username)),
+                     x =>
+                         {
+                             x.Configure(".*");
+                             x.Read(".*");
+                             x.Write(".*");
+                         },
+                     x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -45,12 +46,11 @@ namespace HareDu.Tests
         public void Verify_Can_Delete_User_Permissions()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .Permissions
-                                 .Delete(Settings.Default.Username, Settings.Default.VirtualHost)
-                                 .Response();
+                .Permissions
+                .Delete(x => x.User(Settings.Default.Username), x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
@@ -58,12 +58,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_All_User_Permissions()
         {
             var data = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                             .Permissions
-                             .GetAll()
-                             .Data();
+                .Permissions
+                .GetAll()
+                .Data();
 
             foreach (var permission in data)
             {
@@ -81,12 +80,11 @@ namespace HareDu.Tests
         public void Verify_Can_Return_User_Permissions()
         {
             var data = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                             .Permissions
-                             .Get(Settings.Default.Username, Settings.Default.VirtualHost)
-                             .Data();
+                .Permissions
+                .Get(x => x.User(Settings.Default.Username), x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
 
             Console.WriteLine("Virtual Host: {0}", data.VirtualHost);
             Console.WriteLine("User: {0}", data.User);
@@ -102,12 +100,11 @@ namespace HareDu.Tests
         public void Verify_Throws_Exception_When_Permissions_Null()
         {
             var response = Client
-                                .Factory<UserResources>(
+                .Factory<UserResources>(
                     x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
-                //.User
-                                 .Permissions
-                                 .Set(Settings.Default.Username, Settings.Default.VirtualHost, null)
-                                 .Response();
+                .Permissions
+                .Set(x => x.User(Settings.Default.Username), null, x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Response();
         }
     }
 }

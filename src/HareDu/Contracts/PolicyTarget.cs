@@ -14,25 +14,8 @@
 
 namespace HareDu.Contracts
 {
-    public interface ComponentTarget
+    public interface PolicyTarget
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="component"></param>
-        void For(string component);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="name"></param>
-        void For(string component, string name);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="virtualHost"></param>
-        void On(string virtualHost);
+        void Policy(string policy);
     }
 }

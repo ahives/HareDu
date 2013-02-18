@@ -12,10 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu
 {
-    public interface VirtualHostTarget
+    using System;
+    using Contracts;
+
+    public static class HareDuFactory
     {
-        void VirtualHost(string virtualHost);
+        public static HareDuClient New(Action<HareDuClientBehavior> args)
+        {
+            try
+            {
+                var init = new HareDuClientBehaviorImpl();
+                args(init);
+                var client = new HareDuClientImpl(init);
+
+                return client;
+            }
+            catch (Exception e)
+            {
+                throw new HareDuClientInitException("Unable to initialize the HareDu client.", e);
+            }
+        }
     }
 }

@@ -48,19 +48,23 @@ namespace HareDu.Resources
             return base.Get(url, cancellationToken).As<IEnumerable<User>>(cancellationToken);
         }
 
-        public Task<User> Get(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<User> Get(Action<UserTarget> user, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/users/{0}", userName);
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
+
+            string url = string.Format("api/users/{0}", user.Target);
 
             LogInfo(string.Format(
-                "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.", userName));
+                "Sent request to the RabbitMQ server to return information pertaining to user '{0}'.",
+                userTargetImpl.Target));
 
             return base.Get(url, cancellationToken).As<User>(cancellationToken);
         }
 
-        public Task<ServerResponse> New(string userName, Action<UserCharacteristics> characteristics,
+        public Task<ServerResponse> New(Action<UserTarget> user, Action<UserCharacteristics> characteristics,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
@@ -68,21 +72,27 @@ namespace HareDu.Resources
             var characteristicsImpl = new UserCharacteristicsImpl();
             characteristics(characteristicsImpl);
 
-            string url = string.Format("api/users/{0}", userName);
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
 
-            LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userName));
+            string url = string.Format("api/users/{0}", userTargetImpl.Target);
+
+            LogInfo(string.Format("Sent request to the RabbitMQ server to create user '{0}'.", userTargetImpl.Target));
 
             return base.Put(url, characteristicsImpl, cancellationToken).Response<ServerResponse>(cancellationToken);
         }
 
-        public Task<ServerResponse> Delete(string userName,
+        public Task<ServerResponse> Delete(Action<UserTarget> user,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.RequestCanceled(LogInfo);
 
-            string url = string.Format("api/users/{0}", userName);
+            var userTargetImpl = new UserTargetImpl();
+            user(userTargetImpl);
 
-            LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userName));
+            string url = string.Format("api/users/{0}", userTargetImpl.Target);
+
+            LogInfo(string.Format("Sent request to RabbitMQ server to delete user '{0}'.", userTargetImpl.Target));
 
             return base.Delete(url, cancellationToken).Response<ServerResponse>(cancellationToken);
         }

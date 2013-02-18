@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace HareDu.Contracts
+namespace HareDu.Internal
 {
-    public interface VirtualHostTarget
+    internal class TargetBase
     {
-        void VirtualHost(string virtualHost);
+        public string Target { get; protected set; }
     }
 }

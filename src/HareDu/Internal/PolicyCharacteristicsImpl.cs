@@ -30,11 +30,11 @@ namespace HareDu.Internal
             Pattern = pattern;
         }
 
-        public void DefinedAs(Action<PolicyDefinition> arg)
+        public void Define(Action<PolicyDefinition> definition)
         {
-            var argImpl = new PolicyDefinitionImpl();
-            arg(argImpl);
-            Definition = argImpl.Definition;
+            var definitionImpl = new PolicyDefinitionImpl();
+            definition(definitionImpl);
+            Definition = definitionImpl.Definition;
         }
 
         public void WithPriority(int priority)
