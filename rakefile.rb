@@ -1,4 +1,4 @@
-COPYRIGHT = "Copyright 2013-2014 Chris Patterson, Albert L. Hives."
+COPYRIGHT = "Copyright 2013-2014 Albert L. Hives, Chris Patterson, et al."
 
 require File.dirname(__FILE__) + "/build_support/BuildUtils.rb"
 require File.dirname(__FILE__) + "/build_support/util.rb"
@@ -30,7 +30,7 @@ desc "Update the common version information for the build. You can call this tas
 assemblyinfo :global_version do |asm|
   # Assembly file config
   asm.product_name = PRODUCT
-  asm.description = "A client API for monitoring and configuring RabbitMQ via REST"
+  asm.description = "HareDu is a .NET client and library that consumes the RabbitMQ REST API and is used to manage and monitor a RabbitMQ server or cluster."
   asm.version = FORMAL_VERSION
   asm.file_version = FORMAL_VERSION
   asm.custom_attributes :AssemblyInformationalVersion => "#{BUILD_VERSION}",
@@ -133,8 +133,8 @@ nuspec :create_nuspec do |nuspec|
   nuspec.id = 'HareDu'
   nuspec.version = NUGET_VERSION
   nuspec.authors = 'Albert L. Hives, Chris Patterson, et al.'
-  nuspec.summary = 'A client API for monitoring and configuring RabbitMQ via REST'
-  nuspec.description = 'A client API for monitoring and configuring RabbitMQ via REST'
+  nuspec.summary = 'HareDu is a .NET client and library that consumes the RabbitMQ REST API and is used to manage and monitor a RabbitMQ server or cluster.'
+  nuspec.description = 'HareDu is a .NET client and library that consumes the RabbitMQ REST API and is used to manage and monitor a RabbitMQ server or cluster.'
   nuspec.title = 'HareDu'
   nuspec.projectUrl = 'http://github.com/ahives/HareDu'
   nuspec.language = "en-US"

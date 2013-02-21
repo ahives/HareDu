@@ -18,32 +18,22 @@ namespace HareDu.Contracts
 
     public interface HareDuClientBehavior
     {
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="hostUrl"></param>
-        ///// <param name="virtualHost"></param>
-        //void ConnectTo(string hostUrl, string virtualHost = "/");
-
         /// <summary>
-        /// 
+        /// Specifies RabbitMQ endpoint to which the client will establish an HTTP connection.
         /// </summary>
         /// <param name="hostUrl"></param>
         void ConnectTo(string hostUrl);
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="username"></param>
-        ///// <param name="password"></param>
-        //void UsingCredentials(string username, string password);
-
         /// <summary>
-        /// 
+        /// Enables logging using the specified logger name found in the configuration file.
         /// </summary>
         /// <param name="loggerName"></param>
         void EnableLogging(string loggerName);
 
+        /// <summary>
+        /// Specifies the number of milliseconds to wait until the request will timeout.
+        /// </summary>
+        /// <param name="timeout"></param>
         void TimeoutAfter(TimeSpan timeout);
     }
 }
