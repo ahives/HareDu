@@ -33,22 +33,30 @@ Be sure to call either Response or Data (depending on whether you are returning 
 Assumptions
 ===========
 1.) You have RabbitMQ running in some environment that is reachable from the machine that you are running HareDu applications on
+
 2.) You know the URL and port to access the RabbitMQ REST API you want to interact with
+
 3.) You have some valid credentials to communite with the RabbitMQ server (default credentials are: username => guest, password => guest)
 
 
 Dependencies
 ============
 .NET Framework
+
 JSON.NET
+
 ASP.NET WebAPI
+
 Common.Logging
 
 
 Tested
 ======
 Windows Server 2008 R2
+
 RabbitMQ 2.8.7 and 3.0.1
+
 Erlang OTP R15B02 (x64)
+
 .NET 4.0 Framework
 
