@@ -7,13 +7,19 @@ Usage
 =====
 1.) Setup your HareDu client by calling the ConnectTo method and passing in the URL (http://<IP_address>:<port>) to the RabbitMQ server
 
-		var client = HareDuFactory.New(x => x.ConnectTo("http://localhost:15672"));
+		var client = HareDuFactory.New(x => x.ConnectTo("http://<IP_address>:<port>"));
 
 The above represents the minimm configuration of the client but HareDu also exposes the EnableLogging method for logging and the TimeoutAfter method for setting the timeout threshold.
+
+Please note that the default RabbitMQ port is 15672
+
 
 2.) Setup a resource factory using your user credentials
 
 		var yourResourceFactory = client.Factory<YourResourcesInterface>(x => x.Credentials(<username>, <password>));
+
+Calling the Factory method is essential to accessing HareDu resources as it is responsible for setting up the client for which requests for resources are sent. You must pass an interface that inherits from HareDu.Resources.ResourceClient. 
+
 
 3.) Call your properties and methods that are available to you based on your resource factory you setup in step 2.
 
