@@ -29,10 +29,10 @@ namespace HareDu.Tests
                 var client = HareDuFactory.New(x =>
                                                    {
                                                        x.ConnectTo("http://localhost:15672");
-                                                       x.EnableLogging("HareDuLogger");
+                                                       x.EnableLogging(y => y.Logger("HareDuLogger"));
                                                    });
                 string virtualHost = "MyVirtualHostScenarioTest1";
-                string exchange = "MyExchangeScenarioTest1";
+                string exchange = "MyExchangeScenarioTest2";
                 string username = "haredu_1";
                 string password = "haredu";
                 var virtualHostResources = client.Factory<VirtualHostResources>(x => x.Credentials(username, password));
@@ -60,7 +60,7 @@ namespace HareDu.Tests
                 var client = HareDuFactory.New(x =>
                                                    {
                                                        x.ConnectTo("http://localhost:15672");
-                                                       x.EnableLogging("HareDuLogger");
+                                                       x.EnableLogging(y => y.Logger("HareDuLogger"));
                                                    });
                 string virtualHost = "MyVirtualHostScenarioTest1";
                 string exchange = "MyExchangeScenarioTest1";
@@ -94,7 +94,7 @@ namespace HareDu.Tests
                 var client = HareDuFactory.New(x =>
                                                    {
                                                        x.ConnectTo("http://localhost:15672");
-                                                       x.EnableLogging("HareDuLogger");
+                                                       x.EnableLogging(y => y.Logger("HareDuLogger"));
                                                    });
                 string virtualHost = "MyVirtualHostScenarioTest1";
                 var userResources = client.Factory<UserResources>(x => x.Credentials("guest", "guest"));
@@ -132,7 +132,7 @@ namespace HareDu.Tests
                 var client = HareDuFactory.New(x =>
                                                    {
                                                        x.ConnectTo("http://localhost:15672");
-                                                       x.EnableLogging("HareDuLogger");
+                                                       x.EnableLogging(y => y.Logger("HareDuLogger"));
                                                    });
                 var virtualHostResources = client.Factory<VirtualHostResources>(x => x.Credentials("guest", "guest"));
                 string virtualHost = "MyVirtualHostScenarioTest1";
@@ -173,7 +173,7 @@ namespace HareDu.Tests
                 var client = HareDuFactory.New(x =>
                                                    {
                                                        x.ConnectTo("http://localhost:15672");
-                                                       x.EnableLogging("HareDuLogger");
+                                                       x.EnableLogging(y => y.Logger("HareDuLogger"));
                                                    });
                 var overview = client
                     .Factory<OverviewResources>(x => x.Credentials("guest", "guest"))

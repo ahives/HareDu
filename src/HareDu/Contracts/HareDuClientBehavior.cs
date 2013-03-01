@@ -27,8 +27,8 @@ namespace HareDu.Contracts
         /// <summary>
         /// Enables logging using the specified logger name found in the configuration file.
         /// </summary>
-        /// <param name="loggerName"></param>
-        void EnableLogging(string loggerName);
+        /// <param name="logger"></param>
+        void EnableLogging(Action<LoggingCharacteristics> logger);
 
         /// <summary>
         /// Specifies the number of milliseconds to wait until the request will timeout.

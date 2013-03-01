@@ -25,7 +25,7 @@ namespace HareDu.Tests
             Client = HareDuFactory.New(x =>
                                            {
                                                x.ConnectTo(Settings.Default.HostUrl);
-                                               x.EnableLogging(Settings.Default.LoggerName);
+                                               x.EnableLogging(y => y.Logger(Settings.Default.LoggerName));
                                            });
         }
 

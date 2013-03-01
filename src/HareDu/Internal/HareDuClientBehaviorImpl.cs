@@ -17,6 +17,7 @@ namespace HareDu
     using System;
     using Common.Logging;
     using Contracts;
+    using Internal;
 
     internal class HareDuClientBehaviorImpl :
         HareDuClientBehavior
@@ -30,11 +31,13 @@ namespace HareDu
             HostUrl = hostUrl;
         }
 
-        public void EnableLogging(string loggerName)
+        public void EnableLogging(Action<LoggingCharacteristics> logger)
         {
             if (Logger.IsNull())
             {
-                Logger = LogManager.GetLogger(loggerName);
+                var loggingCharacteristicsImpl = new LoggingCharacteristicsImpl();
+                logger(loggingCharacteristicsImpl);
+                Logger = LogManager.GetLogger(loggingCharacteristicsImpl.Target);
             }
         }
 

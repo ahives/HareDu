@@ -61,10 +61,12 @@
     <Compile Include="Client\HareDuFactory.cs" />
     <Compile Include="Client\Logging.cs" />
     <Compile Include="Contracts\ExchangeTarget.cs" />
+    <Compile Include="Contracts\LoggingCharacteristics.cs" />
     <Compile Include="Contracts\PolicyTarget.cs" />
     <Compile Include="Contracts\PropertiesKeyTarget.cs" />
     <Compile Include="Contracts\UserTarget.cs" />
     <Compile Include="Internal\ExchangeTargetImpl.cs" />
+    <Compile Include="Internal\LoggingCharacteristicsImpl.cs" />
     <Compile Include="Internal\PolicyTargetImpl.cs" />
     <Compile Include="Internal\PropertiesKeyTargetImpl.cs" />
     <Compile Include="Internal\QueueBindingImpl.cs" />
