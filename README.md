@@ -2,6 +2,8 @@ HareDu
 ======
 HareDu is a .NET client and library that consumes the RabbitMQ REST API and is used to manage and monitor a RabbitMQ server or cluster.
 
+You can now get HareDu on NuGet by searching on HareDu. Also, you can check out the HareDu at http://www.nuget.org/packages/HareDu/
+
 
 Usage
 =====
@@ -11,12 +13,16 @@ Usage
 
 The above represents the minimm configuration of the client but HareDu also exposes the EnableLogging method for logging and the TimeoutAfter method for setting the timeout threshold.
 
-Please note that the default RabbitMQ port is 15672
+***Please note that the default RabbitMQ port is 15672
 
 
 2.) Setup a resource factory using your user credentials
 
 		var yourResourceFactory = client.Factory<YourResourcesInterface>(x => x.Credentials(<username>, <password>));
+
+Example,
+
+    var virtualHostResources = client.Factory<VirtualHostResources>(x => x.Credentials(<username>, <password>));
 
 Calling the Factory method is essential to accessing HareDu resources as it is responsible for setting up the client for which requests for resources are sent. You must pass an interface that inherits from HareDu.Resources.ResourceClient. 
 
@@ -32,6 +38,18 @@ Calling the Factory method is essential to accessing HareDu resources as it is r
                                                            },
                                                        x => x.VirtualHost(virtualHost))
                                                   .Response();
+
+Example,
+
+        var createNewExchangeResponse = virtualHostResources.Exchange
+                                                            .New(x => x.Exchange(exchange),
+                                                                 x =>
+                                                                     {
+                                                                         x.IsDurable();
+                                                                         x.UsingRoutingType(y => y.Fanout());
+                                                                     },
+                                                                 x => x.VirtualHost(virtualHost))
+                                                            .Response();
 
 Be sure to call either Response or Data (depending on whether you are returning data - HTTP GET - or a server response - HTTP POST/PUT/DELETE) if you plan on returning a result. Otherwise the method will return a Task<T>.
 
