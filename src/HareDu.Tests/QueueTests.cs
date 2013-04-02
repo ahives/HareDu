@@ -123,6 +123,33 @@ namespace HareDu.Tests
         }
 
         [Test, Category("Integration"), Explicit]
+        public void Verify_Can_Get_All_Queues_On_VirtualHost()
+        {
+            var data = Client
+                .Factory<VirtualHostResources>(
+                    x => x.Credentials(Settings.Default.LoginUsername, Settings.Default.LoginPassword))
+                .Queue
+                .GetAll(x => x.VirtualHost(Settings.Default.VirtualHost))
+                .Data();
+
+            foreach (var queue in data)
+            {
+                Console.WriteLine("Name: {0}", queue.Name);
+                Console.WriteLine("Virtual Host: {0}", queue.VirtualHostName);
+                Console.WriteLine("Memory: {0}", queue.Memory);
+                Console.WriteLine("Messages: {0}", queue.Messages);
+                Console.WriteLine("Messages Ready: {0}", queue.MessagesReady);
+                Console.WriteLine("Messages Unacknowledged: {0}", queue.MessagesUnacknowledged);
+                Console.WriteLine("Node: {0}", queue.Node);
+                Console.WriteLine("IsDurable: {0}", queue.IsDurable);
+                Console.WriteLine("Consumers: {0}", queue.Consumers);
+                Console.WriteLine("Idle Since: {0}", queue.IdleSince);
+                Console.WriteLine("****************************************************");
+                Console.WriteLine();
+            }
+        }
+
+        [Test, Category("Integration"), Explicit]
         public void Verify_Can_Clear_Queue()
         {
             var response = Client

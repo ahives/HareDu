@@ -36,10 +36,27 @@ namespace HareDu.Resources
 
         public Task<IEnumerable<Queue>> GetAll(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
+            string url = "api/queues";
+
             LogInfo(
                 "Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server.");
 
-            string url = "api/queues";
+            return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
+        }
+
+        public Task<IEnumerable<Queue>> GetAll(Action<VirtualHostTarget> virtualHost, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.RequestCanceled(LogInfo);
+
+            var virtualHostTargetImpl = new VirtualHostTargetImpl();
+            virtualHost(virtualHostTargetImpl);
+
+            string url = string.Format("api/queues/{0}", virtualHostTargetImpl.Target);
+
+            LogInfo(
+                "Sent request to return all information on all queues on all virtual hosts on current RabbitMQ server.");
 
             return base.Get(url, cancellationToken).As<IEnumerable<Queue>>(cancellationToken);
         }

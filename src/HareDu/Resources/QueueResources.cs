@@ -34,6 +34,14 @@ namespace HareDu.Resources
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="virtualHost"></param>
+        /// <param name="cancellationToken">Task cancellation token.</param>
+        /// <returns></returns>
+        Task<IEnumerable<Queue>> GetAll(Action<VirtualHostTarget> virtualHost, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="queue"></param>
         /// <param name="behavior"></param>
         /// <param name="virtualHost"></param>

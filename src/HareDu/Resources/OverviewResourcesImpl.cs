@@ -31,6 +31,8 @@ namespace HareDu.Resources
 
         public Task<Overview> Get(CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.RequestCanceled(LogInfo);
+
             LogInfo("Sent request to return general information pertaining to current RabbitMQ server.");
 
             string url = "api/overview";

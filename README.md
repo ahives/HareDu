@@ -2,11 +2,29 @@ HareDu
 ======
 HareDu is a .NET client and library that consumes the RabbitMQ REST API and is used to manage and monitor a RabbitMQ server or cluster.
 
-You can now get HareDu on NuGet by searching on HareDu. Also, you can check out the HareDu at http://www.nuget.org/packages/HareDu/
+
+Get It
+======
+
+You can now get HareDu on NuGet by searching for HareDu. Also, you can check out HareDu at http://www.nuget.org/packages/HareDu/
+
+From the Package Manager Console in Visual Studio you can run the following PowerShell script to get the latest version of HareDu...
+
+PM> Install-Package HareDu
+
+or if you want a specific version of HareDu you can get your Du by doing...
+
+PM> Install-Package -Version <version> HareDu
+
+Example,
+
+PM> Install-Package -Version 1.1.0 HareDu
 
 
-Usage
-=====
+
+Getting Started
+===============
+
 1.) Setup your HareDu client by calling the ConnectTo method and passing in the URL (http://<IP_address>:<port>) to the RabbitMQ server
 
 		var client = HareDuFactory.New(x => x.ConnectTo("http://<IP_address>:<port>"));
